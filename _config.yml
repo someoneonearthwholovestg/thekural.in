@@ -1,0 +1,6 @@
+title: My Blogger
+description: A simple static blog hosted on GitHub Pages
+url: "https://yourusername.github.io" # Replace with your actual GitHub Pages URL
+baseurl: ""
+markdown: kramdown
+highlighter: rouge
