@@ -6,10 +6,17 @@
    • Lucide icon boot
 ═══════════════════════════════════════════════════════════ */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initLucide() {
+  if (window.lucide) {
+    lucide.createIcons();
+  } else {
+    setTimeout(initLucide, 50);
+  }
+}
+initLucide();
 
-  // ── 1. INITIALISE LUCIDE ICONS ──────────────────────────
-  if (window.lucide) lucide.createIcons();
+document.addEventListener('DOMContentLoaded', () => {
+  initLucide();
 
   // ── 2. THEME TOGGLE ─────────────────────────────────────
   const html        = document.documentElement;
