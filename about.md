@@ -48,7 +48,7 @@ description: About this blog and its author
   </div>
 
   <div style="text-align:center;margin-top:2rem;">
-    <a href="/explore" class="btn btn-primary">
+    <a href="/thekural.in/explore" class="btn btn-primary">
       <i data-lucide="book-open" style="width:15px;height:15px;"></i>
       Read my articles
     </a>
