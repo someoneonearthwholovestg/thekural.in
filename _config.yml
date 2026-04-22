@@ -4,3 +4,4 @@ url: "https://someoneonearthwholovestg.github.io/thekural.in"
 baseurl: ""
 markdown: kramdown
 highlighter: rouge
+permalink: /:year/:month/:day/:title/
