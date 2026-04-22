@@ -6,8 +6,8 @@
 title:        "TheKural"
 tagline:      "Stories worth telling"
 description:  "A thoughtful space for ideas, stories, and perspectives."
-url:          "https://someoneonearthwholovestg.github.io/thekural.in"
-baseurl:      ""
+url:     "https://someoneonearthwholovestg.github.io"
+baseurl: "/thekural.in"
 
 # ─── AUTHOR ────────────────────────────────────────────────────────
 author:
