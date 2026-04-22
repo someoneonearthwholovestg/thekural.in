@@ -6,13 +6,15 @@ title: Home
 
 {% for post in site.posts %}
   <article>
-    <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+    <h2>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </h2>
     <div class="meta">{{ post.date | date: "%B %d, %Y" }}</div>
-    <p>{{ post.excerpt }}</p>
+    <p>{{ post.excerpt | strip_html | truncatewords: 30 }}</p>
     <a href="{{ post.url | relative_url }}" class="read-more">Read More →</a>
   </article>
 {% endfor %}
 
 {% if site.posts.size == 0 %}
-  <p>No articles yet. Add a file to the <code>_posts/</code> folder to see it here!</p>
+  <p>No articles yet. Add a file to the <code>_posts/</code> folder!</p>
 {% endif %}
