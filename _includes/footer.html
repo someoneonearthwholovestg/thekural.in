@@ -1,5 +1,20 @@
-<footer style="background: #ecf0f1; padding: 1.5rem 0; margin-top: 3rem; border-top: 1px solid #bdc3c7;">
-  <div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; text-align: center; color: #7f8c8d;">
-    <p>&copy; {{ "now" | date: "%Y" }} {{ site.title }}. Powered by GitHub Pages.</p>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">The<span>Kural</span></div>
+
+      <p class="footer-copy">
+        &copy; {{ "now" | date: "%Y" }} {{ site.title }}.
+        Built with care &amp; hosted on GitHub Pages.
+      </p>
+
+      <nav style="display:flex;gap:.5rem;align-items:center;">
+        <a href="/"        style="font-family:var(--font-ui);font-size:.8rem;color:var(--c-text-muted);">Home</a>
+        <span style="color:var(--c-border);">·</span>
+        <a href="/explore" style="font-family:var(--font-ui);font-size:.8rem;color:var(--c-text-muted);">Explore</a>
+        <span style="color:var(--c-border);">·</span>
+        <a href="/about"   style="font-family:var(--font-ui);font-size:.8rem;color:var(--c-text-muted);">About</a>
+      </nav>
+    </div>
   </div>
 </footer>

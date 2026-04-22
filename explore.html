@@ -1,0 +1,104 @@
+---
+layout: default
+title: Explore
+description: Browse all articles
+---
+
+<div class="container" style="padding-top:3.5rem;padding-bottom:5rem;">
+
+  <!-- Header -->
+  <div style="margin-bottom:2.5rem;">
+    <p class="hero-eyebrow">Archive</p>
+    <h1 style="font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.6rem;">All Articles</h1>
+    <p style="color:var(--c-text-muted);font-size:1rem;">{{ site.posts.size }} articles and counting.</p>
+  </div>
+
+  <!-- Tag filter -->
+  {% assign all_tags = site.posts | map: "tags" | join: "," | split: "," | uniq | sort %}
+  {% if all_tags.size > 0 %}
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;" id="tag-filters">
+    <button class="tag tag-filter active" data-tag="all" style="cursor:pointer;padding:.35rem .9rem;font-size:.8rem;">All</button>
+    {% for tag in all_tags %}
+      {% unless tag == "" %}
+      <button class="tag tag-filter" data-tag="{{ tag }}" style="cursor:pointer;padding:.35rem .9rem;font-size:.8rem;">{{ tag }}</button>
+      {% endunless %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Posts grid -->
+  <div class="explore-grid" id="explore-grid">
+    {% for post in site.posts %}
+    <a href="{{ post.url | relative_url }}"
+       class="post-card fade-in"
+       style="text-decoration:none;"
+       data-tags="{{ post.tags | join: ',' }}">
+
+      {% if post.image %}
+      <div class="post-card-img">
+        <img src="{{ post.image }}" alt="{{ post.image_alt | default: post.title }}" loading="lazy" />
+      </div>
+      {% else %}
+      <div class="post-card-img" style="background: linear-gradient(145deg, color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)), color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="file-text" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
+      </div>
+      {% endif %}
+
+      <div class="post-card-body">
+        <div class="post-card-meta">
+          <span>{{ post.date | date: "%b %d, %Y" }}</span>
+          {% if post.tags.size > 0 %}
+          <span class="dot"></span>
+          <span>{{ post.tags | first }}</span>
+          {% endif %}
+        </div>
+        <h2 class="post-card-title">{{ post.title }}</h2>
+        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 18 }}</p>
+        <div class="post-card-footer">
+          <div class="tag-list">
+            {% for tag in post.tags limit: 2 %}
+              <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          <span class="read-more-arrow">Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if site.posts.size == 0 %}
+  <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
+    <i data-lucide="inbox" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
+    <p style="font-family:var(--font-ui);">No articles yet. Add posts to <code>_posts/</code> to begin.</p>
+  </div>
+  {% endif %}
+
+</div>
+
+<style>
+  .tag-filter { transition: all .2s; }
+  .tag-filter.active {
+    background: var(--c-primary);
+    color: white;
+  }
+  .explore-hide { display: none !important; }
+</style>
+
+<script>
+  document.querySelectorAll('.tag-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const selected = btn.dataset.tag;
+      document.querySelectorAll('#explore-grid .post-card').forEach(card => {
+        if (selected === 'all') {
+          card.classList.remove('explore-hide');
+        } else {
+          const tags = (card.dataset.tags || '').split(',').map(t => t.trim());
+          card.classList.toggle('explore-hide', !tags.includes(selected));
+        }
+      });
+    });
+  });
+</script>

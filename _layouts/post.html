@@ -1,0 +1,91 @@
+---
+layout: default
+---
+
+<div class="container-narrow">
+  <article>
+
+    <div class="post-hero">
+      <!-- Back link -->
+      <a href="/" style="display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-ui);font-size:.82rem;color:var(--c-text-muted);margin-bottom:1.5rem;">
+        <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to articles
+      </a>
+
+      <!-- Category / tags -->
+      {% if page.tags.size > 0 %}
+      <div class="post-hero-meta">
+        {% for tag in page.tags limit:2 %}
+          <span>{{ tag }}</span>{% unless forloop.last %}<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--c-border);display:inline-block;"></span>{% endunless %}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Title -->
+      <h1 class="post-hero-title">{{ page.title }}</h1>
+
+      <!-- Meta row -->
+      <div style="display:flex;align-items:center;gap:1rem;font-family:var(--font-ui);font-size:.82rem;color:var(--c-text-muted);flex-wrap:wrap;margin-bottom:2rem;">
+        {% if site.author.avatar %}
+        <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid var(--c-primary);" />
+        {% endif %}
+        <span>{{ site.author.name }}</span>
+        <span>·</span>
+        <span>{{ page.date | date: "%B %d, %Y" }}</span>
+        {% if site.show_reading_time %}
+        <span>·</span>
+        <span id="reading-time">— min read</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Cover image -->
+    {% if page.image %}
+    <div class="post-cover">
+      <img src="{{ page.image }}" alt="{{ page.image_alt | default: page.title }}" />
+    </div>
+    {% endif %}
+
+    <!-- Post body -->
+    <div class="post-body">
+      {{ content }}
+    </div>
+
+    <!-- Tags -->
+    {% if page.tags.size > 0 and site.show_tags %}
+    <div class="post-tags">
+      {% for tag in page.tags %}
+        <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="divider"></div>
+
+    <!-- Author card -->
+    {% if site.author.name %}
+    <div class="post-author">
+      {% if site.author.avatar %}
+      <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" class="author-avatar" />
+      {% else %}
+      <div style="width:60px;height:60px;border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--c-primary);">{{ site.author.name | slice: 0 }}</div>
+      {% endif %}
+      <div>
+        <div class="author-name">{{ site.author.name }}</div>
+        <div class="author-bio">{{ site.author.bio }}</div>
+      </div>
+    </div>
+    {% endif %}
+
+  </article>
+</div>
+
+<script>
+  // Calculate reading time
+  const body = document.querySelector('.post-body');
+  if (body) {
+    const words = body.innerText.split(/\s+/).length;
+    const mins = Math.max(1, Math.round(words / 220));
+    const el = document.getElementById('reading-time');
+    if (el) el.textContent = mins + ' min read';
+  }
+</script>

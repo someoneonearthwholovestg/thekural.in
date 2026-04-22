@@ -1,9 +1,33 @@
-<header style="background: #2c3e50; color: white; padding: 1rem 0;">
-  <div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center;">
-    <a href="/" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold;">{{ site.title }}</a>
-    <nav>
-      <a href="/" style="color: #ecf0f1; text-decoration: none; margin-left: 1rem;">Home</a>
-      <a href="/about" style="color: #ecf0f1; text-decoration: none; margin-left: 1rem;">About</a>
-    </nav>
+<header class="site-header">
+  <div class="container">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <a href="/" class="site-logo">
+        The<span>Kural</span>
+      </a>
+
+      <!-- Primary Nav -->
+      <nav class="header-nav">
+        <a href="/"        class="nav-link {% if page.url == '/' %}active{% endif %}">Home</a>
+        <a href="/explore" class="nav-link {% if page.url contains 'explore' %}active{% endif %}">Explore</a>
+        <a href="/about"   class="nav-link {% if page.url contains 'about' %}active{% endif %}">About</a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="header-actions">
+        <!-- Search -->
+        <button class="icon-btn" id="search-toggle" aria-label="Search" title="Search posts">
+          <i data-lucide="search"></i>
+        </button>
+
+        <!-- Theme toggle -->
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+          <i data-lucide="moon" class="icon-moon"></i>
+          <i data-lucide="sun"  class="icon-sun"></i>
+        </button>
+      </div>
+
+    </div>
   </div>
 </header>

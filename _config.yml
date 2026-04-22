@@ -1,7 +1,58 @@
-title: My Blogger
-description: A simple static blog hosted on GitHub Pages
-url: "https://someoneonearthwholovestg.github.io/thekural.in"
-baseurl: ""
-markdown: kramdown
+# ═══════════════════════════════════════════════════════════════════
+#  THEKURAL — SITE CONFIGURATION
+#  Edit the sections below to fully customise your blog.
+# ═══════════════════════════════════════════════════════════════════
+
+title:        "TheKural"
+tagline:      "Stories worth telling"
+description:  "A thoughtful space for ideas, stories, and perspectives."
+url:          "https://someoneonearthwholovestg.github.io/thekural.in"
+baseurl:      ""
+
+# ─── AUTHOR ────────────────────────────────────────────────────────
+author:
+  name:   "Your Name"
+  bio:    "Writer. Thinker. Explorer of ideas worth sharing."
+  avatar: "/assets/images/avatar.jpg"   # Put your photo in assets/images/
+
+# ─── JEKYLL CORE ───────────────────────────────────────────────────
+markdown:   kramdown
 highlighter: rouge
-permalink: /:year/:month/:day/:title/
+permalink:  /:categories/:title/
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# ─── TYPOGRAPHY ────────────────────────────────────────────────────
+# Change to any Google Fonts name. The layout auto-imports them.
+fonts:
+  post_heading:    "Cormorant Garamond"   # Big article titles
+  post_subheading: "Spectral"             # Sub-headings inside posts (h2, h3)
+  body:            "Spectral"             # All paragraph / body text
+  ui:              "DM Sans"              # Nav, buttons, tags, meta
+  mono:            "JetBrains Mono"       # Code blocks
+
+font_sizes:
+  post_heading:    "3.4rem"    # Hero title on post page
+  card_heading:    "1.45rem"   # Title on cards in index / explore
+  subheading:      "1.3rem"    # h2 inside posts
+  body:            "1.1rem"    # Body paragraphs
+  ui:              "0.88rem"   # Nav, tags, meta
+
+# ─── COLORS (LIGHT MODE) ───────────────────────────────────────────
+colors:
+  primary:       "#C4965A"    # Camel — links, buttons, accents
+  primary_dark:  "#9E7340"    # Hover state for camel
+  bg:            "#FAF6EE"    # Page background (warm cream)
+  surface:       "#FDF9F4"    # Card / sidebar surface
+  text:          "#2C1508"    # Main text (deep mocha)
+  text_muted:    "#7A5C45"    # Timestamps, secondary text
+  border:        "#E8DDD0"    # Dividers, card borders
+  accent:        "#D4A96A"    # Golden highlight accent
+
+# ─── FEATURES ──────────────────────────────────────────────────────
+show_reading_time: true    # Show "5 min read" on posts
+show_tags:         true    # Show tags on cards
+posts_per_page:    9       # Posts shown on homepage
+default_image:     "/assets/images/default-cover.jpg"
