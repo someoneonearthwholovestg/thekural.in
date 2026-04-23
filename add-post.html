@@ -184,7 +184,7 @@ permalink: /add-post.html
   }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
 
-  /* Author display (locked to logged-in user) */
+  /* Author display */
   .author-locked {
     display: flex; align-items: center; gap: .65rem;
     background: var(--c-bg); border: 1px solid var(--c-border);
@@ -201,10 +201,6 @@ permalink: /add-post.html
   }
   .author-locked-img img { width: 100%; height: 100%; object-fit: cover; }
   .author-locked-name { font-size: .84rem; color: var(--c-text); flex: 1; }
-  .author-locked-badge {
-    font-size: .65rem; color: var(--c-text-muted);
-    font-family: var(--font-ui); letter-spacing: .05em;
-  }
 
   /* Tags */
   .tags-wrap {
@@ -444,10 +440,6 @@ permalink: /add-post.html
     <div class="login-sub">Editor Access</div>
 
     <div class="login-field">
-      <label>Token ID</label>
-      <input type="text" id="login-token" placeholder="your username" autocomplete="off" spellcheck="false"/>
-    </div>
-    <div class="login-field">
       <label>Cloudinary API Key</label>
       <input type="text" id="login-api-key" placeholder="API Key" autocomplete="off" spellcheck="false"/>
     </div>
@@ -639,19 +631,13 @@ let edImages = []; // {name, url, cloudinaryUrl}
 
 // ── LOGIN ─────────────────────────────────────────────────────
 async function doLogin() {
-  const token = document.getElementById('login-token').value.trim().toLowerCase();
   const apiKey = document.getElementById('login-api-key').value.trim();
   const apiSecret = document.getElementById('login-api-secret').value.trim();
   const btn = document.getElementById('login-btn');
   const err = document.getElementById('login-error');
 
-  if (!token || !apiKey || !apiSecret) {
-    showLoginError('Please enter Token ID, API Key, and API Secret.');
-    return;
-  }
-
-  if (!AUTHORS[token]) {
-    showLoginError('Token ID not found.');
+  if (!apiKey || !apiSecret) {
+    showLoginError('Please enter both API Key and API Secret.');
     return;
   }
 
@@ -660,30 +646,50 @@ async function doLogin() {
   err.classList.remove('show');
 
   try {
-    // Cloudinary Admin API basic auth requires API Key and API Secret
-    // We try to fetch cloud usage info as a simple credential check
-    const authHeader = 'Basic ' + btoa(apiKey + ':' + apiSecret);
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/usage`, {
-      headers: { 'Authorization': authHeader }
+    const timestamp = Math.round((new Date()).getTime() / 1000);
+    const signatureBase = `timestamp=${timestamp}${apiSecret}`;
+    const signature = await sha1(signatureBase);
+
+    const formData = new FormData();
+    formData.append('api_key', apiKey);
+    formData.append('timestamp', timestamp);
+    formData.append('signature', signature);
+
+    // Using the explicit endpoint to check credentials
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/explicit`, {
+      method: 'POST',
+      body: formData
     });
 
-    if (res.ok) {
-      // Credentials are valid
+    const data = await res.json();
+    
+    if (res.ok || data.error?.message?.includes('Must supply public_id')) {
       sessionStorage.setItem('cloudinary-key', apiKey);
       sessionStorage.setItem('cloudinary-secret', apiSecret);
-      loginSuccess(token);
+      
+      // Since no username is provided, use the first author in the list
+      const authorKeys = Object.keys(AUTHORS);
+      const defaultToken = authorKeys.length > 0 ? authorKeys[0] : 'admin';
+      
+      loginSuccess(defaultToken);
     } else {
-      const data = await res.json();
       showLoginError(data.error?.message || 'Invalid API Key or Secret.');
       btn.disabled = false;
       document.getElementById('login-btn-text').textContent = 'Sign In';
     }
   } catch(e) {
     console.error('Login error:', e);
-    showLoginError('Connection error. Please check your internet and Cloudinary config.');
+    showLoginError('Connection error or invalid configuration.');
     btn.disabled = false;
     document.getElementById('login-btn-text').textContent = 'Sign In';
   }
+}
+
+// Helper for SHA1 signature
+async function sha1(str) {
+  const buffer = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-1', buffer);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 function showLoginError(msg) {
@@ -693,7 +699,7 @@ function showLoginError(msg) {
 }
 
 function loginSuccess(token) {
-  currentAuthor = AUTHORS[token];
+  currentAuthor = AUTHORS[token] || { key: token, name: 'Author', bio: '', avatar: '' };
   sessionStorage.setItem('tk-author', token);
 
   // Hide login, show editor
@@ -749,7 +755,6 @@ function doLogout() {
   edTags = []; edImages = [];
   document.getElementById('editor-screen').classList.remove('show');
   document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-token').value = '';
   document.getElementById('login-api-key').value = '';
   document.getElementById('login-api-secret').value = '';
   document.getElementById('login-btn').disabled = false;
@@ -765,7 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedAuthor = sessionStorage.getItem('tk-author');
   const savedKey = sessionStorage.getItem('cloudinary-key');
   const savedSecret = sessionStorage.getItem('cloudinary-secret');
-  if (savedAuthor && savedKey && savedSecret && AUTHORS[savedAuthor]) {
+  if (savedAuthor && savedKey && savedSecret) {
     loginSuccess(savedAuthor);
   }
 });
