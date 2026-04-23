@@ -2,6 +2,7 @@
 layout: post
 title: "The Art of Slow Thinking"
 date: 2024-01-15
+author: rithu
 tags: [reflection, mindfulness, writing]
 
 # ─── Cover image (optional) ─────────────────────────────
