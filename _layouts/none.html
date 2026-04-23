@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ page.title }} — {{ site.title }}</title>
+
+  <!-- Same fonts as your site -->
+  {% assign f = site.fonts %}
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family={{ f.post_heading | replace: ' ', '+' }}:ital,wght@0,300;0,400;0,600;0,700;1,400;1,700&family={{ f.body | replace: ' ', '+' }}:ital,wght@0,400;0,600;1,400&family={{ f.ui | replace: ' ', '+' }}:wght@300;400;500;600&family={{ f.mono | replace: ' ', '+' }}:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <!-- Same CSS variables from _config.yml -->
+  <style>
+    :root {
+      --font-heading:    "{{ site.fonts.post_heading }}", Georgia, serif;
+      --font-subheading: "{{ site.fonts.post_subheading }}", Georgia, serif;
+      --font-body:       "{{ site.fonts.body }}", Georgia, serif;
+      --font-ui:         "{{ site.fonts.ui }}", system-ui, sans-serif;
+      --font-mono:       "{{ site.fonts.mono }}", monospace;
+      --c-primary:       {{ site.colors.primary }};
+      --c-primary-dark:  {{ site.colors.primary_dark }};
+      --c-bg:            {{ site.colors.bg }};
+      --c-surface:       {{ site.colors.surface }};
+      --c-text:          {{ site.colors.text }};
+      --c-text-muted:    {{ site.colors.text_muted }};
+      --c-border:        {{ site.colors.border }};
+      --c-accent:        {{ site.colors.accent }};
+      --c-surface-hover: color-mix(in srgb, var(--c-primary) 6%, var(--c-surface));
+      --shadow-sm:  0 1px 3px rgba(44,21,8,.06);
+      --shadow-md:  0 4px 16px rgba(44,21,8,.08);
+      --shadow-lg:  0 12px 40px rgba(44,21,8,.12);
+      --radius:     10px;
+      --radius-lg:  16px;
+      --transition: 0.22s cubic-bezier(.4,0,.2,1);
+    }
+    [data-theme="dark"] {
+      --c-bg:          #130C06;
+      --c-surface:     #1C1008;
+      --c-text:        #F0E8DC;
+      --c-text-muted:  #9A7A5A;
+      --c-border:      #3A2010;
+      --c-primary:     #D4A96A;
+      --c-primary-dark:#E8C080;
+      --c-accent:      #E0B878;
+      --c-surface-hover: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font-ui);
+      background: var(--c-bg);
+      color: var(--c-text);
+    }
+    a { color: var(--c-primary); text-decoration: none; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-family: var(--font-ui); font-size: .8rem; font-weight: 600;
+      padding: .45rem 1rem; border-radius: 7px;
+      border: 1px solid var(--c-border);
+      background: var(--c-surface); color: var(--c-text);
+      cursor: pointer; transition: all var(--transition);
+    }
+    .btn:hover { border-color: var(--c-primary); background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface)); }
+    .btn-primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+    .btn-primary:hover { background: var(--c-primary-dark); border-color: var(--c-primary-dark); color: #fff; }
+    .tag {
+      font-family: var(--font-ui); font-size: .72rem; font-weight: 500;
+      background: color-mix(in srgb, var(--c-primary) 14%, var(--c-bg));
+      color: var(--c-primary-dark);
+      padding: .2rem .6rem; border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  {{ content }}
+</body>
+</html>
