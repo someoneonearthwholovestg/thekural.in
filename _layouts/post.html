@@ -63,19 +63,20 @@ layout: default
     <div class="divider"></div>
 
     <!-- Author card -->
-    {% if site.author.name %}
-    <div class="post-author">
-      {% if site.author.avatar %}
-      <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" class="author-avatar" />
-      {% else %}
-      <div style="width:60px;height:60px;border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--c-primary);">{{ site.author.name | slice: 0 }}</div>
-      {% endif %}
-      <div>
-        <div class="author-name">{{ site.author.name }}</div>
-        <div class="author-bio">{{ site.author.bio }}</div>
+    {% assign author = site.data.authors[page.author] | default: site.data.authors.rithu %}
+      {% if author %}
+      <div class="post-author">
+        {% if author.avatar %}
+        <img src="{{ author.avatar }}" alt="{{ author.name }}" class="author-avatar" />
+        {% else %}
+        <div style="width:60px;height:60px;border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:var(--c-primary);">{{ author.name | slice: 0 }}</div>
+        {% endif %}
+        <div>
+          <div class="author-name">{{ author.name }}</div>
+          <div class="author-bio">{{ author.bio }}</div>
+        </div>
       </div>
-    </div>
-    {% endif %}
+      {% endif %}
 
   </article>
 </div>
