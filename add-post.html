@@ -655,7 +655,9 @@ async function doLogin() {
     formData.append('timestamp', timestamp);
     formData.append('signature', signature);
 
-    // Using the explicit endpoint to check credentials
+    // Using the explicit endpoint to check credentials.
+    // If the credentials are correct, Cloudinary returns "Missing required parameter - public_id".
+    // If they are incorrect, it returns "Invalid API Key" or "Invalid Signature".
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/explicit`, {
       method: 'POST',
       body: formData
@@ -663,14 +665,13 @@ async function doLogin() {
 
     const data = await res.json();
     
-    if (res.ok || data.error?.message?.includes('Must supply public_id')) {
+    // Treat "Missing public_id" as a success because it means the Auth signature was valid.
+    if (res.ok || (data.error && data.error.message && data.error.message.includes('public_id'))) {
       sessionStorage.setItem('cloudinary-key', apiKey);
       sessionStorage.setItem('cloudinary-secret', apiSecret);
       
-      // Since no username is provided, use the first author in the list
       const authorKeys = Object.keys(AUTHORS);
       const defaultToken = authorKeys.length > 0 ? authorKeys[0] : 'admin';
-      
       loginSuccess(defaultToken);
     } else {
       showLoginError(data.error?.message || 'Invalid API Key or Secret.');
@@ -702,11 +703,9 @@ function loginSuccess(token) {
   currentAuthor = AUTHORS[token] || { key: token, name: 'Author', bio: '', avatar: '' };
   sessionStorage.setItem('tk-author', token);
 
-  // Hide login, show editor
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('editor-screen').classList.add('show');
 
-  // Set topbar
   const av = currentAuthor.avatar;
   const initial = currentAuthor.name.charAt(0);
   document.getElementById('topbar-av').innerHTML = av
@@ -714,16 +713,13 @@ function loginSuccess(token) {
     : initial;
   document.getElementById('topbar-name').textContent = currentAuthor.name;
 
-  // Set locked author display
   document.getElementById('al-img').innerHTML = av
     ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
     : initial;
   document.getElementById('al-name').textContent = currentAuthor.name;
 
-  // Set today's date
   document.getElementById('ed-date').value = new Date().toISOString().split('T')[0];
 
-  // Setup tag input
   const ti = document.getElementById('tag-input');
   ti.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -735,7 +731,6 @@ function loginSuccess(token) {
   });
   ti.addEventListener('blur', () => { if(ti.value.trim()) addTag(ti.value.trim()); });
 
-  // Drag & drop
   const drop = document.getElementById('image-drop');
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
@@ -765,7 +760,6 @@ function doLogout() {
   document.getElementById('ed-excerpt').value = '';
 }
 
-// Resume session if already logged in
 document.addEventListener('DOMContentLoaded', () => {
   const savedAuthor = sessionStorage.getItem('tk-author');
   const savedKey = sessionStorage.getItem('cloudinary-key');
@@ -775,30 +769,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ── EDITOR CORE ───────────────────────────────────────────────
 function edUpdate() {
   const title = document.getElementById('ed-title').value;
   const date = document.getElementById('ed-date').value;
   const excerpt = document.getElementById('ed-excerpt').value;
   const content = document.getElementById('content-area').value;
 
-  // Preview Title
   const pvTitle = document.getElementById('pv-title');
   pvTitle.textContent = title || 'Your title will appear here…';
   pvTitle.classList.toggle('empty', !title);
 
-  // Preview Meta
   document.getElementById('pv-aname').textContent = currentAuthor.name;
   document.getElementById('pv-date').textContent = formatDate(date);
   document.getElementById('pv-rt').textContent = calcReadTime(content) + ' min read';
 
-  // Preview Tags
   const pvTagsRow = document.getElementById('pv-tags-row');
   pvTagsRow.innerHTML = edTags.map(t => `<span class="pv-tag-meta">${t}</span>`).join('<span>·</span>');
   const pvPostTags = document.getElementById('pv-post-tags');
   pvPostTags.innerHTML = edTags.map(t => `<span class="tag-chip" style="background:var(--c-bg);border:1px solid var(--c-border);color:var(--c-text-muted)">${t}</span>`).join('');
 
-  // Preview Author Card
   document.getElementById('pv-card-name').textContent = currentAuthor.name;
   document.getElementById('pv-card-bio').textContent = currentAuthor.bio;
   const av = currentAuthor.avatar;
@@ -809,12 +798,10 @@ function edUpdate() {
   document.getElementById('pv-av').innerHTML = avHtml;
   document.getElementById('pv-card-av').innerHTML = avHtml;
 
-  // Preview Body
   document.getElementById('pv-body').innerHTML = content
     ? parseMarkdown(content)
     : '<p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>';
 
-  // Generate Filename
   const slug = title.toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
@@ -822,12 +809,10 @@ function edUpdate() {
   const filename = `${date}-${slug}.md`;
   document.getElementById('out-filename').textContent = title ? filename : '—';
 
-  // Generate Full Post
   let frontMatter = `---\nlayout: post\ntitle: ${JSON.stringify(title)}\ndate: ${date}\nauthor: ${currentAuthor.key}\n`;
   if (edTags.length) frontMatter += `tags: [${edTags.join(', ')}]\n`;
   if (excerpt) frontMatter += `excerpt: ${JSON.stringify(excerpt)}\n`;
   
-  // Find cover image (first image in content)
   const coverMatch = content.match(/!\[.*?\]\((.*?)\)/);
   if (coverMatch) frontMatter += `image: ${coverMatch[1]}\n`;
   
@@ -846,7 +831,6 @@ function calcReadTime(text) {
   return Math.ceil(words / 225) || 1;
 }
 
-// ── TAGS ──────────────────────────────────────────────────────
 function addTag(tag) {
   if (!tag || edTags.includes(tag)) return;
   edTags.push(tag);
@@ -871,7 +855,6 @@ function renderTags() {
   });
 }
 
-// ── IMAGES ────────────────────────────────────────────────────
 async function handleImages(files) {
   const progress = document.getElementById('upload-progress');
   progress.style.display = 'block';
@@ -924,7 +907,6 @@ function insertImg(url) {
   tbIns(`\n![Image description](${url})\n`, '');
 }
 
-// ── TOOLBAR ───────────────────────────────────────────────────
 function tbIns(before, after, isBlock = false) {
   const el = document.getElementById('content-area');
   const start = el.selectionStart;
@@ -950,9 +932,7 @@ function tbParagraph() {
   tbIns('\n\n', '', true);
 }
 
-// ── UTILS ─────────────────────────────────────────────────────
 function parseMarkdown(md) {
-  // Simple parser for preview (not full spec)
   return md
     .replace(/^### (.*$)/gim, '<h3>$1</h3>')
     .replace(/^## (.*$)/gim, '<h2>$1</h2>')
