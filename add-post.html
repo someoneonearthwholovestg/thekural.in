@@ -191,14 +191,11 @@ permalink: /add-post.html
   }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
 
-  /* Author display */
-  .author-locked {
+  /* Author select in editor */
+  .author-select-wrap {
     display: flex; align-items: center; gap: .65rem;
-    background: var(--c-bg); border: 1px solid var(--c-border);
-    border-radius: 7px; padding: .45rem .75rem;
-    opacity: .85;
   }
-  .author-locked-img {
+  .author-select-wrap .author-locked-img {
     width: 26px; height: 26px; border-radius: 50%;
     border: 1.5px solid var(--c-primary); overflow: hidden;
     background: color-mix(in srgb, var(--c-primary) 15%, var(--c-surface));
@@ -206,8 +203,23 @@ permalink: /add-post.html
     font-family: var(--font-heading); font-size: .85rem;
     font-weight: 700; color: var(--c-primary); flex-shrink: 0;
   }
-  .author-locked-img img { width: 100%; height: 100%; object-fit: cover; }
-  .author-locked-name { font-size: .84rem; color: var(--c-text); flex: 1; }
+  .author-select-wrap .author-locked-img img { width: 100%; height: 100%; object-fit: cover; }
+  .author-select-wrap select {
+    flex: 1;
+    font-family: var(--font-ui); font-size: .84rem;
+    color: var(--c-text); background: var(--c-bg);
+    border: 1px solid var(--c-border); border-radius: 7px;
+    padding: .5rem .72rem; outline: none;
+    transition: border-color var(--transition);
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%237A5C45' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .72rem center;
+    padding-right: 2rem; cursor: pointer;
+  }
+  .author-select-wrap select:focus {
+    border-color: var(--c-primary); background: #fff;
+  }
 
   /* Tags */
   .tags-wrap {
@@ -447,12 +459,6 @@ permalink: /add-post.html
     <div class="login-sub">Editor Access</div>
 
     <div class="login-field">
-      <label>Select Author</label>
-      <select id="login-author-select">
-        <!-- Populated by JS -->
-      </select>
-    </div>
-    <div class="login-field">
       <label>Cloudinary API Key</label>
       <input type="text" id="login-api-key" placeholder="API Key" autocomplete="off" spellcheck="false"/>
     </div>
@@ -501,9 +507,11 @@ permalink: /add-post.html
         </div>
         <div class="field">
           <label>Author</label>
-          <div class="author-locked" id="author-locked-display">
+          <div class="author-select-wrap" id="author-select-wrap">
             <div class="author-locked-img" id="al-img">?</div>
-            <span class="author-locked-name" id="al-name">—</span>
+            <select id="ed-author-select" onchange="onAuthorChange()">
+              <!-- Populated by JS -->
+            </select>
           </div>
         </div>
       </div>
@@ -642,9 +650,9 @@ let currentAuthor = null;
 let edTags = [];
 let edImages = []; // {name, url, cloudinaryUrl}
 
-// ── LOGIN ─────────────────────────────────────────────────────
-function populateAuthorDropdown() {
-  const select = document.getElementById('login-author-select');
+// ── AUTHOR DROPDOWN (editor) ──────────────────────────────────
+function populateEditorAuthorDropdown() {
+  const select = document.getElementById('ed-author-select');
   select.innerHTML = '';
   Object.keys(AUTHORS).forEach(key => {
     const opt = document.createElement('option');
@@ -654,14 +662,38 @@ function populateAuthorDropdown() {
   });
 }
 
+function onAuthorChange() {
+  const key = document.getElementById('ed-author-select').value;
+  currentAuthor = AUTHORS[key] || { key: key, name: 'Author', bio: '', avatar: '' };
+  sessionStorage.setItem('tk-author', key);
+  updateAuthorDisplays();
+  edUpdate();
+}
+
+function updateAuthorDisplays() {
+  if (!currentAuthor) return;
+  const av = currentAuthor.avatar;
+  const initial = currentAuthor.name.charAt(0);
+  const avHtml = av
+    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
+    : initial;
+
+  // Topbar
+  document.getElementById('topbar-av').innerHTML = avHtml;
+  document.getElementById('topbar-name').textContent = currentAuthor.name;
+
+  // Editor panel author avatar
+  document.getElementById('al-img').innerHTML = avHtml;
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
 async function doLogin() {
-  const token = document.getElementById('login-author-select').value;
   const apiKey = document.getElementById('login-api-key').value.trim();
   const apiSecret = document.getElementById('login-api-secret').value.trim();
   const btn = document.getElementById('login-btn');
   const err = document.getElementById('login-error');
 
-  if (!token || !apiKey || !apiSecret) {
+  if (!apiKey || !apiSecret) {
     showLoginError('Please enter all credentials.');
     return;
   }
@@ -690,7 +722,7 @@ async function doLogin() {
     if (res.ok || (data.error && data.error.message && data.error.message.includes('public_id'))) {
       sessionStorage.setItem('cloudinary-key', apiKey);
       sessionStorage.setItem('cloudinary-secret', apiSecret);
-      loginSuccess(token);
+      loginSuccess();
     } else {
       showLoginError(data.error?.message || 'Invalid API Key or Secret.');
       btn.disabled = false;
@@ -716,24 +748,20 @@ function showLoginError(msg) {
   err.classList.add('show');
 }
 
-function loginSuccess(token) {
-  currentAuthor = AUTHORS[token] || { key: token, name: 'Author', bio: '', avatar: '' };
-  sessionStorage.setItem('tk-author', token);
-
+function loginSuccess() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('editor-screen').classList.add('show');
 
-  const av = currentAuthor.avatar;
-  const initial = currentAuthor.name.charAt(0);
-  document.getElementById('topbar-av').innerHTML = av
-    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
-    : initial;
-  document.getElementById('topbar-name').textContent = currentAuthor.name;
-
-  document.getElementById('al-img').innerHTML = av
-    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
-    : initial;
-  document.getElementById('al-name').textContent = currentAuthor.name;
+  // Populate & restore author selection
+  populateEditorAuthorDropdown();
+  const savedAuthor = sessionStorage.getItem('tk-author');
+  if (savedAuthor && AUTHORS[savedAuthor]) {
+    document.getElementById('ed-author-select').value = savedAuthor;
+  }
+  // Set current author to whatever is selected (first author by default)
+  const selectedKey = document.getElementById('ed-author-select').value;
+  currentAuthor = AUTHORS[selectedKey] || { key: selectedKey, name: 'Author', bio: '', avatar: '' };
+  updateAuthorDisplays();
 
   document.getElementById('ed-date').value = new Date().toISOString().split('T')[0];
 
@@ -778,16 +806,15 @@ function doLogout() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  populateAuthorDropdown();
-  const savedAuthor = sessionStorage.getItem('tk-author');
   const savedKey = sessionStorage.getItem('cloudinary-key');
   const savedSecret = sessionStorage.getItem('cloudinary-secret');
-  if (savedAuthor && savedKey && savedSecret) {
-    loginSuccess(savedAuthor);
+  if (savedKey && savedSecret) {
+    loginSuccess();
   }
 });
 
 function edUpdate() {
+  if (!currentAuthor) return;
   const title = document.getElementById('ed-title').value;
   const date = document.getElementById('ed-date').value;
   const excerpt = document.getElementById('ed-excerpt').value;
