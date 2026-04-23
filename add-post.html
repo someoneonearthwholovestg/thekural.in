@@ -630,8 +630,8 @@ permalink: /add-post.html
 
 <script>
 // ── CONFIG — update these ─────────────────────────────────────
-const CLOUDINARY_CLOUD = 'dl1gyw7jo';       // e.g. 'mycloud'
-const CLOUDINARY_PRESET = 'thekural';   // unsigned preset name
+const CLOUDINARY_CLOUD = 'YOUR_CLOUD_NAME';       // e.g. 'mycloud'
+const CLOUDINARY_PRESET = 'YOUR_UPLOAD_PRESET';   // unsigned preset name
 
 // ── AUTHORS from _data/authors.yml ───────────────────────────
 const AUTHORS = {
@@ -978,17 +978,33 @@ function tbParagraph() {
 }
 
 function parseMarkdown(md) {
-  return md
+  // Block-level: headings and blockquotes first
+  md = md
     .replace(/^### (.*$)/gim, '<h3>$1</h3>')
     .replace(/^## (.*$)/gim, '<h2>$1</h2>')
     .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-    .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
-    .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-    .replace(/\*(.*)\*/gim, '<em>$1</em>')
+    .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+
+  // Inline formatting
+  md = md
+    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
     .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
     .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
-    .replace(/`(.*?)`/gim, '<code>$1</code>')
-    .replace(/\n/gim, '<br />');
+    .replace(/`(.*?)`/gim, '<code>$1</code>');
+
+  // Paragraphs: split by double newline, wrap each block in <p>
+  md = md.split(/\n\n+/).map(function(block) {
+    block = block.trim();
+    if (!block) return '';
+    // Skip blocks already starting with a block element
+    if (/^<(h[1-3]|blockquote|img|hr|ul|ol|pre)/i.test(block)) return block;
+    // Single newlines within a paragraph → <br>
+    block = block.replace(/\n/g, '<br />');
+    return '<p>' + block + '</p>';
+  }).join('\n');
+
+  return md;
 }
 
 function copyOut(type) {
