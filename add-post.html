@@ -52,7 +52,7 @@ permalink: /add-post.html
     letter-spacing: .06em;
     text-transform: uppercase;
   }
-  .login-field input {
+  .login-field input, .login-field select {
     width: 100%;
     font-family: var(--font-ui);
     font-size: .9rem;
@@ -64,7 +64,14 @@ permalink: /add-post.html
     outline: none;
     transition: border-color var(--transition);
   }
-  .login-field input:focus { border-color: var(--c-primary); background: #fff; }
+  .login-field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%237A5C45' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    cursor: pointer;
+  }
+  .login-field input:focus, .login-field select:focus { border-color: var(--c-primary); background: #fff; }
   .login-btn {
     width: 100%;
     font-family: var(--font-ui);
@@ -440,6 +447,12 @@ permalink: /add-post.html
     <div class="login-sub">Editor Access</div>
 
     <div class="login-field">
+      <label>Select Author</label>
+      <select id="login-author-select">
+        <!-- Populated by JS -->
+      </select>
+    </div>
+    <div class="login-field">
       <label>Cloudinary API Key</label>
       <input type="text" id="login-api-key" placeholder="API Key" autocomplete="off" spellcheck="false"/>
     </div>
@@ -630,14 +643,26 @@ let edTags = [];
 let edImages = []; // {name, url, cloudinaryUrl}
 
 // ── LOGIN ─────────────────────────────────────────────────────
+function populateAuthorDropdown() {
+  const select = document.getElementById('login-author-select');
+  select.innerHTML = '';
+  Object.keys(AUTHORS).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = AUTHORS[key].name;
+    select.appendChild(opt);
+  });
+}
+
 async function doLogin() {
+  const token = document.getElementById('login-author-select').value;
   const apiKey = document.getElementById('login-api-key').value.trim();
   const apiSecret = document.getElementById('login-api-secret').value.trim();
   const btn = document.getElementById('login-btn');
   const err = document.getElementById('login-error');
 
-  if (!apiKey || !apiSecret) {
-    showLoginError('Please enter both API Key and API Secret.');
+  if (!token || !apiKey || !apiSecret) {
+    showLoginError('Please enter all credentials.');
     return;
   }
 
@@ -655,9 +680,6 @@ async function doLogin() {
     formData.append('timestamp', timestamp);
     formData.append('signature', signature);
 
-    // Using the explicit endpoint to check credentials.
-    // If the credentials are correct, Cloudinary returns "Missing required parameter - public_id".
-    // If they are incorrect, it returns "Invalid API Key" or "Invalid Signature".
     const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/explicit`, {
       method: 'POST',
       body: formData
@@ -665,14 +687,10 @@ async function doLogin() {
 
     const data = await res.json();
     
-    // Treat "Missing public_id" as a success because it means the Auth signature was valid.
     if (res.ok || (data.error && data.error.message && data.error.message.includes('public_id'))) {
       sessionStorage.setItem('cloudinary-key', apiKey);
       sessionStorage.setItem('cloudinary-secret', apiSecret);
-      
-      const authorKeys = Object.keys(AUTHORS);
-      const defaultToken = authorKeys.length > 0 ? authorKeys[0] : 'admin';
-      loginSuccess(defaultToken);
+      loginSuccess(token);
     } else {
       showLoginError(data.error?.message || 'Invalid API Key or Secret.');
       btn.disabled = false;
@@ -686,7 +704,6 @@ async function doLogin() {
   }
 }
 
-// Helper for SHA1 signature
 async function sha1(str) {
   const buffer = new TextEncoder().encode(str);
   const hash = await crypto.subtle.digest('SHA-1', buffer);
@@ -761,6 +778,7 @@ function doLogout() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  populateAuthorDropdown();
   const savedAuthor = sessionStorage.getItem('tk-author');
   const savedKey = sessionStorage.getItem('cloudinary-key');
   const savedSecret = sessionStorage.getItem('cloudinary-secret');
