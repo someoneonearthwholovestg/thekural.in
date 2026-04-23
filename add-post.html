@@ -5,21 +5,109 @@ permalink: /add-post.html
 ---
 
 <style>
-  /* Hide the normal site footer/header padding for this page */
-  main { padding: 0 !important; }
-
-  :root {
-    --font-mono: "JetBrains Mono", monospace;
+  /* ── LOGIN PAGE ── */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--c-bg);
+    padding: 2rem;
   }
+  .login-card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-logo {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--c-text);
+    text-align: center;
+    margin-bottom: .3rem;
+    letter-spacing: -.02em;
+  }
+  .login-logo span { color: var(--c-primary); }
+  .login-sub {
+    font-family: var(--font-ui);
+    font-size: .78rem;
+    color: var(--c-text-muted);
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: .04em;
+  }
+  .login-field { margin-bottom: 1rem; }
+  .login-field label {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    margin-bottom: .35rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .login-field input {
+    width: 100%;
+    font-family: var(--font-ui);
+    font-size: .9rem;
+    color: var(--c-text);
+    background: var(--c-bg);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: .7rem 1rem;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .login-field input:focus { border-color: var(--c-primary); background: #fff; }
+  .login-btn {
+    width: 100%;
+    font-family: var(--font-ui);
+    font-size: .88rem;
+    font-weight: 600;
+    padding: .75rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--c-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: background var(--transition);
+    margin-top: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+  }
+  .login-btn:hover { background: var(--c-primary-dark); }
+  .login-btn:disabled { opacity: .6; cursor: not-allowed; }
+  .login-error {
+    font-family: var(--font-ui);
+    font-size: .78rem;
+    color: #c0392b;
+    background: #fdf0ee;
+    border: 1px solid #f5c6c0;
+    border-radius: 7px;
+    padding: .6rem .9rem;
+    margin-top: .9rem;
+    display: none;
+    text-align: center;
+  }
+  .login-error.show { display: block; }
 
-  .editor-page {
+  /* ── EDITOR ── */
+  .editor-screen { display: none; }
+  .editor-screen.show {
     display: grid;
     grid-template-columns: 440px 1fr;
-    height: calc(100vh - 64px); /* 64px = site header height */
+    height: 100vh;
     overflow: hidden;
   }
 
-  /* ── LEFT PANEL ── */
   .ed-panel {
     background: var(--c-surface);
     border-right: 1px solid var(--c-border);
@@ -34,128 +122,105 @@ permalink: /add-post.html
     position: sticky; top: 0; z-index: 5;
     background: var(--c-surface);
     border-bottom: 1px solid var(--c-border);
-    padding: .75rem 1.25rem;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: .75rem;
+    padding: .7rem 1.25rem;
+    display: flex; align-items: center; gap: .75rem;
   }
-  .ed-topbar-title {
-    font-family: var(--font-ui); font-size: .72rem; font-weight: 600;
-    letter-spacing: .12em; text-transform: uppercase; color: var(--c-text-muted);
+  .ed-topbar-logo {
+    font-family: var(--font-heading);
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--c-text); letter-spacing: -.02em;
+    flex: 1;
   }
-  .ed-actions { display: flex; gap: .4rem; }
-
-  .panel-section {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--c-border);
+  .ed-topbar-logo span { color: var(--c-primary); }
+  .ed-user {
+    display: flex; align-items: center; gap: .5rem;
+    font-family: var(--font-ui); font-size: .76rem;
+    color: var(--c-text-muted);
   }
-  .section-label {
-    font-size: .68rem; font-weight: 600;
-    letter-spacing: .12em; text-transform: uppercase;
-    color: var(--c-text-muted); margin-bottom: .7rem;
-  }
-
-  .field { margin-bottom: .7rem; }
-  .field:last-child { margin-bottom: 0; }
-  .field label {
-    display: block; font-size: .72rem; font-weight: 500;
-    color: var(--c-text-muted); margin-bottom: .28rem;
-  }
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    font-family: var(--font-ui); font-size: .85rem;
-    color: var(--c-text); background: var(--c-bg);
-    border: 1px solid var(--c-border); border-radius: 7px;
-    padding: .52rem .75rem; outline: none;
-    transition: border-color var(--transition);
-    -webkit-appearance: none; appearance: none;
-  }
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: var(--c-primary); background: #fff;
-  }
-  .field textarea { resize: vertical; min-height: 62px; line-height: 1.5; }
-  .field select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%237A5C45' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right .75rem center;
-    padding-right: 2rem; cursor: pointer;
-  }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
-
-  /* Author select with avatar */
-  .author-select-wrap { position: relative; }
-  .author-preview {
-    display: flex; align-items: center; gap: .6rem;
-    padding: .4rem .75rem;
-    background: var(--c-bg); border: 1px solid var(--c-border);
-    border-radius: 7px; cursor: pointer;
-    transition: border-color var(--transition);
-    min-height: 38px;
-  }
-  .author-preview:hover, .author-preview.open { border-color: var(--c-primary); }
-  .author-preview-img {
+  .ed-user-av {
     width: 26px; height: 26px; border-radius: 50%;
-    object-fit: cover; border: 1.5px solid var(--c-primary);
+    border: 1.5px solid var(--c-primary);
+    overflow: hidden; flex-shrink: 0;
     background: color-mix(in srgb, var(--c-primary) 15%, var(--c-surface));
     display: flex; align-items: center; justify-content: center;
     font-family: var(--font-heading); font-size: .85rem;
     font-weight: 700; color: var(--c-primary);
-    flex-shrink: 0; overflow: hidden;
   }
-  .author-preview-img img { width: 100%; height: 100%; object-fit: cover; }
-  .author-preview-name { font-size: .85rem; color: var(--c-text); flex: 1; }
-  .author-preview-arrow {
-    font-size: .65rem; color: var(--c-text-muted);
-    transition: transform var(--transition);
-  }
-  .author-preview.open .author-preview-arrow { transform: rotate(180deg); }
+  .ed-user-av img { width: 100%; height: 100%; object-fit: cover; }
+  .ed-actions { display: flex; gap: .4rem; }
 
-  .author-dropdown {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-    background: var(--c-surface); border: 1px solid var(--c-border);
-    border-radius: var(--radius); box-shadow: var(--shadow-md);
-    z-index: 50; overflow: hidden; display: none;
+  .panel-section {
+    padding: .9rem 1.25rem;
+    border-bottom: 1px solid var(--c-border);
   }
-  .author-dropdown.open { display: block; }
-  .author-option {
-    display: flex; align-items: center; gap: .7rem;
-    padding: .55rem .85rem; cursor: pointer;
-    transition: background var(--transition);
+  .section-label {
+    font-size: .67rem; font-weight: 600;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--c-text-muted); margin-bottom: .65rem;
   }
-  .author-option:hover { background: var(--c-surface-hover); }
-  .author-option.selected { background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface)); }
-  .author-option-img {
-    width: 30px; height: 30px; border-radius: 50%;
-    object-fit: cover; border: 1.5px solid var(--c-primary);
+  .field { margin-bottom: .65rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: .71rem; font-weight: 500;
+    color: var(--c-text-muted); margin-bottom: .26rem;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%; font-family: var(--font-ui); font-size: .84rem;
+    color: var(--c-text); background: var(--c-bg);
+    border: 1px solid var(--c-border); border-radius: 7px;
+    padding: .5rem .72rem; outline: none;
+    transition: border-color var(--transition);
+    -webkit-appearance: none; appearance: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--c-primary); background: #fff;
+  }
+  .field textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' viewBox='0 0 10 6'%3E%3Cpath stroke='%237A5C45' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m1 1 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .72rem center;
+    padding-right: 2rem; cursor: pointer;
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+
+  /* Author display (locked to logged-in user) */
+  .author-locked {
+    display: flex; align-items: center; gap: .65rem;
+    background: var(--c-bg); border: 1px solid var(--c-border);
+    border-radius: 7px; padding: .45rem .75rem;
+    opacity: .85;
+  }
+  .author-locked-img {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1.5px solid var(--c-primary); overflow: hidden;
     background: color-mix(in srgb, var(--c-primary) 15%, var(--c-surface));
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-heading); font-size: .9rem;
-    font-weight: 700; color: var(--c-primary);
-    flex-shrink: 0; overflow: hidden;
+    font-family: var(--font-heading); font-size: .85rem;
+    font-weight: 700; color: var(--c-primary); flex-shrink: 0;
   }
-  .author-option-img img { width: 100%; height: 100%; object-fit: cover; }
-  .author-option-info { flex: 1; }
-  .author-option-name { font-size: .84rem; font-weight: 600; color: var(--c-text); }
-  .author-option-bio { font-size: .72rem; color: var(--c-text-muted); margin-top: .1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .author-locked-img img { width: 100%; height: 100%; object-fit: cover; }
+  .author-locked-name { font-size: .84rem; color: var(--c-text); flex: 1; }
+  .author-locked-badge {
+    font-size: .65rem; color: var(--c-text-muted);
+    font-family: var(--font-ui); letter-spacing: .05em;
+  }
 
   /* Tags */
   .tags-wrap {
     display: flex; flex-wrap: wrap; gap: .3rem;
     background: var(--c-bg); border: 1px solid var(--c-border);
-    border-radius: 7px; padding: .42rem .6rem;
+    border-radius: 7px; padding: .4rem .6rem;
     min-height: 38px; align-items: center; cursor: text;
     transition: border-color var(--transition);
   }
   .tags-wrap:focus-within { border-color: var(--c-primary); background: #fff; }
   .tag-chip {
-    display: inline-flex; align-items: center; gap: .28rem;
+    display: inline-flex; align-items: center; gap: .25rem;
     background: color-mix(in srgb, var(--c-primary) 14%, var(--c-bg));
     color: var(--c-primary-dark);
-    font-size: .71rem; font-weight: 500;
-    padding: .16rem .52rem; border-radius: 20px;
+    font-size: .7rem; font-weight: 500;
+    padding: .15rem .5rem; border-radius: 20px;
   }
   .tag-chip button {
     background: none; border: none; cursor: pointer;
@@ -165,15 +230,15 @@ permalink: /add-post.html
   .tag-chip button:hover { opacity: 1; }
   #tag-input {
     border: none; background: transparent; outline: none;
-    font-family: var(--font-ui); font-size: .82rem;
+    font-family: var(--font-ui); font-size: .81rem;
     color: var(--c-text); min-width: 80px; flex: 1;
     padding: .1rem .15rem;
   }
 
-  /* Image upload */
+  /* Images */
   .image-drop {
     border: 2px dashed var(--c-border); border-radius: var(--radius);
-    padding: 1rem; text-align: center; cursor: pointer;
+    padding: .9rem; text-align: center; cursor: pointer;
     transition: all var(--transition); position: relative;
   }
   .image-drop:hover, .image-drop.dragover {
@@ -184,43 +249,47 @@ permalink: /add-post.html
     position: absolute; inset: 0; opacity: 0;
     cursor: pointer; width: 100%; height: 100%;
   }
-  .image-drop-icon { font-size: 1.3rem; margin-bottom: .3rem; }
-  .image-drop p { font-size: .76rem; color: var(--c-text-muted); }
+  .image-drop-icon { font-size: 1.2rem; margin-bottom: .25rem; }
+  .image-drop p { font-size: .75rem; color: var(--c-text-muted); }
   .image-drop p strong { color: var(--c-primary); }
+  .image-upload-progress {
+    font-family: var(--font-ui); font-size: .75rem;
+    color: var(--c-primary); margin-top: .5rem; display: none;
+  }
   .image-previews { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
   .image-thumb {
-    position: relative; width: 58px; height: 58px;
+    position: relative; width: 56px; height: 56px;
     border-radius: 6px; overflow: hidden; border: 1px solid var(--c-border);
   }
   .image-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .image-thumb .remove-img {
     position: absolute; top: 2px; right: 2px;
-    width: 16px; height: 16px; border-radius: 50%;
+    width: 15px; height: 15px; border-radius: 50%;
     background: rgba(0,0,0,.65); color: #fff;
-    border: none; cursor: pointer; font-size: .65rem;
+    border: none; cursor: pointer; font-size: .6rem;
     display: flex; align-items: center; justify-content: center;
     opacity: 0; transition: opacity var(--transition);
   }
   .image-thumb:hover .remove-img { opacity: 1; }
   .image-insert-btn {
-    font-size: .68rem; color: var(--c-primary);
+    font-size: .67rem; color: var(--c-primary);
     background: none; border: none; cursor: pointer;
     font-family: var(--font-ui); font-weight: 500;
-    padding: .1rem 0; text-align: center; display: block; width: 58px;
+    padding: .1rem 0; text-align: center; display: block; width: 56px;
   }
   .image-insert-btn:hover { text-decoration: underline; }
 
   /* Toolbar */
   .content-toolbar {
-    display: flex; flex-wrap: wrap; gap: .25rem;
-    padding: .55rem .7rem;
+    display: flex; flex-wrap: wrap; gap: .22rem;
+    padding: .5rem .65rem;
     background: color-mix(in srgb, var(--c-border) 25%, var(--c-bg));
     border: 1px solid var(--c-border);
     border-bottom: none; border-radius: 7px 7px 0 0;
   }
   .tb-btn {
-    font-family: var(--font-ui); font-size: .74rem; font-weight: 600;
-    padding: .28rem .55rem; border-radius: 5px;
+    font-family: var(--font-ui); font-size: .73rem; font-weight: 600;
+    padding: .26rem .52rem; border-radius: 5px;
     border: 1px solid transparent;
     background: transparent; color: var(--c-text-muted);
     cursor: pointer; transition: all var(--transition);
@@ -229,211 +298,216 @@ permalink: /add-post.html
   .tb-btn:hover {
     background: var(--c-surface); border-color: var(--c-border); color: var(--c-text);
   }
-  .tb-sep { width: 1px; height: 18px; background: var(--c-border); margin: 0 .1rem; align-self: center; }
-
+  .tb-sep { width: 1px; height: 17px; background: var(--c-border); margin: 0 .1rem; align-self: center; }
   #content-area {
-    width: 100%; font-family: var(--font-mono); font-size: .81rem;
+    width: 100%; font-family: var(--font-mono); font-size: .8rem;
     line-height: 1.7; color: var(--c-text); background: var(--c-bg);
     border: 1px solid var(--c-border); border-radius: 0 0 7px 7px;
-    padding: .75rem; outline: none; resize: none; min-height: 200px;
+    padding: .72rem; outline: none; resize: none; min-height: 200px;
     transition: border-color var(--transition);
   }
   #content-area:focus { border-color: var(--c-primary); background: #fff; }
 
-  /* Copy cards */
-  .copy-row { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
-  .copy-card {
+  /* Output */
+  .output-row { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+  .output-card {
     background: var(--c-bg); border: 1px solid var(--c-border);
-    border-radius: var(--radius); padding: .7rem;
+    border-radius: var(--radius); padding: .65rem;
   }
-  .copy-card-head {
+  .output-card-head {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: .45rem;
-    font-size: .67rem; font-weight: 600; letter-spacing: .1em;
+    margin-bottom: .4rem;
+    font-size: .66rem; font-weight: 600; letter-spacing: .1em;
     text-transform: uppercase; color: var(--c-text-muted);
   }
-  .copy-card pre {
-    font-family: var(--font-mono); font-size: .7rem; color: var(--c-text);
+  .output-card-label { font-size: .7rem; color: var(--c-text-muted); font-family: var(--font-mono); margin-bottom: .3rem; }
+  .output-card pre {
+    font-family: var(--font-mono); font-size: .69rem; color: var(--c-text);
     white-space: pre-wrap; word-break: break-all;
-    max-height: 100px; overflow-y: auto; line-height: 1.55;
+    max-height: 90px; overflow-y: auto; line-height: 1.55;
+    background: var(--c-surface); border-radius: 5px;
+    padding: .4rem .5rem;
   }
-  .copy-card pre::-webkit-scrollbar { width: 3px; }
-  .copy-card pre::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 99px; }
 
-  /* ── RIGHT PANEL (preview) ── */
+  /* Preview panel */
   .pv-panel {
-    overflow-y: auto;
-    background: var(--c-bg);
+    overflow-y: auto; background: var(--c-bg);
   }
   .pv-panel::-webkit-scrollbar { width: 5px; }
   .pv-panel::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 99px; }
-
   .pv-topbar {
     position: sticky; top: 0; z-index: 5;
     background: color-mix(in srgb, var(--c-bg) 88%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--c-border);
-    padding: .55rem 1.5rem;
+    padding: .52rem 1.5rem;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .pv-live-label {
-    font-family: var(--font-ui); font-size: .68rem; font-weight: 600;
+  .pv-live {
+    font-family: var(--font-ui); font-size: .67rem; font-weight: 600;
     letter-spacing: .12em; text-transform: uppercase; color: var(--c-text-muted);
-    display: flex; align-items: center; gap: .45rem;
+    display: flex; align-items: center; gap: .42rem;
   }
-  .pv-live-label::before {
+  .pv-live::before {
     content: ''; width: 6px; height: 6px; border-radius: 50%;
     background: #5A8C6A; animation: blink 2s infinite;
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  .pv-content { max-width: 660px; margin: 0 auto; padding: 2rem 2rem 5rem; }
+  .pv-content { max-width: 640px; margin: 0 auto; padding: 2rem 2rem 5rem; }
   .pv-back {
     display: inline-flex; align-items: center; gap: .35rem;
-    font-family: var(--font-ui); font-size: .77rem;
-    color: var(--c-text-muted); margin-bottom: 1.25rem;
+    font-family: var(--font-ui); font-size: .76rem;
+    color: var(--c-text-muted); margin-bottom: 1.2rem;
   }
   .pv-back::before { content: '←'; }
-  .pv-tags-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .85rem; flex-wrap: wrap; }
+  .pv-tags-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .8rem; flex-wrap: wrap; }
   .pv-tag-meta {
-    font-family: var(--font-ui); font-size: .7rem; font-weight: 600;
+    font-family: var(--font-ui); font-size: .69rem; font-weight: 600;
     letter-spacing: .1em; text-transform: uppercase; color: var(--c-text-muted);
   }
   .pv-title {
     font-family: var(--font-heading);
-    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
     font-weight: 700; line-height: 1.12; letter-spacing: -.03em;
-    color: var(--c-text); margin-bottom: 1.1rem;
+    color: var(--c-text); margin-bottom: 1rem;
   }
-  .pv-title.empty { color: var(--c-border); font-style: italic; font-size: 1.6rem; }
+  .pv-title.empty { color: var(--c-border); font-style: italic; font-size: 1.5rem; }
   .pv-meta {
-    display: flex; align-items: center; gap: .7rem;
-    font-family: var(--font-ui); font-size: .79rem;
-    color: var(--c-text-muted); margin-bottom: 2rem; flex-wrap: wrap;
+    display: flex; align-items: center; gap: .65rem;
+    font-family: var(--font-ui); font-size: .78rem;
+    color: var(--c-text-muted); margin-bottom: 1.8rem; flex-wrap: wrap;
   }
   .pv-avatar {
-    width: 30px; height: 30px; border-radius: 50%;
+    width: 28px; height: 28px; border-radius: 50%;
     border: 2px solid var(--c-primary); overflow: hidden; flex-shrink: 0;
     background: color-mix(in srgb, var(--c-primary) 15%, var(--c-surface));
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-heading); font-size: .9rem; font-weight: 700;
+    font-family: var(--font-heading); font-size: .85rem; font-weight: 700;
     color: var(--c-primary);
   }
   .pv-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .pv-cover { margin-bottom: 2.2rem; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--c-border); }
-  .pv-cover img { width: 100%; max-height: 360px; object-fit: cover; display: block; }
-
-  .pv-body { font-family: var(--font-body); font-size: 1.05rem; line-height: 1.8; color: var(--c-text); }
-  .pv-body h1 { font-family: var(--font-heading); font-size: 1.9rem; font-weight: 700; margin: 2rem 0 .7rem; }
-  .pv-body h2 { font-family: var(--font-heading); font-size: 1.35rem; font-weight: 600; margin: 1.8rem 0 .6rem; padding-bottom: .35rem; border-bottom: 1px solid var(--c-border); }
-  .pv-body h3 { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; margin: 1.4rem 0 .5rem; }
-  .pv-body p { margin-bottom: 1.2rem; }
+  .pv-cover { margin-bottom: 2rem; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--c-border); }
+  .pv-cover img { width: 100%; max-height: 340px; object-fit: cover; display: block; }
+  .pv-body { font-family: var(--font-body); font-size: 1.04rem; line-height: 1.8; color: var(--c-text); }
+  .pv-body h1 { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; margin: 1.8rem 0 .65rem; }
+  .pv-body h2 { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 600; margin: 1.6rem 0 .55rem; padding-bottom: .3rem; border-bottom: 1px solid var(--c-border); }
+  .pv-body h3 { font-family: var(--font-heading); font-size: 1.08rem; font-weight: 600; margin: 1.3rem 0 .45rem; }
+  .pv-body p { margin-bottom: 1.15rem; }
   .pv-body strong { font-weight: 700; }
   .pv-body em { font-style: italic; color: var(--c-text-muted); }
-  .pv-body code { font-family: var(--font-mono); font-size: .83em; background: color-mix(in srgb, var(--c-primary) 12%, var(--c-surface)); color: var(--c-primary-dark); padding: .14em .42em; border-radius: 4px; }
-  .pv-body pre { background: #1C1008; border-radius: var(--radius); padding: 1.1rem; overflow-x: auto; margin: 1.4rem 0; }
-  .pv-body pre code { background: none; color: #F0E8DC; font-size: .82rem; padding: 0; }
-  .pv-body blockquote { border-left: 3px solid var(--c-primary); padding: .65rem 1.2rem; margin: 1.4rem 0; font-style: italic; color: var(--c-text-muted); background: var(--c-surface); border-radius: 0 var(--radius) var(--radius) 0; }
-  .pv-body ul, .pv-body ol { padding-left: 1.4rem; margin-bottom: 1.2rem; }
-  .pv-body li { margin-bottom: .3rem; }
-  .pv-body hr { border: none; border-top: 1px solid var(--c-border); margin: 1.8rem 0; }
+  .pv-body code { font-family: var(--font-mono); font-size: .82em; background: color-mix(in srgb, var(--c-primary) 12%, var(--c-surface)); color: var(--c-primary-dark); padding: .13em .4em; border-radius: 4px; }
+  .pv-body pre { background: #1C1008; border-radius: var(--radius); padding: 1rem; overflow-x: auto; margin: 1.3rem 0; }
+  .pv-body pre code { background: none; color: #F0E8DC; font-size: .8rem; padding: 0; }
+  .pv-body blockquote { border-left: 3px solid var(--c-primary); padding: .6rem 1.1rem; margin: 1.3rem 0; font-style: italic; color: var(--c-text-muted); background: var(--c-surface); border-radius: 0 var(--radius) var(--radius) 0; }
+  .pv-body ul, .pv-body ol { padding-left: 1.4rem; margin-bottom: 1.15rem; }
+  .pv-body li { margin-bottom: .28rem; }
+  .pv-body hr { border: none; border-top: 1px solid var(--c-border); margin: 1.6rem 0; }
   .pv-body a { color: var(--c-primary); text-decoration: underline; }
-  .pv-body img { max-width: 100%; border-radius: var(--radius); margin: 1.4rem 0; border: 1px solid var(--c-border); }
-
-  .pv-post-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1.8rem 0 1.4rem; }
-
+  .pv-body img { max-width: 100%; border-radius: var(--radius); margin: 1.3rem 0; border: 1px solid var(--c-border); }
+  .pv-post-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin: 1.6rem 0 1.3rem; }
   .pv-author-card {
-    display: flex; align-items: center; gap: 1rem;
+    display: flex; align-items: center; gap: .9rem;
     background: var(--c-surface); border: 1px solid var(--c-border);
-    border-radius: var(--radius-lg); padding: 1.2rem; margin-top: 1.8rem;
+    border-radius: var(--radius-lg); padding: 1.1rem; margin-top: 1.6rem;
   }
-  .pv-author-card-avatar {
-    width: 50px; height: 50px; border-radius: 50%; flex-shrink: 0;
+  .pv-card-av {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
     border: 2px solid var(--c-primary); overflow: hidden;
     background: color-mix(in srgb, var(--c-primary) 15%, var(--c-surface));
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--c-primary);
+    font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--c-primary);
   }
-  .pv-author-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .pv-author-name { font-family: var(--font-heading); font-size: .95rem; font-weight: 700; }
-  .pv-author-bio { font-size: .82rem; color: var(--c-text-muted); font-family: var(--font-ui); margin-top: .15rem; }
+  .pv-card-av img { width: 100%; height: 100%; object-fit: cover; }
+  .pv-card-name { font-family: var(--font-heading); font-size: .92rem; font-weight: 700; }
+  .pv-card-bio { font-size: .8rem; color: var(--c-text-muted); font-family: var(--font-ui); margin-top: .12rem; }
 
   /* Toast */
   .ed-toast {
     position: fixed; bottom: 1.5rem; right: 1.5rem;
     background: var(--c-text); color: var(--c-bg);
-    font-family: var(--font-ui); font-size: .82rem; font-weight: 500;
-    padding: .6rem 1rem; border-radius: 8px;
+    font-family: var(--font-ui); font-size: .8rem; font-weight: 500;
+    padding: .58rem .95rem; border-radius: 8px;
     transform: translateY(60px); opacity: 0;
     transition: all .28s cubic-bezier(.4,0,.2,1);
     z-index: 9999; pointer-events: none;
   }
   .ed-toast.show { transform: translateY(0); opacity: 1; }
 
-  @media (max-width: 900px) {
-    .editor-page { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  @media (max-width: 860px) {
+    .editor-screen.show { grid-template-columns: 1fr; }
     .pv-panel { display: none; }
   }
 </style>
 
-<div class="editor-page">
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">The<span>Kural</span></div>
+    <div class="login-sub">Editor Access</div>
 
-  <!-- ══ LEFT: EDITOR ══ -->
+    <div class="login-field">
+      <label>Token ID</label>
+      <input type="text" id="login-token" placeholder="your username" autocomplete="off" spellcheck="false"/>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter') doLogin()"/>
+    </div>
+
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <span id="login-btn-text">Sign In</span>
+    </button>
+
+    <div class="login-error" id="login-error">Invalid token or password.</div>
+  </div>
+</div>
+
+<!-- ══ EDITOR SCREEN ══ -->
+<div class="editor-screen" id="editor-screen">
+
+  <!-- LEFT PANEL -->
   <div class="ed-panel">
-
     <div class="ed-topbar">
-      <span class="ed-topbar-title">✍️ New Post</span>
+      <div class="ed-topbar-logo">The<span>Kural</span> <span style="font-size:.75rem;font-weight:400;color:var(--c-text-muted);font-family:var(--font-ui);">/ editor</span></div>
+      <div class="ed-user">
+        <div class="ed-user-av" id="topbar-av">?</div>
+        <span id="topbar-name">—</span>
+      </div>
       <div class="ed-actions">
-        <button class="btn" onclick="edReset()">Reset</button>
-        <button class="btn btn-primary" onclick="edCopyFull()">
-          Copy Full Post
-        </button>
+        <button class="btn" style="font-size:.75rem;padding:.38rem .8rem;color:var(--c-text-muted);" onclick="doLogout()">Logout</button>
+        <button class="btn btn-primary" style="font-size:.78rem;padding:.4rem .9rem;" onclick="edCopyFull()">Copy Post</button>
       </div>
     </div>
 
     <!-- FRONT MATTER -->
     <div class="panel-section">
       <div class="section-label">Front Matter</div>
-
       <div class="field">
         <label>Title</label>
         <input type="text" id="ed-title" placeholder="Your article title…" oninput="edUpdate()"/>
       </div>
-
       <div class="field-row">
         <div class="field">
           <label>Date</label>
           <input type="date" id="ed-date" oninput="edUpdate()"/>
         </div>
         <div class="field">
-          <label>Layout</label>
-          <select id="ed-layout" onchange="edUpdate()">
-            <option value="post">post</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- AUTHOR — custom dropdown with avatars -->
-      <div class="field">
-        <label>Author</label>
-        <div class="author-select-wrap" id="author-wrap">
-          <div class="author-preview" id="author-preview" onclick="toggleAuthorDrop()">
-            <div class="author-preview-img" id="ap-img">?</div>
-            <span class="author-preview-name" id="ap-name">— select author —</span>
-            <span class="author-preview-arrow">▾</span>
+          <label>Author</label>
+          <div class="author-locked" id="author-locked-display">
+            <div class="author-locked-img" id="al-img">?</div>
+            <span class="author-locked-name" id="al-name">—</span>
+            <span class="author-locked-badge">🔒</span>
           </div>
-          <div class="author-dropdown" id="author-dropdown"></div>
         </div>
-        <input type="hidden" id="ed-author" value=""/>
       </div>
-
       <div class="field">
         <label>Tags <small style="opacity:.5;font-weight:400">(Enter or comma)</small></label>
         <div class="tags-wrap" id="tags-wrap" onclick="document.getElementById('tag-input').focus()">
           <input type="text" id="tag-input" placeholder="Add tag…"/>
         </div>
       </div>
-
       <div class="field">
         <label>Excerpt</label>
         <textarea id="ed-excerpt" rows="2" placeholder="One sentence shown on cards…" oninput="edUpdate()"></textarea>
@@ -442,13 +516,14 @@ permalink: /add-post.html
 
     <!-- IMAGES -->
     <div class="panel-section">
-      <div class="section-label">Images</div>
+      <div class="section-label">Images — uploads to Cloudinary</div>
       <div class="image-drop" id="image-drop">
         <input type="file" id="image-input" accept="image/*" multiple onchange="handleImages(this.files)"/>
-        <div class="image-drop-icon">🖼️</div>
+        <div class="image-drop-icon">☁️</div>
         <p><strong>Click to upload</strong> or drag & drop</p>
-        <p style="margin-top:.15rem;font-size:.71rem;">PNG, JPG, GIF, WebP — multiple allowed</p>
+        <p style="margin-top:.12rem;font-size:.7rem;">Uploads directly to your Cloudinary folder</p>
       </div>
+      <div class="image-upload-progress" id="upload-progress">Uploading…</div>
       <div class="image-previews" id="image-previews"></div>
     </div>
 
@@ -478,41 +553,42 @@ permalink: /add-post.html
         spellcheck="true"></textarea>
     </div>
 
-    <!-- COPY OUTPUT -->
+    <!-- OUTPUT -->
     <div class="panel-section">
-      <div class="section-label">Copy Output</div>
-      <div class="copy-row">
-        <div class="copy-card">
-          <div class="copy-card-head">
-            Front Matter
-            <button class="btn" style="font-size:.68rem;padding:.22rem .55rem;" id="btn-cp-fm" onclick="edCopyFm()">Copy</button>
+      <div class="section-label">Output</div>
+      <div class="output-row">
+        <div class="output-card">
+          <div class="output-card-head">
+            Filename
+            <button class="btn" style="font-size:.66rem;padding:.2rem .5rem;" onclick="copyOut('filename')">Copy</button>
           </div>
-          <pre id="out-fm"></pre>
+          <div class="output-card-label">Save as:</div>
+          <pre id="out-filename">—</pre>
         </div>
-        <div class="copy-card">
-          <div class="copy-card-head">
-            Body
-            <button class="btn" style="font-size:.68rem;padding:.22rem .55rem;" id="btn-cp-body" onclick="edCopyBody()">Copy</button>
+        <div class="output-card">
+          <div class="output-card-head">
+            Full Post
+            <button class="btn" style="font-size:.66rem;padding:.2rem .5rem;" onclick="edCopyFull()">Copy</button>
           </div>
-          <pre id="out-body"></pre>
+          <div class="output-card-label">Paste into that file:</div>
+          <pre id="out-preview">—</pre>
         </div>
       </div>
     </div>
 
   </div><!-- /ed-panel -->
 
-  <!-- ══ RIGHT: PREVIEW ══ -->
+  <!-- RIGHT: PREVIEW -->
   <div class="pv-panel">
     <div class="pv-topbar">
-      <div class="pv-live-label">Live Preview</div>
-      <span style="font-size:.68rem;color:var(--c-text-muted);font-family:var(--font-ui);">Updates as you type</span>
+      <div class="pv-live">Live Preview</div>
+      <span style="font-size:.67rem;color:var(--c-text-muted);font-family:var(--font-ui);">Updates as you type</span>
     </div>
-
     <div class="pv-content">
       <span class="pv-back">Back to articles</span>
       <div id="pv-tags-row" class="pv-tags-row"></div>
       <h1 class="pv-title empty" id="pv-title">Your title will appear here…</h1>
-      <div class="pv-meta" id="pv-meta">
+      <div class="pv-meta">
         <div class="pv-avatar" id="pv-av">?</div>
         <span id="pv-aname">Author</span>
         <span>·</span>
@@ -525,11 +601,11 @@ permalink: /add-post.html
         <p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>
       </div>
       <div class="pv-post-tags" id="pv-post-tags"></div>
-      <div class="pv-author-card" id="pv-author-card">
-        <div class="pv-author-card-avatar" id="pv-card-av">?</div>
+      <div class="pv-author-card">
+        <div class="pv-card-av" id="pv-card-av">?</div>
         <div>
-          <div class="pv-author-name" id="pv-card-name">Author Name</div>
-          <div class="pv-author-bio" id="pv-card-bio">Author bio</div>
+          <div class="pv-card-name" id="pv-card-name">Author Name</div>
+          <div class="pv-card-bio" id="pv-card-bio">Author bio</div>
         </div>
       </div>
     </div>
@@ -540,44 +616,118 @@ permalink: /add-post.html
 <div class="ed-toast" id="ed-toast"></div>
 
 <script>
-// ── AUTHORS from _data/authors.yml injected by Jekyll ─────────
+// ── CONFIG — update these ─────────────────────────────────────
+const CLOUDINARY_CLOUD = 'YOUR_CLOUD_NAME';       // e.g. 'mycloud'
+const CLOUDINARY_PRESET = 'YOUR_UPLOAD_PRESET';   // unsigned preset name
+
+// ── AUTHORS from _data/authors.yml ───────────────────────────
 const AUTHORS = {
   {% for author in site.data.authors %}
   "{{ author[0] }}": {
     key:    "{{ author[0] }}",
-    name:   {{ author[1].name | jsonify }},
-    bio:    {{ author[1].bio  | jsonify }},
+    name:   {{ author[1].name   | jsonify }},
+    bio:    {{ author[1].bio    | jsonify }},
     avatar: {{ author[1].avatar | prepend: site.baseurl | jsonify }}
   }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 };
 
 // ── STATE ─────────────────────────────────────────────────────
+let currentAuthor = null;
 let edTags = [];
-let edImages = [];
-let selectedAuthor = null;
+let edImages = []; // {name, url, cloudinaryUrl}
 
-// ── INIT ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // Set today
+// ── LOGIN ─────────────────────────────────────────────────────
+async function doLogin() {
+  const token = document.getElementById('login-token').value.trim().toLowerCase();
+  const pass  = document.getElementById('login-pass').value.trim();
+  const btn   = document.getElementById('login-btn');
+  const err   = document.getElementById('login-error');
+
+  if (!token || !pass) {
+    showLoginError('Please enter both token ID and password.');
+    return;
+  }
+
+  // Check token matches a known author
+  if (!AUTHORS[token]) {
+    showLoginError('Token ID not found.');
+    return;
+  }
+
+  btn.disabled = true;
+  document.getElementById('login-btn-text').textContent = 'Checking…';
+  err.classList.remove('show');
+
+  // Check Cloudinary: does folder authors/{token}/{pass} exist?
+  // We do this by trying to fetch a resource list from that folder
+  const folderPath = `authors/${token}/${pass}`;
+  const checkUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${folderPath}.json`;
+
+  try {
+    const res = await fetch(checkUrl);
+    if (res.ok) {
+      // Folder exists — auth passed
+      loginSuccess(token);
+    } else {
+      showLoginError('Invalid token or password.');
+      btn.disabled = false;
+      document.getElementById('login-btn-text').textContent = 'Sign In';
+    }
+  } catch(e) {
+    // Network error or CORS — try alternate check
+    // Cloudinary resource tags check
+    const tagUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${folderPath}.json`;
+    showLoginError('Could not verify. Check your Cloudinary config.');
+    btn.disabled = false;
+    document.getElementById('login-btn-text').textContent = 'Sign In';
+  }
+}
+
+function showLoginError(msg) {
+  const err = document.getElementById('login-error');
+  err.textContent = msg;
+  err.classList.add('show');
+}
+
+function loginSuccess(token) {
+  currentAuthor = AUTHORS[token];
+  sessionStorage.setItem('tk-author', token);
+
+  // Hide login, show editor
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('editor-screen').classList.add('show');
+
+  // Set topbar
+  const av = currentAuthor.avatar;
+  const initial = currentAuthor.name.charAt(0);
+  document.getElementById('topbar-av').innerHTML = av
+    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
+    : initial;
+  document.getElementById('topbar-name').textContent = currentAuthor.name;
+
+  // Set locked author display
+  document.getElementById('al-img').innerHTML = av
+    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
+    : initial;
+  document.getElementById('al-name').textContent = currentAuthor.name;
+
+  // Set today's date
   document.getElementById('ed-date').value = new Date().toISOString().split('T')[0];
 
-  // Build author dropdown
-  buildAuthorDropdown();
-
-  // Tag input
+  // Setup tag input
   const ti = document.getElementById('tag-input');
   ti.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       addTag(ti.value.replace(/,/g,'').trim());
     } else if (e.key === 'Backspace' && !ti.value && edTags.length) {
-      removeTag(edTags[edTags.length - 1]);
+      removeTag(edTags[edTags.length-1]);
     }
   });
-  ti.addEventListener('blur', () => { if (ti.value.trim()) addTag(ti.value.trim()); });
+  ti.addEventListener('blur', () => { if(ti.value.trim()) addTag(ti.value.trim()); });
 
-  // Drag & drop images
+  // Drag & drop
   const drop = document.getElementById('image-drop');
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
@@ -586,72 +736,32 @@ document.addEventListener('DOMContentLoaded', () => {
     handleImages(e.dataTransfer.files);
   });
 
-  // Close author dropdown on outside click
-  document.addEventListener('click', e => {
-    if (!document.getElementById('author-wrap').contains(e.target)) {
-      document.getElementById('author-dropdown').classList.remove('open');
-      document.getElementById('author-preview').classList.remove('open');
-    }
-  });
-
   edUpdate();
-});
-
-// ── AUTHOR DROPDOWN ───────────────────────────────────────────
-function buildAuthorDropdown() {
-  const dd = document.getElementById('author-dropdown');
-  dd.innerHTML = '';
-  Object.values(AUTHORS).forEach(a => {
-    const div = document.createElement('div');
-    div.className = 'author-option';
-    div.dataset.key = a.key;
-    div.innerHTML = `
-      <div class="author-option-img" id="ao-img-${a.key}">
-        ${a.avatar
-          ? `<img src="${a.avatar}" alt="${a.name}" onerror="this.parentNode.innerHTML='${a.name.charAt(0)}'"/>`
-          : a.name.charAt(0)}
-      </div>
-      <div class="author-option-info">
-        <div class="author-option-name">${a.name}</div>
-        <div class="author-option-bio">${a.bio}</div>
-      </div>`;
-    div.addEventListener('click', () => selectAuthor(a.key));
-    dd.appendChild(div);
-  });
 }
 
-function toggleAuthorDrop() {
-  const dd = document.getElementById('author-dropdown');
-  const pr = document.getElementById('author-preview');
-  dd.classList.toggle('open');
-  pr.classList.toggle('open');
+function doLogout() {
+  sessionStorage.removeItem('tk-author');
+  currentAuthor = null;
+  edTags = []; edImages = [];
+  document.getElementById('editor-screen').classList.remove('show');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-token').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn-text').textContent = 'Sign In';
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('content-area').value = '';
+  document.getElementById('ed-title').value = '';
+  document.getElementById('ed-excerpt').value = '';
 }
 
-function selectAuthor(key) {
-  selectedAuthor = AUTHORS[key];
-  document.getElementById('ed-author').value = key;
-
-  // Update preview button
-  const apImg = document.getElementById('ap-img');
-  const apName = document.getElementById('ap-name');
-  if (selectedAuthor.avatar) {
-    apImg.innerHTML = `<img src="${selectedAuthor.avatar}" alt="${selectedAuthor.name}" onerror="this.parentNode.innerHTML='${selectedAuthor.name.charAt(0)}'"/>`;
-  } else {
-    apImg.innerHTML = selectedAuthor.name.charAt(0);
+// Resume session if already logged in
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = sessionStorage.getItem('tk-author');
+  if (saved && AUTHORS[saved]) {
+    loginSuccess(saved);
   }
-  apName.textContent = selectedAuthor.name;
-
-  // Mark selected
-  document.querySelectorAll('.author-option').forEach(o => {
-    o.classList.toggle('selected', o.dataset.key === key);
-  });
-
-  // Close dropdown
-  document.getElementById('author-dropdown').classList.remove('open');
-  document.getElementById('author-preview').classList.remove('open');
-
-  edUpdate();
-}
+});
 
 // ── TAGS ──────────────────────────────────────────────────────
 function addTag(val) {
@@ -678,87 +788,115 @@ function renderTags() {
   });
 }
 
-// ── IMAGES ────────────────────────────────────────────────────
-function handleImages(files) {
-  Array.from(files).forEach(file => {
-    if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      edImages.push({ name: file.name, dataUrl: e.target.result, path: `/assets/images/${file.name}` });
-      renderImagePreviews();
-      edUpdate();
-    };
-    reader.readAsDataURL(file);
-  });
+// ── CLOUDINARY UPLOAD ─────────────────────────────────────────
+async function handleImages(files) {
+  const progress = document.getElementById('upload-progress');
+  progress.style.display = 'block';
+
+  for (const file of Array.from(files)) {
+    if (!file.type.startsWith('image/')) continue;
+    progress.textContent = `Uploading ${file.name}…`;
+
+    const folder = `authors/${currentAuthor.key}/posts`;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', folder);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+        { method: 'POST', body: formData }
+      );
+      const data = await res.json();
+      if (data.secure_url) {
+        edImages.push({
+          name: file.name,
+          cloudinaryUrl: data.secure_url,
+          publicId: data.public_id
+        });
+        renderImagePreviews();
+        edUpdate();
+        showToast(`✓ ${file.name} uploaded`);
+      } else {
+        showToast(`✗ Upload failed: ${file.name}`);
+      }
+    } catch(e) {
+      showToast(`✗ Upload error: ${file.name}`);
+    }
+  }
+  progress.style.display = 'none';
 }
-function removeImage(name) {
-  edImages = edImages.filter(i => i.name !== name);
+
+function removeImage(url) {
+  edImages = edImages.filter(i => i.cloudinaryUrl !== url);
   renderImagePreviews();
   edUpdate();
 }
+
 function renderImagePreviews() {
   const wrap = document.getElementById('image-previews');
   wrap.innerHTML = '';
   edImages.forEach(img => {
     const w = document.createElement('div');
     w.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:.2rem;';
+    const safeUrl = img.cloudinaryUrl.replace(/'/g, "\\'");
     w.innerHTML = `
       <div class="image-thumb">
-        <img src="${img.dataUrl}" alt="${img.name}"/>
-        <button class="remove-img" onclick="removeImage('${img.name}')">×</button>
+        <img src="${img.cloudinaryUrl}" alt="${img.name}"/>
+        <button class="remove-img" onclick="removeImage('${safeUrl}')">×</button>
       </div>
-      <button class="image-insert-btn" onclick="insertImgMd('${img.name}','${img.dataUrl}')">Insert</button>`;
+      <button class="image-insert-btn" onclick="insertImgMd('${safeUrl}','${escH(img.name)}')">Insert</button>`;
     wrap.appendChild(w);
   });
 }
-function insertImgMd(name, dataUrl) {
+
+function insertImgMd(url, name) {
   const ta = document.getElementById('content-area');
   const pos = ta.selectionStart;
   const md = `\n
 
-![${name}](${dataUrl})
+![${name}](${url})
 
 \n`;
   ta.value = ta.value.slice(0, pos) + md + ta.value.slice(pos);
+  ta.setSelectionRange(pos + md.length, pos + md.length);
   ta.focus();
   edUpdate();
 }
 
 // ── TOOLBAR ───────────────────────────────────────────────────
-function tbIns(before, after = '', lineStart = false) {
+function tbIns(before, after='', lineStart=false) {
   const ta = document.getElementById('content-area');
   const s = ta.selectionStart, e = ta.selectionEnd;
   const sel = ta.value.slice(s, e);
   if (lineStart) {
-    const lb = ta.value.lastIndexOf('\n', s - 1) + 1;
+    const lb = ta.value.lastIndexOf('\n', s-1) + 1;
     const lc = ta.value.slice(lb, e);
-    ta.value = ta.value.slice(0, lb) + before + lc + after + ta.value.slice(e);
-    ta.setSelectionRange(lb + before.length, lb + before.length + lc.length);
+    ta.value = ta.value.slice(0,lb) + before + lc + after + ta.value.slice(e);
+    ta.setSelectionRange(lb+before.length, lb+before.length+lc.length);
   } else {
-    ta.value = ta.value.slice(0, s) + before + sel + after + ta.value.slice(e);
-    ta.setSelectionRange(s + before.length, s + before.length + sel.length);
+    ta.value = ta.value.slice(0,s) + before + sel + after + ta.value.slice(e);
+    ta.setSelectionRange(s+before.length, s+before.length+sel.length);
   }
-  ta.focus();
-  edUpdate();
+  ta.focus(); edUpdate();
 }
 function tbLink() {
   const ta = document.getElementById('content-area');
   const s = ta.selectionStart, e = ta.selectionEnd;
-  const sel = ta.value.slice(s, e) || 'link text';
+  const sel = ta.value.slice(s,e) || 'link text';
   const url = prompt('Enter URL:') || 'https://';
   const md = `[${sel}](${url})`;
-  ta.value = ta.value.slice(0, s) + md + ta.value.slice(e);
-  ta.setSelectionRange(s, s + md.length);
-  ta.focus();
-  edUpdate();
+  ta.value = ta.value.slice(0,s) + md + ta.value.slice(e);
+  ta.setSelectionRange(s, s+md.length);
+  ta.focus(); edUpdate();
 }
 function tbParagraph() {
   const ta = document.getElementById('content-area');
   const pos = ta.selectionEnd;
-  ta.value = ta.value.slice(0, pos) + '\n\n' + ta.value.slice(pos);
-  ta.setSelectionRange(pos + 2, pos + 2);
-  ta.focus();
-  edUpdate();
+  ta.value = ta.value.slice(0,pos) + '\n\n' + ta.value.slice(pos);
+  ta.setSelectionRange(pos+2, pos+2);
+  ta.focus(); edUpdate();
 }
 
 // ── MARKDOWN RENDERER ─────────────────────────────────────────
@@ -766,7 +904,7 @@ function renderMd(md) {
   if (!md.trim()) return '';
   let h = md
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/```(\w*)\n([\s\S]*?)```/g, (_,l,c) => `<pre><code>${c.trim()}</code></pre>`)
+    .replace(/```(\w*)\n([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${c.trim()}</code></pre>`)
     .replace(/`([^`]+)`/g,'<code>$1</code>')
     .replace(/^### (.+)$/gm,'<h3>$1</h3>')
     .replace(/^## (.+)$/gm,'<h2>$1</h2>')
@@ -779,11 +917,10 @@ function renderMd(md) {
     .replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1"/>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>')
     .replace(/^\- (.+)$/gm,'<li>$1</li>');
-  h = h.replace(/(<li>.*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
-  h = h.split('\n\n').map(b => {
-    b = b.trim();
-    if (!b) return '';
-    if (/^<(h[1-6]|blockquote|pre|ul|ol|hr)/.test(b)) return b;
+  h = h.replace(/(<li>.*?<\/li>\n?)+/g, m=>`<ul>${m}</ul>`);
+  h = h.split('\n\n').map(b=>{
+    b=b.trim(); if(!b) return '';
+    if(/^<(h[1-6]|blockquote|pre|ul|ol|hr)/.test(b)) return b;
     return `<p>${b.replace(/\n/g,'<br>')}</p>`;
   }).join('\n');
   return h;
@@ -794,7 +931,7 @@ function edUpdate() {
   const title   = document.getElementById('ed-title').value.trim();
   const dateVal = document.getElementById('ed-date').value;
   const content = document.getElementById('content-area').value;
-  const a       = selectedAuthor;
+  const a = currentAuthor;
 
   // Title
   const pvT = document.getElementById('pv-title');
@@ -802,15 +939,14 @@ function edUpdate() {
   else { pvT.textContent = 'Your title will appear here…'; pvT.classList.add('empty'); }
 
   // Tags row
-  document.getElementById('pv-tags-row').innerHTML = edTags.slice(0,2).map((t,i) =>
-    `${i?'<span style="color:var(--c-border);font-size:.5rem">●</span>':''}<span class="pv-tag-meta">${t}</span>`
+  document.getElementById('pv-tags-row').innerHTML = edTags.slice(0,2).map((t,i)=>
+    `${i?'<span style="color:var(--c-border);font-size:.45rem;margin:0 .1rem">●</span>':''}<span class="pv-tag-meta">${t}</span>`
   ).join('');
 
   // Date
   const pvD = document.getElementById('pv-date');
   if (dateVal) {
-    const d = new Date(dateVal + 'T12:00:00');
-    pvD.textContent = d.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    pvD.textContent = new Date(dateVal+'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   } else { pvD.textContent = 'Date'; }
 
   // Author
@@ -818,19 +954,18 @@ function edUpdate() {
     document.getElementById('pv-aname').textContent = a.name;
     document.getElementById('pv-card-name').textContent = a.name;
     document.getElementById('pv-card-bio').textContent = a.bio;
-    const avatarHtml = a.avatar
+    const avHtml = a.avatar
       ? `<img src="${a.avatar}" alt="${a.name}" onerror="this.parentNode.innerHTML='${a.name.charAt(0)}'">`
       : a.name.charAt(0);
-    document.getElementById('pv-av').innerHTML = avatarHtml;
+    document.getElementById('pv-av').innerHTML = avHtml;
     document.getElementById('pv-card-av').innerHTML = a.avatar
-      ? `<img src="${a.avatar}" alt="${a.name}" onerror="this.parentNode.innerHTML='${a.name.charAt(0)}'">` 
+      ? `<img src="${a.avatar}" alt="${a.name}" onerror="this.parentNode.innerHTML='${a.name.charAt(0)}'">`
       : a.name.charAt(0);
   }
 
   // Cover
-  const pvCov = document.getElementById('pv-cover');
-  pvCov.innerHTML = edImages.length
-    ? `<div class="pv-cover"><img src="${edImages[0].dataUrl}" alt="Cover"/></div>` : '';
+  document.getElementById('pv-cover').innerHTML = edImages.length
+    ? `<div class="pv-cover"><img src="${edImages[0].cloudinaryUrl}" alt="Cover"/></div>` : '';
 
   // Body
   const pvBody = document.getElementById('pv-body');
@@ -839,28 +974,40 @@ function edUpdate() {
     : '<p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>';
 
   // Reading time
-  const words = content.split(/\s+/).filter(Boolean).length;
-  document.getElementById('pv-rt').textContent = Math.max(1, Math.round(words/220)) + ' min read';
+  document.getElementById('pv-rt').textContent =
+    Math.max(1, Math.round(content.split(/\s+/).filter(Boolean).length / 220)) + ' min read';
 
   // Post tags
   document.getElementById('pv-post-tags').innerHTML = edTags
-    .map(t => `<span class="tag">${t}</span>`).join('');
+    .map(t=>`<span class="tag">${t}</span>`).join('');
 
-  // Update output panels
+  // ── FILENAME output ──
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g,'')
+    .trim()
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-');
+  const filename = dateVal && slug
+    ? `${dateVal}-${slug}.md`
+    : (slug ? `YYYY-MM-DD-${slug}.md` : '—');
+  document.getElementById('out-filename').textContent = filename;
+
+  // ── Full post preview ──
   const fm = buildFm(title, dateVal, content);
-  document.getElementById('out-fm').textContent = fm;
-  document.getElementById('out-body').textContent = content.slice(0,200) + (content.length > 200 ? '…' : '');
+  const fullPost = fm + '\n\n' + content;
+  document.getElementById('out-preview').textContent =
+    fullPost.slice(0, 180) + (fullPost.length > 180 ? '…' : '');
 }
 
 function buildFm(title, dateVal, content) {
-  const lines = ['---','layout: post'];
+  const lines = ['---', 'layout: post'];
   if (title)   lines.push(`title: "${title}"`);
   if (dateVal) lines.push(`date: ${dateVal}`);
-  const ak = document.getElementById('ed-author').value;
-  if (ak)      lines.push(`author: ${ak}`);
+  if (currentAuthor) lines.push(`author: ${currentAuthor.key}`);
   if (edTags.length) lines.push(`tags: [${edTags.join(', ')}]`);
   if (edImages.length) {
-    lines.push(`image: ${edImages[0].path}`);
+    lines.push(`image: ${edImages[0].cloudinaryUrl}`);
     lines.push(`image_alt: "${edImages[0].name}"`);
   }
   const exc = document.getElementById('ed-excerpt').value.trim();
@@ -869,62 +1016,33 @@ function buildFm(title, dateVal, content) {
   return lines.join('\n');
 }
 
-function edCopyFm() {
-  const t = document.getElementById('ed-title').value.trim();
-  const d = document.getElementById('ed-date').value;
-  const c = document.getElementById('content-area').value;
-  copy(buildFm(t,d,c), 'btn-cp-fm', 'Front matter copied!');
-}
-function edCopyBody() {
-  copy(document.getElementById('content-area').value, 'btn-cp-body', 'Body copied!');
-}
-function edCopyFull() {
-  const t = document.getElementById('ed-title').value.trim();
-  const d = document.getElementById('ed-date').value;
-  const c = document.getElementById('content-area').value;
-  copy(buildFm(t,d,c) + '\n\n' + c, null, 'Full post copied!');
-}
-function edReset() {
-  if (!confirm('Reset everything?')) return;
-  document.getElementById('ed-title').value = '';
-  document.getElementById('ed-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('ed-author').value = '';
-  document.getElementById('ed-excerpt').value = '';
-  document.getElementById('content-area').value = '';
-  document.getElementById('ap-name').textContent = '— select author —';
-  document.getElementById('ap-img').innerHTML = '?';
-  selectedAuthor = null;
-  edTags = []; renderTags();
-  edImages = []; renderImagePreviews();
-  document.querySelectorAll('.author-option').forEach(o => o.classList.remove('selected'));
-  edUpdate();
+function copyOut(type) {
+  const title   = document.getElementById('ed-title').value.trim();
+  const dateVal = document.getElementById('ed-date').value;
+  const slug = title.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-');
+  const filename = `${dateVal}-${slug}.md`;
+  copy(filename, 'Filename copied!');
 }
 
-function copy(text, btnId, msg) {
-  navigator.clipboard.writeText(text).then(() => {
-    if (btnId) {
-      const b = document.getElementById(btnId);
-      const orig = b.textContent;
-      b.textContent = '✓';
-      b.style.background = '#5A8C6A';
-      b.style.color = '#fff';
-      b.style.borderColor = '#5A8C6A';
-      setTimeout(() => {
-        b.textContent = orig;
-        b.style.background = '';
-        b.style.color = '';
-        b.style.borderColor = '';
-      }, 2000);
-    }
-    toast(msg);
-  });
+function edCopyFull() {
+  const title   = document.getElementById('ed-title').value.trim();
+  const dateVal = document.getElementById('ed-date').value;
+  const content = document.getElementById('content-area').value;
+  const full = buildFm(title, dateVal, content) + '\n\n' + content;
+  copy(full, 'Full post copied!');
 }
-function toast(msg) {
+
+function copy(text, msg) {
+  navigator.clipboard.writeText(text).then(() => showToast(msg));
+}
+
+function showToast(msg) {
   const t = document.getElementById('ed-toast');
-  t.textContent = '✓ ' + msg;
+  t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+
 function escH(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
