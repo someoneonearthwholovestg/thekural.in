@@ -50,6 +50,7 @@ colors:
   text_muted:    "#7A7A7A"   # neutral muted text
   border:        "#F0E6B8"   # light yellow border
   accent:        "#FFE066"   # bright highlight yellow
+  footer:        "#000000"   #black footer
 
 # ─── FEATURES ──────────────────────────────────────────────────────
 show_reading_time: true    # Show "5 min read" on posts
