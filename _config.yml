@@ -48,15 +48,15 @@ font_sizes:
 
 # ─── COLORS (LIGHT MODE) ───────────────────────────────────────────
 colors:
-  primary:       "#F4C430"   # rich golden yellow — main actions
-  primary_dark:  "#D4A017"   # deeper gold for hover
-  bg:            "#FFFFFF"   # clean white background
-  surface:       "#FFFBEA"   # soft pale yellow surface (cards)
-  text:          "#1F1F1F"   # near-black for strong readability
-  text_muted:    "#7A7A7A"   # neutral muted text
-  border:        "#F0E6B8"   # light yellow border
-  accent:        "#FFE066"   # bright highlight yellow
-  footer:        "#000000"   #black footer
+  primary:       "#4A4A4A"   # medium graphite — main actions
+  primary_dark:  "#2E2E2E"   # deep pencil pressure (hover)
+  bg:            "#FFFFFF"   # paper white background
+  surface:       "#F5F5F5"   # light sketch shading (cards)
+  text:          "#1A1A1A"   # near-black pencil outline
+  text_muted:    "#8A8A8A"   # faded pencil strokes
+  border:        "#E0E0E0"   # soft sketch boundary
+  accent:        "#BDBDBD"   # highlight grey (like smudge/light shade)
+  footer:        "#000000"   # strong charcoal finish
 
 # ─── FEATURES ──────────────────────────────────────────────────────
 show_reading_time: true    # Show "5 min read" on posts
