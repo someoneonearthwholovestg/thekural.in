@@ -15,7 +15,7 @@
 
   <!-- ─── ICONS (Lucide) ─── -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script>if(window.lucide) lucide.createIcons();</script>
+  <script>if(window.lucide) lucide.createIcons();</script>
 
   <!-- ─── CSS CUSTOM PROPERTIES (from _config.yml) ─── -->
   <style>
@@ -56,14 +56,14 @@
 
     /* ─── DARK MODE ─── */
     [data-theme="dark"] {
-      --c-bg:           #1A1405;  /* deep dark yellow-brown background */
-      --c-surface:      #241B08;  /* slightly lighter surface */
-      --c-text:         #FFF6D6;  /* soft warm yellow-white */
-      --c-text-muted:   #C9B458;  /* muted golden text */
-      --c-border:       #4A3A10;  /* yellow-brown border */
-      --c-primary:      #FFD54F;  /* main yellow */
-      --c-primary-dark: #FFCA28;  /* deeper yellow */
-      --c-accent:       #FFE082;  /* light accent yellow */
+      --c-bg:           #1A1405;
+      --c-surface:      #241B08;
+      --c-text:         #FFF6D6;
+      --c-text-muted:   #C9B458;
+      --c-border:       #4A3A10;
+      --c-primary:      #FFD54F;
+      --c-primary-dark: #FFCA28;
+      --c-accent:       #FFE082;
       --c-surface-hover: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
       --shadow-sm:  0 1px 3px rgba(0,0,0,.3);
       --shadow-md:  0 4px 16px rgba(0,0,0,.35);
@@ -73,14 +73,6 @@
     /* ─── RESET & BASE ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
-    html, body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      margin: 0;
-      padding: 0;
-    }
 
     body {
       font-family: var(--font-body);
@@ -230,6 +222,18 @@
     .icon-sun { display: none; }
     [data-theme="dark"] .icon-sun { display: block; }
     [data-theme="dark"] .icon-moon { display: none; }
+
+    /* ─── SITE BANNER ─── */
+    .site-banner {
+      width: 100%;
+      line-height: 0; /* removes the bottom gap under the image */
+    }
+    .site-banner img {
+      width: 100%;
+      height: auto;           /* preserves original aspect ratio */
+      display: block;
+      object-fit: cover;
+    }
 
     /* ─── SEARCH OVERLAY ─── */
     .search-overlay {
@@ -644,6 +648,15 @@
 
 <body>
   {% include header.html %}
+
+  <!-- ─── SITE-WIDE BANNER (full width, auto height) ─── -->
+  <div class="site-banner">
+    <img
+      src="https://kommodo.ai/i/UObhObqrAWQjZaqnke7b"
+      alt="TheKural banner"
+      loading="eager"
+    />
+  </div>
 
   {% include search-overlay.html %}
 

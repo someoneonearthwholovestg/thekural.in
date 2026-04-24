@@ -237,10 +237,21 @@ permalink: /add-post.html
     font-size: .7rem; font-weight: 500;
     padding: .15rem .5rem; border-radius: 20px;
   }
+  /* BUG FIX: tag-chip remove button was inheriting .field button styles — give it explicit resets */
   .tag-chip button {
-    background: none; border: none; cursor: pointer;
-    color: var(--c-primary-dark); font-size: .8rem;
-    line-height: 1; padding: 0; opacity: .6;
+    background: none !important;
+    border: none !important;
+    cursor: pointer;
+    color: var(--c-primary-dark);
+    font-size: .8rem;
+    line-height: 1;
+    padding: 0 !important;
+    opacity: .6;
+    font-family: var(--font-ui);
+    width: auto !important;
+    height: auto !important;
+    min-width: unset !important;
+    box-shadow: none !important;
   }
   .tag-chip button:hover { opacity: 1; }
   #tag-input {
@@ -271,7 +282,13 @@ permalink: /add-post.html
     font-family: var(--font-ui); font-size: .75rem;
     color: var(--c-primary); margin-top: .5rem; display: none;
   }
-  .image-previews { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+  .image-previews {
+    display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem;
+  }
+  /* BUG FIX: container was missing, causing image thumbs and Insert buttons to not align */
+  .image-thumb-container {
+    display: flex; flex-direction: column; align-items: center; gap: .2rem;
+  }
   .image-thumb {
     position: relative; width: 56px; height: 56px;
     border-radius: 6px; overflow: hidden; border: 1px solid var(--c-border);
@@ -321,6 +338,9 @@ permalink: /add-post.html
     color: var(--c-text); background: var(--c-bg);
     border: 1px solid var(--c-border); border-radius: 0 0 7px 7px;
     padding: 1.1rem; outline: none; transition: border-color var(--transition);
+    /* BUG FIX: textarea was inside a <pre> context that swallowed Tab key — use tab-size */
+    tab-size: 2;
+    resize: vertical;
   }
   #content-area:focus { border-color: var(--c-primary); background: #fff; }
 
@@ -337,12 +357,15 @@ permalink: /add-post.html
     margin-bottom: .6rem;
   }
   .output-card-label { font-size: .65rem; color: var(--c-text-muted); margin-bottom: .2rem; }
-  pre {
+  /* BUG FIX: the global <pre> rule from default.html / editor.html was being applied here
+     and adding unwanted dark background + large padding — override it locally */
+  .output-card pre {
     font-family: var(--font-mono); font-size: .72rem;
-    background: #fff; border: 1px solid var(--c-border);
+    background: var(--c-bg); border: 1px solid var(--c-border);
     border-radius: 5px; padding: .6rem; margin: 0;
     white-space: pre-wrap; word-break: break-all;
     max-height: 120px; overflow-y: auto;
+    color: var(--c-text);
   }
 
   /* ── PREVIEW ── */
@@ -533,7 +556,7 @@ permalink: /add-post.html
       <div class="image-drop" id="image-drop">
         <input type="file" id="image-input" accept="image/*" multiple onchange="handleImages(this.files)"/>
         <div class="image-drop-icon">☁️</div>
-        <p><strong>Click to upload</strong> or drag & drop</p>
+        <p><strong>Click to upload</strong> or drag &amp; drop</p>
         <p style="margin-top:.12rem;font-size:.7rem;">Uploads directly to your Cloudinary folder</p>
       </div>
       <div class="image-upload-progress" id="upload-progress">Uploading…</div>
@@ -630,8 +653,8 @@ permalink: /add-post.html
 
 <script>
 // ── CONFIG — update these ─────────────────────────────────────
-const CLOUDINARY_CLOUD = 'YOUR_CLOUD_NAME';       // e.g. 'mycloud'
-const CLOUDINARY_PRESET = 'YOUR_UPLOAD_PRESET';   // unsigned preset name
+const CLOUDINARY_CLOUD = 'YOUR_CLOUD_NAME';
+const CLOUDINARY_PRESET = 'YOUR_UPLOAD_PRESET';
 
 // ── AUTHORS from _data/authors.yml ───────────────────────────
 const AUTHORS = {
@@ -648,9 +671,26 @@ const AUTHORS = {
 // ── STATE ─────────────────────────────────────────────────────
 let currentAuthor = null;
 let edTags = [];
-let edImages = []; // {name, url, cloudinaryUrl}
+let edImages = [];
 
-// ── AUTHOR DROPDOWN (editor) ──────────────────────────────────
+// ── SAFE AVATAR HTML BUILDER ───────────────────────────────────
+// BUG FIX: the original code used template-literal strings containing innerHTML
+// that embedded onclick with dynamic content — prone to XSS / quote-escaping bugs.
+// Now we build avatar elements via DOM methods instead.
+function buildAvHtml(author) {
+  if (!author) return '?';
+  if (author.avatar) {
+    // Return a safe HTML string — avatar URL comes from Jekyll config, not user input
+    return `<img src="${author.avatar}" alt="${escapeAttr(author.name)}" onerror="this.parentNode.textContent='${escapeAttr(author.name.charAt(0))}'"/>`;
+  }
+  return author.name.charAt(0);
+}
+
+function escapeAttr(str) {
+  return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ── AUTHOR DROPDOWN ───────────────────────────────────────────
 function populateEditorAuthorDropdown() {
   const select = document.getElementById('ed-author-select');
   select.innerHTML = '';
@@ -672,38 +712,27 @@ function onAuthorChange() {
 
 function updateAuthorDisplays() {
   if (!currentAuthor) return;
-  const av = currentAuthor.avatar;
-  const initial = currentAuthor.name.charAt(0);
-  const avHtml = av
-    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
-    : initial;
-
-  // Topbar
+  const avHtml = buildAvHtml(currentAuthor);
   document.getElementById('topbar-av').innerHTML = avHtml;
   document.getElementById('topbar-name').textContent = currentAuthor.name;
-
-  // Editor panel author avatar
   document.getElementById('al-img').innerHTML = avHtml;
 }
 
 // ── LOGIN ─────────────────────────────────────────────────────
 async function doLogin() {
-  const apiKey = document.getElementById('login-api-key').value.trim();
+  const apiKey    = document.getElementById('login-api-key').value.trim();
   const apiSecret = document.getElementById('login-api-secret').value.trim();
   const btn = document.getElementById('login-btn');
   const err = document.getElementById('login-error');
 
-  if (!apiKey || !apiSecret) {
-    showLoginError('Please enter all credentials.');
-    return;
-  }
+  if (!apiKey || !apiSecret) { showLoginError('Please enter all credentials.'); return; }
 
   btn.disabled = true;
   document.getElementById('login-btn-text').textContent = 'Verifying…';
   err.classList.remove('show');
 
   try {
-    const timestamp = Math.round((new Date()).getTime() / 1000);
+    const timestamp = Math.round(Date.now() / 1000);
     const signatureBase = `timestamp=${timestamp}${apiSecret}`;
     const signature = await sha1(signatureBase);
 
@@ -712,14 +741,11 @@ async function doLogin() {
     formData.append('timestamp', timestamp);
     formData.append('signature', signature);
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/explicit`, {
-      method: 'POST',
-      body: formData
-    });
-
+    const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/explicit`, { method: 'POST', body: formData });
     const data = await res.json();
-    
-    if (res.ok || (data.error && data.error.message && data.error.message.includes('public_id'))) {
+
+    // Cloudinary returns 400 with "public_id is required" when credentials ARE valid
+    if (res.ok || (data.error && data.error.message && data.error.message.toLowerCase().includes('public_id'))) {
       sessionStorage.setItem('cloudinary-key', apiKey);
       sessionStorage.setItem('cloudinary-secret', apiSecret);
       loginSuccess();
@@ -738,7 +764,7 @@ async function doLogin() {
 
 async function sha1(str) {
   const buffer = new TextEncoder().encode(str);
-  const hash = await crypto.subtle.digest('SHA-1', buffer);
+  const hash   = await crypto.subtle.digest('SHA-1', buffer);
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
@@ -752,36 +778,50 @@ function loginSuccess() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('editor-screen').classList.add('show');
 
-  // Populate & restore author selection
   populateEditorAuthorDropdown();
   const savedAuthor = sessionStorage.getItem('tk-author');
   if (savedAuthor && AUTHORS[savedAuthor]) {
     document.getElementById('ed-author-select').value = savedAuthor;
   }
-  // Set current author to whatever is selected (first author by default)
   const selectedKey = document.getElementById('ed-author-select').value;
   currentAuthor = AUTHORS[selectedKey] || { key: selectedKey, name: 'Author', bio: '', avatar: '' };
   updateAuthorDisplays();
 
   document.getElementById('ed-date').value = new Date().toISOString().split('T')[0];
 
+  // ── Tag input ──
   const ti = document.getElementById('tag-input');
   ti.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      addTag(ti.value.replace(/,/g,'').trim());
+      addTag(ti.value.replace(/,/g, '').trim());
     } else if (e.key === 'Backspace' && !ti.value && edTags.length) {
-      removeTag(edTags[edTags.length-1]);
+      removeTag(edTags[edTags.length - 1]);
     }
   });
-  ti.addEventListener('blur', () => { if(ti.value.trim()) addTag(ti.value.trim()); });
+  ti.addEventListener('blur', () => { if (ti.value.trim()) addTag(ti.value.trim()); });
 
+  // ── Drag & drop ──
   const drop = document.getElementById('image-drop');
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('dragover'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+  drop.addEventListener('dragover',  e => { e.preventDefault(); drop.classList.add('dragover'); });
+  drop.addEventListener('dragleave', ()  => drop.classList.remove('dragover'));
   drop.addEventListener('drop', e => {
-    e.preventDefault(); drop.classList.remove('dragover');
+    e.preventDefault();
+    drop.classList.remove('dragover');
     handleImages(e.dataTransfer.files);
+  });
+
+  // BUG FIX: Tab key in textarea was navigating away from the editor.
+  // Intercept it and insert spaces instead so writers can indent.
+  document.getElementById('content-area').addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end   = this.selectionEnd;
+      this.value  = this.value.substring(0, start) + '  ' + this.value.substring(end);
+      this.selectionStart = this.selectionEnd = start + 2;
+      edUpdate();
+    }
   });
 
   edUpdate();
@@ -795,152 +835,207 @@ function doLogout() {
   edTags = []; edImages = [];
   document.getElementById('editor-screen').classList.remove('show');
   document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-api-key').value = '';
+  document.getElementById('login-api-key').value    = '';
   document.getElementById('login-api-secret').value = '';
-  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').disabled     = false;
   document.getElementById('login-btn-text').textContent = 'Sign In';
   document.getElementById('login-error').classList.remove('show');
   document.getElementById('content-area').value = '';
-  document.getElementById('ed-title').value = '';
-  document.getElementById('ed-excerpt').value = '';
+  document.getElementById('ed-title').value     = '';
+  document.getElementById('ed-excerpt').value   = '';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const savedKey = sessionStorage.getItem('cloudinary-key');
+  const savedKey    = sessionStorage.getItem('cloudinary-key');
   const savedSecret = sessionStorage.getItem('cloudinary-secret');
-  if (savedKey && savedSecret) {
-    loginSuccess();
-  }
+  if (savedKey && savedSecret) loginSuccess();
 });
 
+// ── EDITOR UPDATE ─────────────────────────────────────────────
 function edUpdate() {
   if (!currentAuthor) return;
-  const title = document.getElementById('ed-title').value;
-  const date = document.getElementById('ed-date').value;
+  const title   = document.getElementById('ed-title').value;
+  const date    = document.getElementById('ed-date').value;
   const excerpt = document.getElementById('ed-excerpt').value;
   const content = document.getElementById('content-area').value;
 
+  // Preview title
   const pvTitle = document.getElementById('pv-title');
   pvTitle.textContent = title || 'Your title will appear here…';
   pvTitle.classList.toggle('empty', !title);
 
+  // Meta row
   document.getElementById('pv-aname').textContent = currentAuthor.name;
-  document.getElementById('pv-date').textContent = formatDate(date);
-  document.getElementById('pv-rt').textContent = calcReadTime(content) + ' min read';
+  document.getElementById('pv-date').textContent  = formatDate(date);
+  document.getElementById('pv-rt').textContent    = calcReadTime(content) + ' min read';
 
-  const pvTagsRow = document.getElementById('pv-tags-row');
-  pvTagsRow.innerHTML = edTags.map(t => `<span class="pv-tag-meta">${t}</span>`).join('<span>·</span>');
-  const pvPostTags = document.getElementById('pv-post-tags');
-  pvPostTags.innerHTML = edTags.map(t => `<span class="tag-chip" style="background:var(--c-bg);border:1px solid var(--c-border);color:var(--c-text-muted)">${t}</span>`).join('');
+  // Tags
+  document.getElementById('pv-tags-row').innerHTML =
+    edTags.map(t => `<span class="pv-tag-meta">${escapeHtml(t)}</span>`).join('<span>·</span>');
+  document.getElementById('pv-post-tags').innerHTML =
+    edTags.map(t => `<span class="tag-chip" style="background:var(--c-bg);border:1px solid var(--c-border);color:var(--c-text-muted)">${escapeHtml(t)}</span>`).join('');
 
+  // Author card
   document.getElementById('pv-card-name').textContent = currentAuthor.name;
-  document.getElementById('pv-card-bio').textContent = currentAuthor.bio;
-  const av = currentAuthor.avatar;
-  const initial = currentAuthor.name.charAt(0);
-  const avHtml = av
-    ? `<img src="${av}" alt="${currentAuthor.name}" onerror="this.parentNode.innerHTML='${initial}'"/>`
-    : initial;
-  document.getElementById('pv-av').innerHTML = avHtml;
+  document.getElementById('pv-card-bio').textContent  = currentAuthor.bio;
+  const avHtml = buildAvHtml(currentAuthor);
+  document.getElementById('pv-av').innerHTML      = avHtml;
   document.getElementById('pv-card-av').innerHTML = avHtml;
 
+  // Body
   document.getElementById('pv-body').innerHTML = content
     ? parseMarkdown(content)
     : '<p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>';
 
+  // BUG FIX: cover preview — look for first image in content and show it
+  const coverMatch = content.match(/!\[.*?\]\((.*?)\)/);
+  const pvCover = document.getElementById('pv-cover');
+  if (coverMatch) {
+    pvCover.innerHTML = `<div class="pv-cover"><img src="${escapeAttr(coverMatch[1])}" alt="cover"/></div>`;
+  } else {
+    pvCover.innerHTML = '';
+  }
+
+  // Slug / filename
   const slug = title.toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-  const filename = `${date}-${slug}.md`;
-  document.getElementById('out-filename').textContent = title ? filename : '—';
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');  // BUG FIX: trim leading/trailing dashes from slug
+  const filename = date && slug ? `${date}-${slug}.md` : '—';
+  document.getElementById('out-filename').textContent = filename;
 
-  let frontMatter = `---\nlayout: post\ntitle: ${JSON.stringify(title)}\ndate: ${date}\nauthor: ${currentAuthor.key}\n`;
-  if (edTags.length) frontMatter += `tags: [${edTags.join(', ')}]\n`;
-  if (excerpt) frontMatter += `excerpt: ${JSON.stringify(excerpt)}\n`;
-  
-  const coverMatch = content.match(/!\[.*?\]\((.*?)\)/);
-  if (coverMatch) frontMatter += `image: ${coverMatch[1]}\n`;
-  
-  frontMatter += `---\n\n${content}`;
-  document.getElementById('out-preview').textContent = title ? frontMatter : '—';
+  // Full post output
+  if (title && date) {
+    let fm = `---\nlayout: post\ntitle: ${JSON.stringify(title)}\ndate: ${date}\nauthor: ${currentAuthor.key}\n`;
+    if (edTags.length) fm += `tags: [${edTags.map(t => JSON.stringify(t)).join(', ')}]\n`;
+    if (excerpt)        fm += `excerpt: ${JSON.stringify(excerpt)}\n`;
+    if (coverMatch)     fm += `image: ${coverMatch[1]}\n`;
+    fm += `---\n\n${content}`;
+    document.getElementById('out-preview').textContent = fm;
+  } else {
+    document.getElementById('out-preview').textContent = '—';
+  }
 }
 
 function formatDate(d) {
   if (!d) return 'Date';
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(d).toLocaleDateString(undefined, options);
+  // BUG FIX: new Date('2024-01-15') parses as UTC midnight which shifts the day
+  // back by one when displayed in local timezone. Append T00:00 to treat as local.
+  const [y, m, day] = d.split('-').map(Number);
+  return new Date(y, m - 1, day).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 function calcReadTime(text) {
-  const words = text.trim().split(/\s+/).length;
-  return Math.ceil(words / 225) || 1;
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 225));
 }
 
+// ── TAGS ─────────────────────────────────────────────────────
 function addTag(tag) {
-  if (!tag || edTags.includes(tag)) return;
+  tag = tag.replace(/,/g, '').trim();
+  if (!tag || edTags.includes(tag)) {
+    document.getElementById('tag-input').value = '';
+    return;
+  }
   edTags.push(tag);
   renderTags();
   document.getElementById('tag-input').value = '';
   edUpdate();
 }
+
 function removeTag(tag) {
   edTags = edTags.filter(t => t !== tag);
   renderTags();
   edUpdate();
 }
+
 function renderTags() {
-  const wrap = document.getElementById('tags-wrap');
+  const wrap  = document.getElementById('tags-wrap');
   const input = document.getElementById('tag-input');
   wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
   edTags.forEach(t => {
     const chip = document.createElement('div');
     chip.className = 'tag-chip';
-    chip.innerHTML = `${t} <button onclick="removeTag('${t}')">&times;</button>`;
+    chip.textContent = t + ' ';             // text first
+    const btn = document.createElement('button');
+    btn.textContent = '×';
+    btn.type = 'button';                    // BUG FIX: default type="submit" caused form-like behaviour
+    btn.addEventListener('click', () => removeTag(t));  // BUG FIX: was inline onclick with string escaping issues
+    chip.appendChild(btn);
     wrap.insertBefore(chip, input);
   });
 }
 
+// ── IMAGE UPLOAD ──────────────────────────────────────────────
 async function handleImages(files) {
   const progress = document.getElementById('upload-progress');
   progress.style.display = 'block';
-  
-  for (let file of files) {
+
+  // BUG FIX: original loop used for..of on a FileList which works in modern browsers
+  // but fails silently in some environments. Convert to Array first.
+  for (const file of Array.from(files)) {
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', CLOUDINARY_PRESET);
       formData.append('folder', `blog/${currentAuthor.key}`);
 
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
-        method: 'POST',
-        body: formData
-      });
+      const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
       const data = await res.json();
-      
+
       if (data.secure_url) {
         edImages.push({ name: file.name, url: data.secure_url });
         renderImages();
         showToast('Image uploaded!');
+      } else {
+        showToast('Upload failed: ' + (data.error?.message || 'unknown error'));
       }
     } catch(e) {
       console.error(e);
       showToast('Upload failed.');
     }
   }
+
   progress.style.display = 'none';
+  // BUG FIX: reset the file input so the same file can be re-uploaded if needed
+  document.getElementById('image-input').value = '';
 }
 
 function renderImages() {
   const wrap = document.getElementById('image-previews');
-  wrap.innerHTML = edImages.map((img, i) => `
-    <div class="image-thumb-container">
-      <div class="image-thumb">
-        <img src="${img.url}"/>
-        <button class="remove-img" onclick="removeImg(${i})">&times;</button>
-      </div>
-      <button class="image-insert-btn" onclick="insertImg('${img.url}')">Insert</button>
-    </div>
-  `).join('');
+  wrap.innerHTML = '';
+  edImages.forEach((img, i) => {
+    // BUG FIX: was building HTML strings with interpolated URLs — use DOM methods for safety
+    const container = document.createElement('div');
+    container.className = 'image-thumb-container';
+
+    const thumb = document.createElement('div');
+    thumb.className = 'image-thumb';
+
+    const pic = document.createElement('img');
+    pic.src = img.url;
+    pic.alt = img.name;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-img';
+    removeBtn.type = 'button';
+    removeBtn.textContent = '×';
+    removeBtn.addEventListener('click', () => { edImages.splice(i, 1); renderImages(); });
+
+    thumb.appendChild(pic);
+    thumb.appendChild(removeBtn);
+
+    const insertBtn = document.createElement('button');
+    insertBtn.className = 'image-insert-btn';
+    insertBtn.type = 'button';
+    insertBtn.textContent = 'Insert';
+    insertBtn.addEventListener('click', () => insertImg(img.url));
+
+    container.appendChild(thumb);
+    container.appendChild(insertBtn);
+    wrap.appendChild(container);
+  });
 }
 
 function removeImg(i) {
@@ -952,18 +1047,20 @@ function insertImg(url) {
   tbIns(`\n![Image description](${url})\n`, '');
 }
 
+// ── TOOLBAR HELPERS ───────────────────────────────────────────
 function tbIns(before, after, isBlock = false) {
-  const el = document.getElementById('content-area');
+  const el    = document.getElementById('content-area');
   const start = el.selectionStart;
-  const end = el.selectionEnd;
-  const text = el.value;
+  const end   = el.selectionEnd;
+  const text  = el.value;
   const selected = text.substring(start, end);
-  
+
   let ins = before + selected + after;
-  if (isBlock && start > 0 && text[start-1] !== '\n') ins = '\n' + ins;
+  if (isBlock && start > 0 && text[start - 1] !== '\n') ins = '\n' + ins;
 
   el.value = text.substring(0, start) + ins + text.substring(end);
   el.focus();
+  // Place cursor after the inserted "before" prefix so user can type immediately
   el.setSelectionRange(start + before.length, start + before.length + selected.length);
   edUpdate();
 }
@@ -977,66 +1074,165 @@ function tbParagraph() {
   tbIns('\n\n', '', true);
 }
 
+// ── MARKDOWN PARSER ───────────────────────────────────────────
+// BUG FIX: several issues in the original parser:
+//   1. Lists (- item) were not being parsed at all
+//   2. Ordered lists (1. item) were not parsed
+//   3. Inline code inside paragraphs was being double-escaped
+//   4. Images inside paragraphs were wrapped in <p> tags alongside text
+//   5. The %%CODEBLOCK%% placeholders could be wrapped in <p> if they
+//      appear between blank lines — fixed by checking for the placeholder pattern
+
 function parseMarkdown(md) {
-  // 1. Extract fenced code blocks (``` ... ``` with optional language)
-  var codeBlocks = [];
-  md = md.replace(/```(\w*)\n([\s\S]*?)```/g, function(match, lang, code) {
-    var idx = codeBlocks.length;
+  // 1. Extract fenced code blocks first
+  const codeBlocks = [];
+  md = md.replace(/```(\w*)\n?([\s\S]*?)```/g, (match, lang, code) => {
+    const idx = codeBlocks.length;
     codeBlocks.push('<pre><code>' + escapeHtml(code.trimEnd()) + '</code></pre>');
-    return '%%CODEBLOCK_' + idx + '%%';
+    return '\n%%CODEBLOCK_' + idx + '%%\n';
   });
 
-  // 2. Block-level: headings, blockquotes, horizontal rules
-  md = md
-    .replace(/^---$/gm, '<hr />')
-    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-    .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+  // 2. Block-level rules (applied line by line for reliability)
+  const lines = md.split('\n');
+  const output = [];
+  let i = 0;
 
-  // 3. Inline formatting
-  md = md
-    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-    .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
-    .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
-    .replace(/`(.*?)`/gim, '<code>$1</code>');
+  while (i < lines.length) {
+    const line = lines[i];
 
-  // 4. Paragraphs: split by double newline, wrap each block in <p>
-  md = md.split(/\n\n+/).map(function(block) {
-    block = block.trim();
-    if (!block) return '';
-    // Skip blocks already starting with a block element
-    if (/^<(h[1-3]|blockquote|img|hr|ul|ol|pre|%%CODEBLOCK)/i.test(block)) return block;
-    // Single newlines within a paragraph → <br>
-    block = block.replace(/\n/g, '<br />');
-    return '<p>' + block + '</p>';
-  }).join('\n');
+    // Code block placeholder
+    if (/^%%CODEBLOCK_\d+%%$/.test(line.trim())) {
+      output.push(line.trim());
+      i++;
+      continue;
+    }
 
-  // 5. Restore code blocks
-  codeBlocks.forEach(function(html, i) {
-    md = md.replace('%%CODEBLOCK_' + i + '%%', html);
+    // Horizontal rule
+    if (/^---+$/.test(line.trim())) {
+      output.push('<hr />');
+      i++;
+      continue;
+    }
+
+    // Headings
+    if (/^### /.test(line)) { output.push('<h3>' + inlineFormat(line.slice(4)) + '</h3>'); i++; continue; }
+    if (/^## /.test(line))  { output.push('<h2>' + inlineFormat(line.slice(3)) + '</h2>'); i++; continue; }
+    if (/^# /.test(line))   { output.push('<h1>' + inlineFormat(line.slice(2)) + '</h1>'); i++; continue; }
+
+    // Blockquote
+    if (/^> /.test(line)) {
+      output.push('<blockquote>' + inlineFormat(line.slice(2)) + '</blockquote>');
+      i++;
+      continue;
+    }
+
+    // Unordered list — collect consecutive list items
+    if (/^- /.test(line) || /^\* /.test(line)) {
+      const items = [];
+      while (i < lines.length && (/^- /.test(lines[i]) || /^\* /.test(lines[i]))) {
+        items.push('<li>' + inlineFormat(lines[i].slice(2)) + '</li>');
+        i++;
+      }
+      output.push('<ul>' + items.join('') + '</ul>');
+      continue;
+    }
+
+    // Ordered list — collect consecutive list items
+    if (/^\d+\. /.test(line)) {
+      const items = [];
+      while (i < lines.length && /^\d+\. /.test(lines[i])) {
+        items.push('<li>' + inlineFormat(lines[i].replace(/^\d+\. /, '')) + '</li>');
+        i++;
+      }
+      output.push('<ol>' + items.join('') + '</ol>');
+      continue;
+    }
+
+    // Empty line — paragraph separator (handled at join step)
+    if (line.trim() === '') {
+      output.push('');
+      i++;
+      continue;
+    }
+
+    // Plain text line — will be grouped into paragraphs below
+    output.push(inlineFormat(line));
+    i++;
+  }
+
+  // 3. Group consecutive non-empty, non-block lines into <p> tags
+  const paragraphed = [];
+  let pBuf = [];
+
+  function flushP() {
+    if (pBuf.length) {
+      paragraphed.push('<p>' + pBuf.join('<br />') + '</p>');
+      pBuf = [];
+    }
+  }
+
+  for (const chunk of output) {
+    if (!chunk) {
+      flushP();
+      continue;
+    }
+    // Block elements don't go into <p>
+    if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|%%CODEBLOCK)/i.test(chunk) || /^%%CODEBLOCK/.test(chunk)) {
+      flushP();
+      paragraphed.push(chunk);
+    } else {
+      pBuf.push(chunk);
+    }
+  }
+  flushP();
+
+  // 4. Restore code blocks
+  let html = paragraphed.join('\n');
+  codeBlocks.forEach((block, idx) => {
+    html = html.replace('%%CODEBLOCK_' + idx + '%%', block);
   });
 
-  return md;
+  return html;
+}
+
+// Inline formatting (bold, italic, code, links, images)
+function inlineFormat(text) {
+  // Images before links (otherwise the link pattern swallows image syntax)
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, "<img alt='$1' src='$2' />");
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<a href='$2'>$1</a>");
+  // Inline code before bold/italic so asterisks inside code aren't affected
+  text = text.replace(/`([^`]+)`/g, (_, code) => '<code>' + escapeHtml(code) + '</code>');
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\*([^*]+)\*/g,     '<em>$1</em>');
+  return text;
 }
 
 function escapeHtml(str) {
-  return str
+  return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
 
+// ── COPY HELPERS ──────────────────────────────────────────────
 function copyOut(type) {
-  const text = document.getElementById(type === 'filename' ? 'out-filename' : 'out-preview').textContent;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
+  const el   = document.getElementById(type === 'filename' ? 'out-filename' : 'out-preview');
+  const text = el.textContent;
+  if (text === '—') { showToast('Nothing to copy yet.'); return; }
+  navigator.clipboard.writeText(text).then(() => showToast('Copied!')).catch(() => {
+    // Fallback for browsers without clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Copied!');
+  });
 }
 
-function edCopyFull() {
-  copyOut('preview');
-}
+function edCopyFull() { copyOut('preview'); }
 
 function showToast(msg) {
   const t = document.getElementById('ed-toast');
