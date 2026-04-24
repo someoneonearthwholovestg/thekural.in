@@ -26,13 +26,19 @@ plugins:
 
 # ─── TYPOGRAPHY ────────────────────────────────────────────────────
 # Change to any Google Fonts name. The layout auto-imports them.
+# fonts:
+#   post_heading:    "Cormorant Garamond"   # Big article titles
+#   post_subheading: "Spectral"             # Sub-headings inside posts (h2, h3)
+#   body:            "Spectral"             # All paragraph / body text
+#   ui:              "DM Sans"              # Nav, buttons, tags, meta
+#   mono:            "JetBrains Mono"       # Code blocks
 fonts:
-  post_heading:    "Cormorant Garamond"   # Big article titles
-  post_subheading: "Spectral"             # Sub-headings inside posts (h2, h3)
-  body:            "Spectral"             # All paragraph / body text
-  ui:              "DM Sans"              # Nav, buttons, tags, meta
-  mono:            "JetBrains Mono"       # Code blocks
-
+  post_heading:    "Caveat"
+  post_subheading: "Kalam"
+  body:            "Patrick Hand"
+  ui:              "Architects Daughter"
+  mono:            "JetBrains Mono"
+  
 font_sizes:
   post_heading:    "3.4rem"    # Hero title on post page
   card_heading:    "1.45rem"   # Title on cards in index / explore
