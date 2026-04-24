@@ -42,14 +42,14 @@ font_sizes:
 
 # ─── COLORS (LIGHT MODE) ───────────────────────────────────────────
 colors:
-  primary:       "#C4965A"    # Camel — links, buttons, accents
-  primary_dark:  "#9E7340"    # Hover state for camel
-  bg:            "#FAF6EE"    # Page background (warm cream)
-  surface:       "#FDF9F4"    # Card / sidebar surface
-  text:          "#2C1508"    # Main text (deep mocha)
-  text_muted:    "#7A5C45"    # Timestamps, secondary text
-  border:        "#E8DDD0"    # Dividers, card borders
-  accent:        "#D4A96A"    # Golden highlight accent
+  primary:       "#F4C430"   # rich golden yellow — main actions
+  primary_dark:  "#D4A017"   # deeper gold for hover
+  bg:            "#FFFFFF"   # clean white background
+  surface:       "#FFFBEA"   # soft pale yellow surface (cards)
+  text:          "#1F1F1F"   # near-black for strong readability
+  text_muted:    "#7A7A7A"   # neutral muted text
+  border:        "#F0E6B8"   # light yellow border
+  accent:        "#FFE066"   # bright highlight yellow
 
 # ─── FEATURES ──────────────────────────────────────────────────────
 show_reading_time: true    # Show "5 min read" on posts
