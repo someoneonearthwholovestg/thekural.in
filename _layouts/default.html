@@ -75,6 +75,7 @@
     html { scroll-behavior: smooth; }
 
     body {
+      scrollbar-width: none;
       font-family: var(--font-body);
       font-size: var(--fs-body);
       background: var(--c-bg);
@@ -83,6 +84,8 @@
       transition: background var(--transition), color var(--transition);
       min-height: 100vh;
     }
+    
+    body::-webkit-scrollbar { display: none; }
 
     /* ─── NOISE TEXTURE OVERLAY ─── */
     body::before {
