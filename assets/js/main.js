@@ -231,3 +231,17 @@ document.querySelectorAll('.mobile-nav-link').forEach(link => {
     document.body.style.overflow = '';
   });
 });
+
+const headerInput = document.getElementById('header-search-input');
+if (headerInput) {
+  headerInput.addEventListener('input', () => {
+    const overlay = document.getElementById('search-overlay');
+    const searchInput = document.getElementById('search-input');
+    if (!overlay.classList.contains('open')) {
+      overlay.classList.add('open');
+    }
+    searchInput.value = headerInput.value;
+    searchInput.dispatchEvent(new Event('input'));
+    headerInput.value = '';
+  });
+}
