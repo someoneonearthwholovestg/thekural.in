@@ -299,12 +299,23 @@
 
     /* ─── MOBILE NAV ─── */
     .mobile-nav {
-      display: none;
       border-top: 1px solid var(--c-border);
       background: var(--c-surface);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+      opacity: 0;
     }
-    .mobile-nav.open { display: block; }
-    .mobile-nav-inner { padding: .75rem 1.5rem 1.25rem; display: flex; flex-direction: column; gap: .15rem; }
+    .mobile-nav.open {
+      max-height: 600px;
+      opacity: 1;
+    }
+    .mobile-nav-inner {
+      padding: .75rem 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+    }
     .mobile-nav-link {
       font-family: var(--font-ui);
       font-size: .9rem;
