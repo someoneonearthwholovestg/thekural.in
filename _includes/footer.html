@@ -1,20 +1,56 @@
 <footer class="site-footer">
   <div class="container">
-    <div class="footer-inner">
-      <div class="footer-logo">The<span>Kural</span></div>
+    <div class="footer-grid">
 
+      <!-- LEFT — Brand -->
+      <div class="footer-brand">
+        <div class="footer-logo">The<span>Kural</span></div>
+        <p class="footer-tagline">Voice &amp; Perception</p>
+        <p class="footer-desc">A thoughtful space for ideas, stories, and perspectives worth sharing. We write slowly, think deeply, and speak honestly.</p>
+      </div>
+
+      <!-- RIGHT — Nav -->
+      <nav class="footer-nav">
+        {% for item in site.data.nav %}
+          {% if item.children %}
+            <div class="footer-nav-group">
+              <span class="footer-nav-label">{{ item.label }}</span>
+              {% for child in item.children %}
+                <a href="{{ child.url | relative_url }}" class="footer-nav-link">{{ child.label }}</a>
+              {% endfor %}
+            </div>
+          {% else %}
+            <a href="{{ item.url | relative_url }}" class="footer-nav-link">{{ item.label }}</a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="footer-bottom">
+
+      <!-- Social icons -->
+      <div class="footer-socials">
+        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="footer-social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter / X" class="footer-social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://wa.me/YOUR_NUMBER" target="_blank" rel="noopener" aria-label="WhatsApp" class="footer-social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.116 1.526 5.845L.057 23.547a.5.5 0 0 0 .596.596l5.702-1.469A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.65-.52-5.16-1.427l-.36-.215-3.733.961.979-3.636-.235-.374A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        </a>
+        <a href="mailto:your@email.com" aria-label="Email" class="footer-social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Copyright -->
       <p class="footer-copy">
-        &copy; {{ "now" | date: "%Y" }} {{ site.title }}.
-        Built with care &amp; hosted on GitHub Pages.
+        &copy; {{ "now" | date: "%Y" }} {{ site.title }}. All rights reserved.
       </p>
 
-      <nav style="display:flex;gap:.5rem;align-items:center;">
-        <a href="/thekural.in/"        style="font-family:var(--font-ui);font-size:.8rem;color:var(--c-text-muted);">Home</a>
-        <span style="color:var(--c-border);">·</span>
-        <a href="/thekural.in/explore" style="font-family:var(--font-ui);font-size:.8rem;color:var(--c-text-muted);">Explore</a>
-        <span style="color:var(--c-border);">·</span>
-        <a href="/thekural.in/about"   style="font-family:var(--font-ui);font-size:.8rem;color:var(--c-text-muted);">About</a>
-      </nav>
     </div>
   </div>
 </footer>
