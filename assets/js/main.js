@@ -187,3 +187,44 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+// ── DROPDOWN MENUS ──────────────────────────────────────────
+document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+  const toggle = dropdown.querySelector('.dropdown-toggle');
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
+    // Close all others first
+    document.querySelectorAll('.nav-dropdown.open').forEach(d => {
+      if (d !== dropdown) d.classList.remove('open');
+    });
+    dropdown.classList.toggle('open');
+  });
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => {
+  document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+});
+
+// ── MOBILE MENU ─────────────────────────────────────────────
+const mobileToggle = document.getElementById('mobile-menu-toggle');
+const mobileNav    = document.getElementById('mobile-nav');
+const hamburgerIcon = document.getElementById('hamburger-icon');
+const closeIcon     = document.getElementById('close-icon');
+
+if (mobileToggle) {
+  mobileToggle.addEventListener('click', () => {
+    const isOpen = mobileNav.classList.toggle('open');
+    hamburgerIcon.style.display = isOpen ? 'none'  : 'block';
+    closeIcon.style.display     = isOpen ? 'block' : 'none';
+  });
+}
+
+// Close mobile menu when a link is clicked
+document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    hamburgerIcon.style.display = 'block';
+    closeIcon.style.display     = 'none';
+  });
+});
