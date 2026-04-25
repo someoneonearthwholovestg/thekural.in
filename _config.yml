@@ -62,4 +62,4 @@ colors:
 show_reading_time: true    # Show "5 min read" on posts
 show_tags:         true    # Show tags on cards
 posts_per_page:    9       # Posts shown on homepage
-default_image:     "/assets/images/default-cover.jpg"
+default_image:     "/assets/images/default-cover.png"
