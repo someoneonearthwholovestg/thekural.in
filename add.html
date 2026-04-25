@@ -1,7 +1,7 @@
 ---
 layout: editor
 title: "New Post — Editor"
-permalink: /add-post.html
+permalink: /add
 ---
 
 <style>
@@ -457,6 +457,59 @@ permalink: /add-post.html
   .pv-card-name { font-family: var(--font-heading); font-size: .92rem; font-weight: 700; }
   .pv-card-bio { font-size: .8rem; color: var(--c-text-muted); font-family: var(--font-ui); margin-top: .12rem; }
 
+  /* ── IN-EDITOR POPUPS ── */
+  .ed-popup-overlay {
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,.45); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  .ed-popup-overlay.open { opacity: 1; pointer-events: all; }
+  .ed-popup {
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg); padding: 1.5rem 1.6rem;
+    width: min(400px, 90vw); box-shadow: var(--shadow-lg);
+    transform: translateY(12px); transition: transform .2s ease;
+  }
+  .ed-popup-overlay.open .ed-popup { transform: translateY(0); }
+  .ed-popup-title {
+    font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700;
+    color: var(--c-text); margin-bottom: 1.1rem;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .ed-popup-field { margin-bottom: .85rem; }
+  .ed-popup-field label {
+    display: block; font-family: var(--font-ui); font-size: .69rem;
+    font-weight: 600; color: var(--c-text-muted); text-transform: uppercase;
+    letter-spacing: .08em; margin-bottom: .3rem;
+  }
+  .ed-popup-field input {
+    width: 100%; font-family: var(--font-ui); font-size: .88rem;
+    color: var(--c-text); background: var(--c-bg);
+    border: 1px solid var(--c-border); border-radius: 7px;
+    padding: .55rem .8rem; outline: none;
+    transition: border-color var(--transition);
+  }
+  .ed-popup-field input:focus { border-color: var(--c-primary); }
+  .ed-popup-preview {
+    font-family: var(--font-ui); font-size: .78rem;
+    color: var(--c-text-muted); background: var(--c-bg);
+    border: 1px solid var(--c-border); border-radius: 6px;
+    padding: .45rem .75rem; margin-bottom: .85rem;
+    min-height: 32px; word-break: break-all;
+    display: none;
+  }
+  .ed-popup-preview.show { display: block; }
+  .ed-popup-preview span { color: var(--c-primary); }
+  .ed-popup-actions {
+    display: flex; gap: .5rem; justify-content: flex-end; margin-top: 1rem;
+  }
+  .ed-popup-actions .btn { font-size: .8rem; padding: .45rem .95rem; }
+  .ed-popup-actions .btn-primary { font-size: .8rem; padding: .45rem .95rem; }
+
+  /* Toast */
+  .ed-toast {
   /* Toast */
   .ed-toast {
     position: fixed; bottom: 1.5rem; right: 1.5rem;
@@ -588,6 +641,7 @@ permalink: /add-post.html
         <div class="tb-sep"></div>
         <button class="tb-btn" onclick="tbIns('> ','',true)">"</button>
         <button class="tb-btn" onclick="tbLink()">🔗</button>
+        <button class="tb-btn" onclick="tbUtub()">🔗</button>
         <button class="tb-btn" onclick="tbIns('\n```\n','\n```\n')">{ }</button>
         <button class="tb-btn" onclick="tbIns('\n```yaml\n','\n```\n')">yaml</button>
         <div class="tb-sep"></div>
@@ -659,6 +713,46 @@ permalink: /add-post.html
     </div>
   </div>
 
+</div>
+
+<!-- Link popup -->
+<div class="ed-popup-overlay" id="link-popup-overlay">
+  <div class="ed-popup">
+    <div class="ed-popup-title">🔗 Insert Link</div>
+    <div class="ed-popup-field">
+      <label>Display Text</label>
+      <input type="text" id="link-text-input" placeholder="Click here to read more…" oninput="updateLinkPreview()"/>
+    </div>
+    <div class="ed-popup-field">
+      <label>URL</label>
+      <input type="text" id="link-url-input" placeholder="https://example.com" oninput="updateLinkPreview()"/>
+    </div>
+    <div class="ed-popup-preview" id="link-preview">
+      Preview: <span id="link-preview-text"></span> → <span id="link-preview-url"></span>
+    </div>
+    <div class="ed-popup-actions">
+      <button class="btn" onclick="closePopup('link-popup-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="insertLink()">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- YouTube popup -->
+<div class="ed-popup-overlay" id="yt-popup-overlay">
+  <div class="ed-popup">
+    <div class="ed-popup-title">▶️ Insert YouTube Video</div>
+    <div class="ed-popup-field">
+      <label>YouTube URL or Video ID</label>
+      <input type="text" id="yt-url-input" placeholder="https://youtube.com/watch?v=... or video ID" oninput="updateYtPreview()"/>
+    </div>
+    <div class="ed-popup-preview" id="yt-preview">
+      Video ID: <span id="yt-preview-id"></span>
+    </div>
+    <div class="ed-popup-actions">
+      <button class="btn" onclick="closePopup('yt-popup-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="insertYoutube()">Insert</button>
+    </div>
+  </div>
 </div>
 
 <div class="ed-toast" id="ed-toast"></div>
@@ -862,6 +956,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedKey    = sessionStorage.getItem('cloudinary-key');
   const savedSecret = sessionStorage.getItem('cloudinary-secret');
   if (savedKey && savedSecret) loginSuccess();
+
+  // Close popups when clicking outside
+  document.querySelectorAll('.ed-popup-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+
+  // Close popups with Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.ed-popup-overlay.open').forEach(o => o.classList.remove('open'));
+    }
+  });
 });
 
 // ── EDITOR UPDATE ─────────────────────────────────────────────
@@ -1136,10 +1244,109 @@ function tbIns(before, after, isBlock = false) {
   edUpdate();
 }
 
-function tbLink() {
-  const url = prompt('Enter URL:');
-  if (url) tbIns('[', `](${url})`);
+// ── POPUP HELPERS ─────────────────────────────────────────────
+function openPopup(id) {
+  document.getElementById(id).classList.add('open');
 }
+function closePopup(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ── LINK POPUP ────────────────────────────────────────────────
+function tbLink() {
+  const el = document.getElementById('content-area');
+  const selected = el.value.substring(el.selectionStart, el.selectionEnd);
+  document.getElementById('link-text-input').value = selected || '';
+  document.getElementById('link-url-input').value  = '';
+  document.getElementById('link-preview').classList.remove('show');
+  openPopup('link-popup-overlay');
+  setTimeout(() => document.getElementById(selected ? 'link-url-input' : 'link-text-input').focus(), 50);
+}
+
+function updateLinkPreview() {
+  const text = document.getElementById('link-text-input').value.trim();
+  const url  = document.getElementById('link-url-input').value.trim();
+  const prev = document.getElementById('link-preview');
+  if (text || url) {
+    document.getElementById('link-preview-text').textContent = text || '(no text)';
+    document.getElementById('link-preview-url').textContent  = url  || '(no url)';
+    prev.classList.add('show');
+  } else {
+    prev.classList.remove('show');
+  }
+}
+
+function insertLink() {
+  const text = document.getElementById('link-text-input').value.trim();
+  const url  = document.getElementById('link-url-input').value.trim();
+  if (!url) { showToast('Please enter a URL.'); return; }
+  const md = [${text || url}](${url});
+  tbInsRaw(md);
+  closePopup('link-popup-overlay');
+}
+
+// ── YOUTUBE POPUP ─────────────────────────────────────────────
+function tbUtub() {
+  document.getElementById('yt-url-input').value = '';
+  document.getElementById('yt-preview').classList.remove('show');
+  openPopup('yt-popup-overlay');
+  setTimeout(() => document.getElementById('yt-url-input').focus(), 50);
+}
+
+function extractYoutubeId(input) {
+  input = input.trim();
+  // Full URL patterns
+  const patterns = [
+    /youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})/,
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const p of patterns) {
+    const m = input.match(p);
+    if (m) return m[1];
+  }
+  // Raw video ID (11 chars)
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+  return null;
+}
+
+function updateYtPreview() {
+  const input = document.getElementById('yt-url-input').value;
+  const id    = extractYoutubeId(input);
+  const prev  = document.getElementById('yt-preview');
+  if (id) {
+    document.getElementById('yt-preview-id').textContent = id;
+    prev.classList.add('show');
+  } else {
+    prev.classList.remove('show');
+  }
+}
+
+function insertYoutube() {
+  const input = document.getElementById('yt-url-input').value;
+  const id    = extractYoutubeId(input);
+  if (!id) { showToast('Could not find a valid YouTube video ID.'); return; }
+  const md =
+\n<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:2rem 0;">
+  <iframe src="https://www.youtube.com/embed/${id}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe>
+</div>\n;
+  tbInsRaw(md);
+  closePopup('yt-popup-overlay');
+}
+
+// ── SHARED INSERT (inserts at cursor, then scrolls textarea to bottom) ──
+function tbInsRaw(text) {
+  const el    = document.getElementById('content-area');
+  const start = el.selectionStart;
+  const end   = el.selectionEnd;
+  el.value    = el.value.substring(0, start) + text + el.value.substring(end);
+  const newPos = start + text.length;
+  el.focus();
+  el.setSelectionRange(newPos, newPos);
+  el.scrollTop = el.scrollHeight;   // scroll textarea to bottom
+  edUpdate();
+}
+
 
 function tbParagraph() {
   tbIns('\n\n', '', true);
