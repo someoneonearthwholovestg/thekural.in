@@ -434,7 +434,8 @@ permalink: /add
   .pv-body pre code { background: none; color: #F0E8DC; font-size: .8rem; padding: 0; }
   .pv-body blockquote { border-left: 3px solid var(--c-primary); padding: .6rem 1.1rem; margin: 1.3rem 0; font-style: italic; color: var(--c-text-muted); background: var(--c-surface); border-radius: 0 var(--radius) var(--radius) 0; }
   .pv-body ul, .pv-body ol { padding-left: 1.4rem; margin-bottom: 1.15rem; }
-  .pv-body li { margin-bottom: .28rem; }
+    .pv-body li { margin-bottom: .1rem; }
+  .pv-body ul, .pv-body ol { margin: .4rem 0; }
   .pv-body hr { border: none; border-top: 1px solid var(--c-border); margin: 1.6rem 0; }
   .pv-body a { color: var(--c-primary); text-decoration: underline; }
   .pv-body figure { margin: 1.3rem 0; }
@@ -672,7 +673,8 @@ permalink: /add
         <button class="tb-btn" onclick="tbIns('\n```\n','\n```\n')">{ }</button>
         <button class="tb-btn" onclick="tbIns('\n```yaml\n','\n```\n')">yaml</button>
         <div class="tb-sep"></div>
-        <button class="tb-btn" onclick="tbIns('\n- ','',true)">• list</button>
+        <button class="tb-btn" onclick="tbIns('\n- ','',true)">• ul</button>
+        <button class="tb-btn" onclick="tbIns('\n1. ','',true)">1. ol</button>
         <button class="tb-btn" onclick="tbIns('\n---\n','',true)">— hr</button>
         <button class="tb-btn" onclick="tbParagraph()" style="color:var(--c-primary);font-weight:700">+ ¶</button>
       </div>
@@ -1638,7 +1640,7 @@ function parseMarkdown(md) {
         items.push('<li>' + inlineFormat(lines[i].slice(2)) + '</li>');
         i++;
       }
-      output.push('<ul>' + items.join('') + '</ul>');
+      output.push('<ul style="margin:.4rem 0;padding-left:1.4rem;">' + items.join('') + '</ul>');
       continue;
     }
 
@@ -1649,14 +1651,7 @@ function parseMarkdown(md) {
         items.push('<li>' + inlineFormat(lines[i].replace(/^\d+\. /, '')) + '</li>');
         i++;
       }
-      output.push('<ol>' + items.join('') + '</ol>');
-      continue;
-    }
-
-    // Empty line — paragraph separator (handled at join step)
-    if (line.trim() === '') {
-      output.push('');
-      i++;
+      output.push('<ol style="margin:.4rem 0;padding-left:1.4rem;">' + items.join('') + '</ol>');
       continue;
     }
 
