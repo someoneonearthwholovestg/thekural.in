@@ -9,7 +9,7 @@ description: About this blog and its author
   <div class="about-hero">
     <div class="about-avatar-wrap">
       {% if site.author.avatar %}
-        <img src="{{ site.author.avatar }}" alt="{{ site.author.name }}" />
+        <img src="{{ site.baseurl }}{{ site.author.avatar }}" alt="{{ site.author.name }}" />
       {% else %}
         <div style="width:100%;height:100%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:5rem;font-weight:700;color:var(--c-primary);">
           {{ site.author.name | slice: 0 | default: "A" }}
