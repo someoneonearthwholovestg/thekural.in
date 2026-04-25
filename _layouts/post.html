@@ -44,13 +44,6 @@ layout: default
       </div>
     </div>
 
-    <!-- Cover image -->
-    {% if page.image %}
-    <div class="post-cover">
-      <img src="{{ page.image }}" alt="{{ page.image_alt | default: page.title }}" />
-    </div>
-    {% endif %}
-
     <!-- Post body -->
     <div class="post-body">
       {{ content }}
