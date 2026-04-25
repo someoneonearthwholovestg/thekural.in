@@ -12,11 +12,13 @@
       <!-- RIGHT — Nav -->
       <nav class="footer-nav">
         {% for item in site.data.nav %}
-          {% if item.children %}
+                  {% if item.children %}
             <div class="footer-nav-group">
               <span class="footer-nav-label">{{ item.label }}</span>
               {% for child in item.children %}
-                <a href="{{ child.url | relative_url }}" class="footer-nav-link">{{ child.label }}</a>
+                <a href="{{ child.url | relative_url }}" class="footer-nav-link footer-nav-child">
+                  <span class="footer-nav-dot">·</span> {{ child.label }}
+                </a>
               {% endfor %}
             </div>
           {% else %}
