@@ -1,0 +1,13 @@
+# _data/nazar.yml
+# Add your images here. Order determines gallery order.
+# url: direct image URL (Cloudinary, ibb, etc.)
+# caption: optional text shown on hover and in lightbox
+
+- url: "https://res.cloudinary.com/demo/image/upload/sample.jpg"
+  caption: "Golden hour at the coast"
+
+- url: "https://res.cloudinary.com/demo/image/upload/couple.jpg"
+  caption: ""
+
+- url: "https://res.cloudinary.com/demo/image/upload/dog.jpg"
+  caption: "A quiet afternoon"
