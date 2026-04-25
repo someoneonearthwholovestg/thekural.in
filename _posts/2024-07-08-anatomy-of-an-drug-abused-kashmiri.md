@@ -218,7 +218,7 @@ Just as suddenly as she had met him, they had parted — like strangers passing 
 
 Seerat didn’t know how to respond to that. Did she? Were they in love?
 
-# Did two people in love inject drugs like they used to? If they were in love, was it a crime? Or an unhappy circumstance?
+## Did two people in love inject drugs like they used to? If they were in love, was it a crime? Or an unhappy circumstance?
 
 Seerat got out of the bus and walked a few metres. The main gate of the hospital was wide open.
 
