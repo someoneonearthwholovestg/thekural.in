@@ -26,17 +26,17 @@ description: About this blog and its author
   <div class="divider"></div>
 
   <div class="post-body" style="margin-bottom:2.5rem;">
-    <h1>ABOUT THE KURAL</h1>h1
+    <h1>ABOUT THE KURAL</h1>
 
-<p>The Kural is an independent platform that engages with the movement of ideas beyond formal academic settings. It emerges from the recognition that while knowledge is continuously produced across institutions, much of it remains inaccessible, contained, or unheard within dominant frameworks of discourse.
+<p>The Kural is an independent platform that engages with the movement of ideas beyond formal academic settings. It emerges from the recognition that while knowledge is continuously produced across institutions, much of it remains inaccessible, contained, or unheard within dominant frameworks of discourse.</p>
 
-It is particularly attentive to voices and forms of thought that are often lost in larger contexts—whether due to disciplinary boundaries, linguistic limitations, or structural exclusions. The Kural seeks to create conditions where such work can be revisited, rearticulated, and made available to a wider public without compromising its analytical depth.
+<p>It is particularly attentive to voices and forms of thought that are often lost in larger contexts—whether due to disciplinary boundaries, linguistic limitations, or structural exclusions. The Kural seeks to create conditions where such work can be revisited, rearticulated, and made available to a wider public without compromising its analytical depth.</p>
 
-Working across structured and experimental forms, the platform encourages engagements that are both rigorous and accessible. It is invested in rethinking how research circulates—foregrounding clarity, reflection, and critical precision over convention alone.
+<p>Working across structured and experimental forms, the platform encourages engagements that are both rigorous and accessible. It is invested in rethinking how research circulates—foregrounding clarity, reflection, and critical precision over convention alone.</p>
 
-The Kural is non-sectarian in its orientation. It does not adhere to any single ideological position or institutional framework, but remains open to diverse locations of thought, particularly those that are marginalised or underrepresented in mainstream conversations.
+<p>The Kural is non-sectarian in its orientation. It does not adhere to any single ideological position or institutional framework, but remains open to diverse locations of thought, particularly those that are marginalised or underrepresented in mainstream conversations.</p>
 
-At its core, The Kural is an effort to extend the life of ideas—
+<p>At its core, The Kural is an effort to extend the life of ideas—
 to enable what exists, but often remains unheard, to enter public articulation.</p>
   </div>
 
