@@ -918,10 +918,11 @@ function edUpdate() {
   const filename = date && slug ? `${date}-${slug}.md` : '—';
   document.getElementById('out-filename').textContent = filename;
 
-  // Full post output
-  if (edTags.length) fm += `tags: [${edTags.map(t => JSON.stringify(t)).join(', ')}]\n`;
-  if (excerpt)        fm += `excerpt: ${JSON.stringify(excerpt)}\n`;
-  if (coverImageUrl)  fm += `image: ${coverImageUrl}\n`;
+  if (title && date) {
+    let fm = `---\nlayout: post\ntitle: ${JSON.stringify(title)}\ndate: ${date}\nauthor: ${currentAuthor.key}\n`;
+    if (edTags.length) fm += `tags: [${edTags.map(t => JSON.stringify(t)).join(', ')}]\n`;
+    if (excerpt)        fm += `excerpt: ${JSON.stringify(excerpt)}\n`;
+    if (coverImageUrl)  fm += `image: ${coverImageUrl}\n`;
     fm += `---\n\n${content}`;
     document.getElementById('out-preview').textContent = fm;
   } else {
@@ -1023,9 +1024,9 @@ async function handleImages(files) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_PRESET);
-    formData.append('folder', blog/${currentAuthor.key});
+    formData.append('folder', `blog/${currentAuthor.key}`);
 
-    const res  = await fetch(https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload, { method: 'POST', body: formData });
+    const res  = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
     const data = await res.json();
 
     if (data.secure_url) {
