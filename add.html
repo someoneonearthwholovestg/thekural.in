@@ -1007,13 +1007,14 @@ function edUpdate() {
     : '<p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>';
 
   // BUG FIX: cover preview — look for first image in content and show it
+  const coverMatch = content.match(/!\[.*?\]\((.*?)\)/);
   const pvCover = document.getElementById('pv-cover');
   if (coverMatch) {
     pvCover.innerHTML = `<div class="pv-cover"><img src="${escapeAttr(coverMatch[1])}" alt="cover"/></div>`;
   } else {
     pvCover.innerHTML = '';
   }
-
+  
   // Slug / filename
   const slug = title.toLowerCase()
     .replace(/[^\w\s-]/g, '')
