@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://someoneonearthwholovestg.github.io/thekural.in/sitemap.xml
