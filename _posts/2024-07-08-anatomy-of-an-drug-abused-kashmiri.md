@@ -2,7 +2,7 @@
 layout: post
 title: "Anatomy of an (Drug) Abused Kashmiri"
 date: 2024-07-08
-author: priya
+author: Hameeda
 tags: ["Hameeda Syed"]
 excerpt: "A young woman in Kashmir becomes an addict and reveals a system that hides rather than heals."
 image: https://res.cloudinary.com/dl1gyw7jo/image/upload/v1777087955/blog/rithu/zwsead9dmd7ihxpsq2kh.jpg
