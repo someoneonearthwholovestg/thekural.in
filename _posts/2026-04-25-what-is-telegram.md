@@ -1,8 +1,11 @@
 ---
 layout: post
-title: "What is TELEGRAM..?"
+title: "What is Telegram .?"
 date: 2026-04-25
 author: vikram
+tags: ["parvel durov", "telegram"]
+excerpt: "Telegram is a secure messaging and audio calling cloud-based app that allows you to send messages, photos, videos and files of any type to your contacts for free. You can also create groups for up to 200,000 people"
+image: https://res.cloudinary.com/dl1gyw7jo/image/upload/v1777102531/blog/vikram/quza5tetszuoi7zelnz0.avif
 ---
 
 Telegram is a secure messaging and audio calling cloud-based app that allows you to send messages, photos, videos and files of any type to your contacts for free. You can also create groups for up to 200,000 people or channels for broadcasting to unlimited contacts or audiences. Telegram is designed so that the content you share is private, secure and encrypted, allowing you to have ‘secret chats’ and for the messages you send or receive to ‘self-destruct’ so they can no longer be seen by the sender or the recipient.
@@ -24,6 +27,7 @@ Telegram is used for: encrypted, messaging/online chat, money transfers/online p
 
 
 <figure>
-  <img src="https://res.cloudinary.com/dl1gyw7jo/image/upload/v1777102121/blog/vikram/efvsox1d7y3klscz7wmq.avif" alt="Founder Of Telegram" />
-  <figcaption>Founder Of Telegram</figcaption>
+  <img src="https://res.cloudinary.com/dl1gyw7jo/image/upload/v1777102524/blog/vikram/b9gm01xaqdhc9ptvdmnw.avif" alt="Founter of Telegram" />
+  <figcaption>Founter of Telegram</figcaption>
 </figure>
+
