@@ -11,9 +11,9 @@ baseurl: "/thekural.in"
 
 # ─── AUTHOR ────────────────────────────────────────────────────────
 author:
-  name:   "Your Name"
-  bio:    "Writer. Thinker. Explorer of ideas worth sharing."
-  avatar: "/assets/images/avatar.jpg"   # Put your photo in assets/images/
+  name:   "The Kural"
+  bio:    "Voices & Perceptions"
+  avatar: "/assets/images/about.png"   # Put your photo in assets/images/
 
 # ─── JEKYLL CORE ───────────────────────────────────────────────────
 markdown:   kramdown
