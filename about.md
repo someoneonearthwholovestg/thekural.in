@@ -23,10 +23,7 @@ description: About this blog and its author
     </div>
   </div>
 
-  <div class="divider"></div>
-
   <div class="post-body" style="margin-bottom:2.5rem;">
-    <h1>ABOUT THE KURAL</h1>
 
 <p>The Kural is an independent platform that engages with the movement of ideas beyond formal academic settings. It emerges from the recognition that while knowledge is continuously produced across institutions, much of it remains inaccessible, contained, or unheard within dominant frameworks of discourse.</p>
 
