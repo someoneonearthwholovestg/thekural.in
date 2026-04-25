@@ -1328,7 +1328,7 @@ function insertImageWithCaption() {
   const caption = document.getElementById('img-caption-input').value.trim();
   let md;
   if (caption) {
-    md = `\n<figure>\n  <img src="${pendingImageUrl}" alt="${caption}" />\n  <figcaption>${caption}</figcaption>\n</figure>\n;`
+    md = `\n<figure>\n  <img src="${pendingImageUrl}" alt="${caption}" />\n  <figcaption>${caption}</figcaption>\n</figure>\n`;
   } else {
     md = `\n
 
