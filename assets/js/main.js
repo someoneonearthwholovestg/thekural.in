@@ -217,8 +217,6 @@ if (mobileToggle) {
     const isOpen = mobileNav.classList.toggle('open');
     hamburgerIcon.style.display = isOpen ? 'none'  : 'block';
     closeIcon.style.display     = isOpen ? 'block' : 'none';
-    // Prevent body scroll without causing layout shift
-    document.body.style.overflow = isOpen ? 'hidden' : '';
   });
 }
 
@@ -228,7 +226,6 @@ document.querySelectorAll('.mobile-nav-link').forEach(link => {
     mobileNav.classList.remove('open');
     hamburgerIcon.style.display  = 'block';
     closeIcon.style.display      = 'none';
-    document.body.style.overflow = '';
   });
 });
 
