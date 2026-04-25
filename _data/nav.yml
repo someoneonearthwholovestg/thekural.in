@@ -1,0 +1,18 @@
+- label: Home
+  url: /
+
+- label: Reading
+  url: "#"
+  children:
+    - label: Nazar
+      url: /nazar
+    - label: Explore
+      url: /explore
+    - label: Book Review
+      url: /book-review
+
+- label: Submission
+  url: /submission
+
+- label: About
+  url: /about
