@@ -32,10 +32,20 @@
       </nav>
 
       <!-- Actions -->
+      <!-- Actions -->
       <div class="header-actions">
-        <button class="icon-btn" id="search-toggle" aria-label="Search">
-          <i data-lucide="search"></i>
-        </button>
+        <div class="header-search">
+          <input
+            type="text"
+            id="header-search-input"
+            placeholder="Search…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="search-icon-btn" id="search-toggle" aria-label="Search">
+            <i data-lucide="search"></i>
+          </button>
+        </div>
         <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme">
           <i data-lucide="moon" class="icon-moon"></i>
           <i data-lucide="sun"  class="icon-sun"></i>
