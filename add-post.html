@@ -552,7 +552,28 @@ permalink: /add-post.html
 
     <!-- IMAGES -->
     <div class="panel-section">
-      <div class="section-label">Images — uploads to Cloudinary</div>
+  <div class="section-label">Cover Image (cards only)</div>
+  <div class="image-drop" id="cover-drop">
+    <input type="file" id="cover-input" accept="image/*" onchange="handleCover(this.files)"/>
+    <div class="image-drop-icon">🖼️</div>
+    <p><strong>Click to upload</strong> cover image</p>
+    <p style="margin-top:.12rem;font-size:.7rem;">Shows on home &amp; explore cards only</p>
+  </div>
+  <div class="image-upload-progress" id="cover-progress">Uploading…</div>
+  <div id="cover-preview" style="margin-top:.6rem;"></div>
+</div>
+
+      <div class="panel-section">
+        <div class="section-label">Article Images — uploads to Cloudinary</div>
+        <div class="image-drop" id="image-drop">
+          <input type="file" id="image-input" accept="image/*" multiple onchange="handleImages(this.files)"/>
+          <div class="image-drop-icon">☁️</div>
+          <p><strong>Click to upload</strong> or drag &amp; drop</p>
+          <p style="margin-top:.12rem;font-size:.7rem;">Insert anywhere inside your article</p>
+        </div>
+        <div class="image-upload-progress" id="upload-progress">Uploading…</div>
+        <div class="image-previews" id="image-previews"></div>
+      </div>
       <div class="image-drop" id="image-drop">
         <input type="file" id="image-input" accept="image/*" multiple onchange="handleImages(this.files)"/>
         <div class="image-drop-icon">☁️</div>
@@ -672,6 +693,7 @@ const AUTHORS = {
 let currentAuthor = null;
 let edTags = [];
 let edImages = [];
+let coverImageUrl = '';
 
 // ── SAFE AVATAR HTML BUILDER ───────────────────────────────────
 // BUG FIX: the original code used template-literal strings containing innerHTML
@@ -906,11 +928,9 @@ function edUpdate() {
   document.getElementById('out-filename').textContent = filename;
 
   // Full post output
-  if (title && date) {
-    let fm = `---\nlayout: post\ntitle: ${JSON.stringify(title)}\ndate: ${date}\nauthor: ${currentAuthor.key}\n`;
-    if (edTags.length) fm += `tags: [${edTags.map(t => JSON.stringify(t)).join(', ')}]\n`;
-    if (excerpt)        fm += `excerpt: ${JSON.stringify(excerpt)}\n`;
-    if (coverMatch)     fm += `image: ${coverMatch[1]}\n`;
+  if (edTags.length) fm += `tags: [${edTags.map(t => JSON.stringify(t)).join(', ')}]\n`;
+  if (excerpt)        fm += `excerpt: ${JSON.stringify(excerpt)}\n`;
+  if (coverImageUrl)  fm += `image: ${coverImageUrl}\n`;
     fm += `---\n\n${content}`;
     document.getElementById('out-preview').textContent = fm;
   } else {
@@ -1000,6 +1020,65 @@ async function handleImages(files) {
   progress.style.display = 'none';
   // BUG FIX: reset the file input so the same file can be re-uploaded if needed
   document.getElementById('image-input').value = '';
+}
+
+  async function handleCover(files) {
+  if (!files || !files.length) return;
+  const file = files[0];
+  const progress = document.getElementById('cover-progress');
+  progress.style.display = 'block';
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', blog/${currentAuthor.key});
+
+    const res  = await fetch(https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload, { method: 'POST', body: formData });
+    const data = await res.json();
+
+    if (data.secure_url) {
+      coverImageUrl = data.secure_url;
+      renderCoverPreview();
+      edUpdate();
+      showToast('Cover uploaded!');
+    } else {
+      showToast('Upload failed: ' + (data.error?.message || 'unknown'));
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Upload failed.');
+  }
+
+  progress.style.display = 'none';
+  document.getElementById('cover-input').value = '';
+}
+
+function renderCoverPreview() {
+  const wrap = document.getElementById('cover-preview');
+  if (!coverImageUrl) { wrap.innerHTML = ''; return; }
+
+  const container = document.createElement('div');
+  container.style.cssText = 'position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--c-border);';
+
+  const img = document.createElement('img');
+  img.src = coverImageUrl;
+  img.style.cssText = 'width:100%;height:80px;object-fit:cover;display:block;';
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.textContent = '× Remove';
+  removeBtn.style.cssText = 'position:absolute;top:4px;right:4px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:5px;font-size:.68rem;padding:.2rem .45rem;cursor:pointer;font-family:var(--font-ui);';
+  removeBtn.addEventListener('click', () => {
+    coverImageUrl = '';
+    renderCoverPreview();
+    edUpdate();
+  });
+
+  container.appendChild(img);
+  container.appendChild(removeBtn);
+  wrap.innerHTML = '';
+  wrap.appendChild(container);
 }
 
 function renderImages() {
