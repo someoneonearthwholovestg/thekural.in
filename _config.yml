@@ -6,8 +6,12 @@
 title:        "TheKural"
 tagline:      "Stories worth telling"
 description:  "A thoughtful space for ideas, stories, and perspectives."
-url:     "https://someoneonearthwholovestg.github.io"
-baseurl: "/thekural.in"
+url:          "https://someoneonearthwholovestg.github.io"
+baseurl:      "/thekural.in"
+lang:         "en"
+twitter:
+  username:   "yourtwitterhandle"
+logo:         "/assets/images/logo.png"
 
 # ─── AUTHOR ────────────────────────────────────────────────────────
 author:
@@ -23,7 +27,8 @@ permalink:  /:categories/:title/
 plugins:
   - jekyll-feed
   - jekyll-sitemap
-
+  - jekyll-seo-tag
+  
 # ─── TYPOGRAPHY ────────────────────────────────────────────────────
 # Change to any Google Fonts name. The layout auto-imports them.
 # fonts:
