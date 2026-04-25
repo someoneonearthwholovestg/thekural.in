@@ -571,7 +571,7 @@ permalink: /add
       </div>
       <div class="ed-actions">
         <button class="btn" style="font-size:.75rem;padding:.38rem .8rem;color:var(--c-text-muted);" onclick="doLogout()">Logout</button>
-        <button class="btn btn-primary" style="font-size:.78rem;padding:.4rem .9rem;" onclick="edCopyFull()">Copy Post</button>
+        <button class="btn btn-primary" style="font-size:.78rem;padding:.4rem .9rem;" onclick="openImportPopup()">Import Post</button>
       </div>
     </div>
 
@@ -758,6 +758,30 @@ permalink: /add
   </div>
 </div>
 
+<!-- Import popup -->
+<div class="ed-popup-overlay" id="import-popup-overlay">
+  <div class="ed-popup" style="width:min(580px,94vw);">
+    <div class="ed-popup-title">📥 Import Post</div>
+    <div class="ed-popup-field">
+      <label>Paste your full post content (with or without front matter)</label>
+      <textarea
+        id="import-textarea"
+        rows="12"
+        placeholder="Paste your .md file content here…"
+        style="width:100%;font-family:var(--font-mono);font-size:.82rem;color:var(--c-text);background:var(--c-bg);border:1px solid var(--c-border);border-radius:7px;padding:.65rem .85rem;outline:none;resize:vertical;line-height:1.6;transition:border-color var(--transition);"
+        onfocus="this.style.borderColor='var(--c-primary)'"
+        onblur="this.style.borderColor='var(--c-border)'"
+      ></textarea>
+    </div>
+    <div id="import-status" style="font-family:var(--font-ui);font-size:.76rem;color:var(--c-text-muted);margin-bottom:.5rem;min-height:1.2rem;"></div>
+    <div class="ed-popup-actions">
+      <button class="btn" onclick="closePopup('import-popup-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="importPost()">Import</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- Link popup -->
 <div class="ed-popup-overlay" id="link-popup-overlay">
   <div class="ed-popup">
@@ -923,6 +947,120 @@ function showLoginError(msg) {
   err.textContent = msg;
   err.classList.add('show');
 }
+
+// ── IMPORT POST ───────────────────────────────────────────────
+function openImportPopup() {
+  document.getElementById('import-textarea').value = '';
+  document.getElementById('import-status').textContent = '';
+  openPopup('import-popup-overlay');
+  setTimeout(() => document.getElementById('import-textarea').focus(), 50);
+}
+
+function importPost() {
+  const raw = document.getElementById('import-textarea').value.trim();
+  const status = document.getElementById('import-status');
+
+  if (!raw) { status.textContent = '⚠️ Nothing to import.'; return; }
+
+  let content = raw;
+  let title = '', date = '', authorKey = '', excerpt = '', tags = [], image = '';
+
+  // ── Parse front matter if present ──
+  const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (fmMatch) {
+    const fm   = fmMatch[1];
+    content    = fmMatch[2].trim();
+
+    // Title
+    const titleM = fm.match(/^title:\s*["']?(.+?)["']?\s*$/m);
+    if (titleM) title = titleM[1].trim();
+
+    // Date
+    const dateM = fm.match(/^date:\s*(\d{4}-\d{2}-\d{2})/m);
+    if (dateM) date = dateM[1].trim();
+
+    // Author
+    const authorM = fm.match(/^author:\s*(\S+)/m);
+    if (authorM) authorKey = authorM[1].trim();
+
+    // Excerpt
+    const excerptM = fm.match(/^excerpt:\s*["']?(.+?)["']?\s*$/m);
+    if (excerptM) excerpt = excerptM[1].trim();
+
+    // Tags
+    const tagsLineM = fm.match(/^tags:\s*\[(.+?)\]/m);
+    if (tagsLineM) {
+      tags = tagsLineM[1].split(',').map(t => t.trim().replace(/['"]/g, '')).filter(Boolean);
+    } else {
+      // Multi-line tags
+      const tagsBlockM = fm.match(/^tags:\s*\n((?:\s*-\s*.+\n?)+)/m);
+      if (tagsBlockM) {
+        tags = tagsBlockM[1].split('\n')
+          .map(l => l.replace(/^\s*-\s*/, '').trim())
+          .filter(Boolean);
+      }
+    }
+
+    // Image / cover
+    const imageM = fm.match(/^image:\s*(\S+)/m);
+    if (imageM) image = imageM[1].trim();
+
+  } else {
+    // No front matter — treat entire paste as content
+    content = raw;
+  }
+
+  // ── Apply to editor fields ──
+  if (title) document.getElementById('ed-title').value = title;
+
+  if (date) {
+    document.getElementById('ed-date').value = date;
+  }
+
+  if (authorKey && AUTHORS[authorKey]) {
+    document.getElementById('ed-author-select').value = authorKey;
+    currentAuthor = AUTHORS[authorKey];
+    updateAuthorDisplays();
+  }
+
+  if (excerpt) document.getElementById('ed-excerpt').value = excerpt;
+
+  // Tags
+  if (tags.length) {
+    edTags = tags;
+    renderTags();
+  }
+
+  // Cover image
+  if (image) {
+    coverImageUrl = image;
+    renderCoverPreview();
+  }
+
+  // Content
+  document.getElementById('content-area').value = content;
+
+  // ── Build status summary ──
+  const found = [];
+  if (title)          found.push('title');
+  if (date)           found.push('date');
+  if (authorKey)      found.push('author');
+  if (tags.length)    found.push(`${tags.length} tag${tags.length > 1 ? 's' : ''}`);
+  if (excerpt)        found.push('excerpt');
+  if (image)          found.push('cover image');
+  if (content)        found.push('content');
+
+  status.style.color = 'var(--c-primary)';
+  status.textContent = found.length
+    ? `✓ Imported: ${found.join(', ')}`
+    : '✓ Content imported.';
+
+  edUpdate();
+
+  // Close after short delay so user can see the status
+  setTimeout(() => closePopup('import-popup-overlay'), 1200);
+}
+
 
 function loginSuccess() {
   document.getElementById('login-screen').style.display = 'none';
