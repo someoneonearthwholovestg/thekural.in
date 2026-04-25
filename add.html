@@ -709,6 +709,23 @@ permalink: /add
   </div>
 
 </div>
+<!-- Image caption popup -->
+<div class="ed-popup-overlay" id="img-caption-popup-overlay">
+  <div class="ed-popup">
+    <div class="ed-popup-title">🖼️ Insert Image</div>
+    <div class="ed-popup-field">
+      <label>Caption <small style="opacity:.5;font-weight:400">(optional)</small></label>
+      <input type="text" id="img-caption-input" placeholder="Describe the image…"/>
+    </div>
+    <div class="ed-popup-preview show" id="img-caption-preview" style="display:block;">
+      <span id="img-caption-preview-src" style="font-size:.7rem;word-break:break-all;"></span>
+    </div>
+    <div class="ed-popup-actions">
+      <button class="btn" onclick="closePopup('img-caption-popup-overlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="insertImageWithCaption()">Insert</button>
+    </div>
+  </div>
+</div>
 
 <!-- Link popup -->
 <div class="ed-popup-overlay" id="link-popup-overlay">
@@ -1196,7 +1213,7 @@ function renderImages() {
     insertBtn.className = 'image-insert-btn';
     insertBtn.type = 'button';
     insertBtn.textContent = 'Insert';
-    insertBtn.addEventListener('click', () => insertImg(img.url));
+    insertBtn.addEventListener('click', () => openImageCaptionPopup(img.url));
 
     container.appendChild(thumb);
     container.appendChild(insertBtn);
@@ -1295,6 +1312,33 @@ function extractYoutubeId(input) {
   // Raw video ID (11 chars)
   if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
   return null;
+}
+
+let pendingImageUrl = '';
+
+function openImageCaptionPopup(url) {
+  pendingImageUrl = url;
+  document.getElementById('img-caption-input').value = '';
+  document.getElementById('img-caption-preview-src').textContent = url;
+  openPopup('img-caption-popup-overlay');
+  setTimeout(() => document.getElementById('img-caption-input').focus(), 50);
+}
+
+function insertImageWithCaption() {
+  const caption = document.getElementById('img-caption-input').value.trim();
+  let md;
+  if (caption) {
+    md = `\n<figure>\n  <img src="${pendingImageUrl}" alt="${caption}" />\n  <figcaption>${caption}</figcaption>\n</figure>\n;`
+  } else {
+    md = `\n
+
+![Image](${pendingImageUrl})
+
+\n`;
+  }
+  closePopup('img-caption-popup-overlay');
+  tbInsRaw(md);
+  pendingImageUrl = '';
 }
 
 function updateYtPreview() {
