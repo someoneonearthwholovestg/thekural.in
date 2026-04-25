@@ -327,8 +327,13 @@
 
     /* ─── MOBILE NAV ─── */
     .mobile-nav {
-      border-top: 1px solid var(--c-border);
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      z-index: 99;
       background: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
       max-height: 0;
       overflow: hidden;
       transition: max-height .35s cubic-bezier(.4,0,.2,1), opacity .3s ease;
