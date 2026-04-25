@@ -510,8 +510,6 @@ permalink: /add
 
   /* Toast */
   .ed-toast {
-  /* Toast */
-  .ed-toast {
     position: fixed; bottom: 1.5rem; right: 1.5rem;
     background: var(--c-text); color: var(--c-bg);
     font-family: var(--font-ui); font-size: .8rem; font-weight: 500;
@@ -1009,7 +1007,6 @@ function edUpdate() {
     : '<p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>';
 
   // BUG FIX: cover preview — look for first image in content and show it
-  const coverMatch = content.match(/!\[.*?\]\((.*?)\)/);
   const pvCover = document.getElementById('pv-cover');
   if (coverMatch) {
     pvCover.innerHTML = `<div class="pv-cover"><img src="${escapeAttr(coverMatch[1])}" alt="cover"/></div>`;
@@ -1280,7 +1277,7 @@ function insertLink() {
   const text = document.getElementById('link-text-input').value.trim();
   const url  = document.getElementById('link-url-input').value.trim();
   if (!url) { showToast('Please enter a URL.'); return; }
-  const md = [${text || url}](${url});
+  const md = `[${text || url}](${url})`;
   tbInsRaw(md);
   closePopup('link-popup-overlay');
 }
@@ -1326,10 +1323,9 @@ function insertYoutube() {
   const input = document.getElementById('yt-url-input').value;
   const id    = extractYoutubeId(input);
   if (!id) { showToast('Could not find a valid YouTube video ID.'); return; }
-  const md =
-\n<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:2rem 0;">
+  const md = `\n<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:2rem 0;">
   <iframe src="https://www.youtube.com/embed/${id}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen loading="lazy"></iframe>
-</div>\n;
+</div>\n`;
   tbInsRaw(md);
   closePopup('yt-popup-overlay');
 }
@@ -1343,7 +1339,6 @@ function tbInsRaw(text) {
   const newPos = start + text.length;
   el.focus();
   el.setSelectionRange(newPos, newPos);
-  el.scrollTop = el.scrollHeight;   // scroll textarea to bottom
   edUpdate();
 }
 
