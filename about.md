@@ -4,7 +4,7 @@ title: About
 description: About this blog and its author
 ---
 
-<div class="container-narrow" style="padding-bottom:5rem;">
+<div class="container-narrow">
 
   <div class="about-hero">
     <div class="about-avatar-wrap">
