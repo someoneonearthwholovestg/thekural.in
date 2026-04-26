@@ -188,15 +188,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// ── DROPDOWN MENUS ──────────────────────────────────────────
 document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
   const toggle = dropdown.querySelector('.dropdown-toggle');
-  toggle.addEventListener('click', e => {
-    e.stopPropagation();
-    // Close all others first
+
+  // Open on hover
+  dropdown.addEventListener('mouseenter', () => {
     document.querySelectorAll('.nav-dropdown.open').forEach(d => {
       if (d !== dropdown) d.classList.remove('open');
     });
+    dropdown.classList.add('open');
+  });
+
+  // Close when mouse leaves the whole dropdown including menu
+  dropdown.addEventListener('mouseleave', () => {
+    dropdown.classList.remove('open');
+  });
+
+  // Also keep click working for mobile
+  toggle.addEventListener('click', e => {
+    e.stopPropagation();
     dropdown.classList.toggle('open');
   });
 });
@@ -205,6 +215,7 @@ document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
 document.addEventListener('click', () => {
   document.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
 });
+
 
 // ── MOBILE MENU ─────────────────────────────────────────────
 const mobileToggle  = document.getElementById('mobile-menu-toggle');
