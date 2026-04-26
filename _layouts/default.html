@@ -373,16 +373,10 @@
       z-index: 200;
       overflow: hidden;
       flex-direction: column;
-      display: flex;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-6px);
-      transition: opacity .18s ease, transform .18s ease;
+      display: none;
     }
     .nav-dropdown.open .dropdown-menu {
-      opacity: 1;
-      pointer-events: all;
-      transform: translateY(0);
+      display: flex;
     }
     .dropdown-item {
       font-family: var(--font-ui);
