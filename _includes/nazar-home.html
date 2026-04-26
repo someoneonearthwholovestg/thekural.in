@@ -1,5 +1,6 @@
 {% if site.data.nazar and site.data.nazar.size > 0 %}
 <section style="margin: 3rem 0;">
+<div class="nazar-home-wrap">
   <div class="section-label">Nazar — Visual Journal</div>
 
   <!-- Preview strip: first 6 images in a masonry-like row -->
@@ -18,11 +19,12 @@
     {% endfor %}
   </div>
 
-  <div style="text-align:center;margin-top:1.5rem;">
+  <div class="nazar-home-more">
     <a href="{{ '/nazar' | relative_url }}" class="btn">
       View full gallery →
     </a>
   </div>
+</div>
 </section>
 
 <style>
