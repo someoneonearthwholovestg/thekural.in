@@ -187,82 +187,73 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
-document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-  const toggle   = dropdown.querySelector('.dropdown-toggle');
-  const menu     = dropdown.querySelector('.dropdown-menu');
-  const origLabel = toggle.childNodes[0].textContent.trim();
 
-  // Click toggle to open/close
-  toggle.addEventListener('click', e => {
-    e.stopPropagation();
-    document.querySelectorAll('.nav-dropdown.open').forEach(d => {
-      if (d !== dropdown) {
-        d.classList.remove('open');
-        // Reset other dropdowns label
-        const ot = d.querySelector('.dropdown-toggle');
-        ot.childNodes[0].textContent = ot.dataset.orig + ' ';
-      }
-    });
-    dropdown.classList.toggle('open');
-  });
 
-  // Store original label
-  toggle.dataset.orig = origLabel;
+// ── DROPDOWN + MOBILE (runs after DOM ready) ─────────────────
+document.addEventListener('DOMContentLoaded', () => {
 
-  // On child item click — replace label and close
-  menu.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', e => {
+  // ── DROPDOWN MENUS ──────────────────────────────────────────
+  document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+    const toggle    = dropdown.querySelector('.dropdown-toggle');
+    const menu      = dropdown.querySelector('.dropdown-menu');
+
+    // Store original label text on first run
+    toggle.dataset.orig = toggle.childNodes[0].textContent.trim();
+
+    // Click toggle to open/close
+    toggle.addEventListener('click', e => {
       e.stopPropagation();
-      // Replace toggle text with selected item label
-      toggle.childNodes[0].textContent = item.textContent.trim() + ' ';
-      dropdown.classList.remove('open');
+      // Close all other dropdowns and reset their labels
+      document.querySelectorAll('.nav-dropdown.open').forEach(d => {
+        if (d !== dropdown) {
+          d.classList.remove('open');
+          const ot = d.querySelector('.dropdown-toggle');
+          ot.childNodes[0].textContent = ot.dataset.orig + ' ';
+        }
+      });
+      dropdown.classList.toggle('open');
+    });
+
+    // On child item click — replace label and close
+    menu.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        toggle.childNodes[0].textContent = item.textContent.trim() + ' ';
+        dropdown.classList.remove('open');
+      });
     });
   });
+
+  // Close all dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.nav-dropdown.open').forEach(d => {
+      d.classList.remove('open');
+      const t = d.querySelector('.dropdown-toggle');
+      t.childNodes[0].textContent = t.dataset.orig + ' ';
+    });
+  });
+
+  // ── MOBILE MENU ─────────────────────────────────────────────
+  const mobileToggle  = document.getElementById('mobile-menu-toggle');
+  const mobileNav     = document.getElementById('mobile-nav');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+  const closeIcon     = document.getElementById('close-icon');
+
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('open');
+      hamburgerIcon.style.display = isOpen ? 'none'  : 'block';
+      closeIcon.style.display     = isOpen ? 'block' : 'none';
+    });
+  }
+
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNav.classList.remove('open');
+      hamburgerIcon.style.display = 'block';
+      closeIcon.style.display     = 'none';
+    });
+  });
+
 });
 
-// Close all when clicking outside
-document.addEventListener('click', () => {
-  document.querySelectorAll('.nav-dropdown.open').forEach(d => {
-    d.classList.remove('open');
-    const t = d.querySelector('.dropdown-toggle');
-    // Reset to original label
-    t.childNodes[0].textContent = t.dataset.orig + ' ';
-  });
-});
-
-// ── MOBILE MENU ─────────────────────────────────────────────
-const mobileToggle  = document.getElementById('mobile-menu-toggle');
-const mobileNav     = document.getElementById('mobile-nav');
-const hamburgerIcon = document.getElementById('hamburger-icon');
-const closeIcon     = document.getElementById('close-icon');
-
-if (mobileToggle) {
-  mobileToggle.addEventListener('click', () => {
-    const isOpen = mobileNav.classList.toggle('open');
-    hamburgerIcon.style.display = isOpen ? 'none'  : 'block';
-    closeIcon.style.display     = isOpen ? 'block' : 'none';
-  });
-}
-
-// Close mobile menu when a link is clicked
-document.querySelectorAll('.mobile-nav-link').forEach(link => {
-  link.addEventListener('click', () => {
-    mobileNav.classList.remove('open');
-    hamburgerIcon.style.display  = 'block';
-    closeIcon.style.display      = 'none';
-  });
-});
-
-const headerInput = document.getElementById('header-search-input');
-if (headerInput) {
-  headerInput.addEventListener('input', () => {
-    const overlay = document.getElementById('search-overlay');
-    const searchInput = document.getElementById('search-input');
-    if (!overlay.classList.contains('open')) {
-      overlay.classList.add('open');
-    }
-    searchInput.value = headerInput.value;
-    searchInput.dispatchEvent(new Event('input'));
-    headerInput.value = '';
-  });
-}
