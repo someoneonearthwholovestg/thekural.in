@@ -372,10 +372,18 @@
       min-width: 160px;
       z-index: 200;
       overflow: hidden;
-      display: none;
       flex-direction: column;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity .18s ease, transform .18s ease;
     }
-    .nav-dropdown.open .dropdown-menu { display: flex; }
+    .nav-dropdown.open .dropdown-menu {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
     .dropdown-item {
       font-family: var(--font-ui);
       font-size: .82rem;
