@@ -16,8 +16,6 @@ title: Home
   </div>
 </section>
 
-{% include nazar-home.html %}
-
 <!-- ── POSTS GRID ── -->
 <section>
   <div class="container">
@@ -28,6 +26,8 @@ title: Home
         <p style="font-family:var(--font-ui);">No articles yet — add a file to <code>_posts/</code> to get started!</p>
       </div>
     {% else %}
+
+    {% include nazar-home.html %}
 
     <div class="section-label">Latest articles</div>
 
