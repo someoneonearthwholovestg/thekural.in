@@ -4,6 +4,8 @@
    • Full-text search (loads from /search.json)
    • Scroll fade-in
    • Lucide icons
+   • Dropdown nav
+   • Mobile menu
 ═══════════════════════════════════════════════════════════ */
 
 function initLucide() {
@@ -39,35 +41,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const results   = document.getElementById('search-results');
   const hint      = document.getElementById('search-hint');
 
-  // Load search index from search.json once
-  let searchIndex = null;
+  let searchIndex   = null;
   let searchLoading = false;
 
   function loadSearchIndex() {
     if (searchIndex || searchLoading) return;
     searchLoading = true;
-
-    // Get base path from existing script tag
     const base = document.querySelector('script[src*="main.js"]')
       .getAttribute('src')
       .replace('/assets/js/main.js', '');
-
     fetch(base + '/search.json')
       .then(r => r.json())
-      .then(data => {
-        searchIndex = data;
-        searchLoading = false;
-      })
-      .catch(() => {
-        searchLoading = false;
-        console.warn('TheKural: could not load search.json');
-      });
+      .then(data => { searchIndex = data; searchLoading = false; })
+      .catch(() => { searchLoading = false; console.warn('TheKural: could not load search.json'); });
   }
 
   function openSearch() {
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
-    loadSearchIndex(); // start loading as soon as search opens
+    loadSearchIndex();
     setTimeout(() => input && input.focus(), 50);
   }
 
@@ -76,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
     if (input) input.value = '';
     if (results) results.innerHTML = hint ? hint.outerHTML : '';
-    // re-init lucide for the hint icon
     if (window.lucide) lucide.createIcons();
   }
 
@@ -92,37 +83,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') closeSearch();
   });
 
-  // Live full-text search
   input && input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
-
     if (!q) {
       results.innerHTML = hint ? hint.outerHTML : '';
       if (window.lucide) lucide.createIcons();
       return;
     }
-
     if (!searchIndex) {
       results.innerHTML = `<div class="search-empty">Loading search index…</div>`;
-      // Try loading if not already
       loadSearchIndex();
       return;
     }
-
-    // Search title (weight 3), tags (weight 2), excerpt + content (weight 1)
     const hits = searchIndex
       .map(post => {
         const title   = (post.title   || '').toLowerCase();
         const content = (post.content || '').toLowerCase();
         const excerpt = (post.excerpt || '').toLowerCase();
         const tags    = (post.tags    || []).join(' ').toLowerCase();
-
         let score = 0;
         if (title.includes(q))   score += 3;
         if (tags.includes(q))    score += 2;
         if (excerpt.includes(q)) score += 1;
         if (content.includes(q)) score += 1;
-
         return { ...post, score };
       })
       .filter(p => p.score > 0)
@@ -132,9 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `<div class="search-empty">No articles found for "<strong>${escHtml(q)}</strong>"</div>`;
       return;
     }
-
     results.innerHTML = hits.map(p => {
-      // Find the matching snippet from full content
       const snippet = getSnippet(p.content || p.excerpt || '', q);
       return `
         <a href="${p.url}" class="search-result-item">
@@ -145,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   });
 
-  // Extract a relevant snippet around the matched word
   function getSnippet(text, q) {
     const lower = text.toLowerCase();
     const idx   = lower.indexOf(q);
@@ -153,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const start = Math.max(0, idx - 60);
     const end   = Math.min(text.length, idx + q.length + 80);
     let snippet = text.slice(start, end).trim();
-    if (start > 0)          snippet = '…' + snippet;
-    if (end < text.length)  snippet = snippet + '…';
+    if (start > 0)         snippet = '…' + snippet;
+    if (end < text.length) snippet = snippet + '…';
     return snippet;
   }
 
@@ -186,54 +166,62 @@ document.addEventListener('DOMContentLoaded', () => {
     faders.forEach(el => el.classList.add('visible'));
   }
 
-});
-
-
-// ── DROPDOWN + MOBILE (runs after DOM ready) ─────────────────
-document.addEventListener('DOMContentLoaded', () => {
-
-  // ── DROPDOWN MENUS ──────────────────────────────────────────
+  // ── 4. DROPDOWN NAV ──────────────────────────────────────
   document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-    const toggle    = dropdown.querySelector('.dropdown-toggle');
-    const menu      = dropdown.querySelector('.dropdown-menu');
+    const toggle = dropdown.querySelector('.dropdown-toggle');
+    const menu   = dropdown.querySelector('.dropdown-menu');
 
-    // Store original label text on first run
+    // Save original label on first run
     toggle.dataset.orig = toggle.childNodes[0].textContent.trim();
 
-    // Click toggle to open/close
     toggle.addEventListener('click', e => {
+      e.preventDefault();
       e.stopPropagation();
-      // Close all other dropdowns and reset their labels
-      document.querySelectorAll('.nav-dropdown.open').forEach(d => {
-        if (d !== dropdown) {
-          d.classList.remove('open');
-          const ot = d.querySelector('.dropdown-toggle');
-          ot.childNodes[0].textContent = ot.dataset.orig + ' ';
-        }
+
+      const isOpen = dropdown.classList.contains('open');
+
+      // Close all dropdowns first
+      document.querySelectorAll('.nav-dropdown').forEach(d => {
+        d.classList.remove('open');
+        const t = d.querySelector('.dropdown-toggle');
+        if (t) t.childNodes[0].textContent = t.dataset.orig + ' ';
       });
-      dropdown.classList.toggle('open');
+
+      // If it was closed, open it now
+      if (!isOpen) {
+        dropdown.classList.add('open');
+      }
     });
 
-    // On child item click — replace label and close
+    // Child item click — set label, navigate, close
     menu.querySelectorAll('.dropdown-item').forEach(item => {
       item.addEventListener('click', e => {
         e.stopPropagation();
+        // Set the label to selected child
         toggle.childNodes[0].textContent = item.textContent.trim() + ' ';
+        // Close dropdown
         dropdown.classList.remove('open');
+        // Navigate
+        const href = item.getAttribute('href');
+        if (href && href !== '#') {
+          window.location.href = href;
+        }
       });
     });
   });
 
-  // Close all dropdowns when clicking outside
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.nav-dropdown.open').forEach(d => {
-      d.classList.remove('open');
-      const t = d.querySelector('.dropdown-toggle');
-      t.childNodes[0].textContent = t.dataset.orig + ' ';
-    });
+  // Close dropdowns when clicking anywhere else
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown')) {
+      document.querySelectorAll('.nav-dropdown.open').forEach(d => {
+        d.classList.remove('open');
+        const t = d.querySelector('.dropdown-toggle');
+        if (t) t.childNodes[0].textContent = t.dataset.orig + ' ';
+      });
+    }
   });
 
-  // ── MOBILE MENU ─────────────────────────────────────────────
+  // ── 5. MOBILE MENU ───────────────────────────────────────
   const mobileToggle  = document.getElementById('mobile-menu-toggle');
   const mobileNav     = document.getElementById('mobile-nav');
   const hamburgerIcon = document.getElementById('hamburger-icon');
@@ -250,10 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.mobile-nav-link').forEach(link => {
     link.addEventListener('click', () => {
       mobileNav.classList.remove('open');
-      hamburgerIcon.style.display = 'block';
-      closeIcon.style.display     = 'none';
+      if (hamburgerIcon) hamburgerIcon.style.display = 'block';
+      if (closeIcon)     closeIcon.style.display     = 'none';
     });
   });
 
 });
-
