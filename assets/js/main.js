@@ -171,8 +171,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggle = dropdown.querySelector('.dropdown-toggle');
     const menu   = dropdown.querySelector('.dropdown-menu');
 
-    // Save original label on first run
-    toggle.dataset.orig = toggle.childNodes[0].textContent.trim();
+    // Save original label
+    const origLabel = toggle.childNodes[0].textContent.trim();
+    toggle.dataset.orig = origLabel;
+
+    // Restore saved label from sessionStorage on page load
+    const savedLabel = sessionStorage.getItem('tk-nav-' + origLabel);
+    if (savedLabel) {
+      toggle.childNodes[0].textContent = savedLabel + ' ';
+    }
+
+    // Also check current page URL and highlight matching child
+    menu.querySelectorAll('.dropdown-item').forEach(item => {
+      const href = item.getAttribute('href');
+      if (href && window.location.pathname.includes(href.replace(/^\//, ''))) {
+        toggle.childNodes[0].textContent = item.textContent.trim() + ' ';
+        sessionStorage.setItem('tk-nav-' + origLabel, item.textContent.trim());
+      }
+    });
 
     toggle.addEventListener('click', e => {
       e.preventDefault();
@@ -183,8 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Close all dropdowns first
       document.querySelectorAll('.nav-dropdown').forEach(d => {
         d.classList.remove('open');
-        const t = d.querySelector('.dropdown-toggle');
-        if (t) t.childNodes[0].textContent = t.dataset.orig + ' ';
       });
 
       // If it was closed, open it now
@@ -193,15 +207,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Child item click — set label, navigate, close
+    // Child item click — set label, save, navigate, close
     menu.querySelectorAll('.dropdown-item').forEach(item => {
       item.addEventListener('click', e => {
         e.stopPropagation();
-        // Set the label to selected child
-        toggle.childNodes[0].textContent = item.textContent.trim() + ' ';
-        // Close dropdown
+        const label = item.textContent.trim();
+        toggle.childNodes[0].textContent = label + ' ';
+        // Save to sessionStorage so it persists after navigation
+        sessionStorage.setItem('tk-nav-' + origLabel, label);
         dropdown.classList.remove('open');
-        // Navigate
         const href = item.getAttribute('href');
         if (href && href !== '#') {
           window.location.href = href;
@@ -215,8 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!e.target.closest('.nav-dropdown')) {
       document.querySelectorAll('.nav-dropdown.open').forEach(d => {
         d.classList.remove('open');
-        const t = d.querySelector('.dropdown-toggle');
-        if (t) t.childNodes[0].textContent = t.dataset.orig + ' ';
       });
     }
   });
