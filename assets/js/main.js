@@ -215,9 +215,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Close dropdowns when clicking anywhere else
+  // Close dropdowns when clicking anywhere else or on a child item
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-dropdown')) {
+    if (!e.target.closest('.dropdown-toggle')) {
       document.querySelectorAll('.nav-dropdown.open').forEach(d => {
         d.classList.remove('open');
       });
