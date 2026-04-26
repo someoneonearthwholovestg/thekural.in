@@ -171,15 +171,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggle = dropdown.querySelector('.dropdown-toggle');
     const menu   = dropdown.querySelector('.dropdown-menu');
 
-    // Save original label
     const origLabel = toggle.childNodes[0].textContent.trim();
     toggle.dataset.orig = origLabel;
-
-    // Restore saved label from sessionStorage on page load
-    const savedLabel = sessionStorage.getItem('tk-nav-' + origLabel);
-    if (savedLabel) {
-      toggle.childNodes[0].textContent = savedLabel + ' ';
-    }
+    // Highlight the active child based on current URL
+    menu.querySelectorAll('.dropdown-item').forEach(item => {
+      const href = item.getAttribute('href') || '';
+      const path = href.replace(/^\//, '').replace(/\/$/, '');
+      const curr = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+      if (path && curr && (curr === path || curr.startsWith(path))) {
+        item.style.color          = 'var(--c-primary)';
+        item.style.fontWeight     = '600';
+        item.style.background     = 'color-mix(in srgb, var(--c-primary) 8%, var(--c-surface))';
+      }
+    });
 
     toggle.addEventListener('click', e => {
       e.preventDefault();
@@ -202,10 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
     menu.querySelectorAll('.dropdown-item').forEach(item => {
       item.addEventListener('click', e => {
         e.stopPropagation();
-        const label = item.textContent.trim();
-        toggle.childNodes[0].textContent = label + ' ';
-        // Save to sessionStorage so it persists after navigation
-        sessionStorage.setItem('tk-nav-' + origLabel, label);
         dropdown.classList.remove('open');
         const href = item.getAttribute('href');
         if (href && href !== '#') {
