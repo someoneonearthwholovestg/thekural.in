@@ -181,15 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.childNodes[0].textContent = savedLabel + ' ';
     }
 
-    // Also check current page URL and highlight matching child
-    menu.querySelectorAll('.dropdown-item').forEach(item => {
-      const href = item.getAttribute('href');
-      if (href && window.location.pathname.includes(href.replace(/^\//, ''))) {
-        toggle.childNodes[0].textContent = item.textContent.trim() + ' ';
-        sessionStorage.setItem('tk-nav-' + origLabel, item.textContent.trim());
-      }
-    });
-
     toggle.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
