@@ -185,20 +185,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    toggle.addEventListener('click', e => {
+      toggle.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
 
       const isOpen = dropdown.classList.contains('open');
 
-      // Close all dropdowns first
       document.querySelectorAll('.nav-dropdown').forEach(d => {
         d.classList.remove('open');
       });
 
-      // If it was closed, open it now
       if (!isOpen) {
-        dropdown.classList.add('open');
+        // Small delay so the close-all above settles first
+        requestAnimationFrame(() => {
+          dropdown.classList.add('open');
+        });
       }
     });
 
@@ -215,14 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Close dropdowns when clicking anywhere else or on a child item
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.dropdown-toggle')) {
+    document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown')) {
       document.querySelectorAll('.nav-dropdown.open').forEach(d => {
         d.classList.remove('open');
       });
     }
   });
+
 
   // ── 5. MOBILE MENU ───────────────────────────────────────
   const mobileToggle  = document.getElementById('mobile-menu-toggle');
