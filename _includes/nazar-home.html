@@ -26,9 +26,13 @@
 </section>
 
 <style>
+  .nazar-home-wrap {
+    width: 100%;
+  }
   .nazar-home-grid {
     columns: 3;
     column-gap: 10px;
+    width: 100%;
   }
   @media (max-width: 768px) { .nazar-home-grid { columns: 2; } }
   @media (max-width: 480px) { .nazar-home-grid { columns: 2; } }
@@ -47,14 +51,36 @@
     display: block; margin: 0;
     transition: transform .4s ease;
   }
-  .nazar-home-item:hover img { transform: scale(1.04); }
+
+  /* Desktop — show on hover */
   .nazar-home-caption {
     position: absolute; bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+    background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
     color: #fff; font-family: var(--font-ui); font-size: .72rem;
-    padding: 1rem .7rem .5rem; opacity: 0;
-    transition: opacity .3s;
+    padding: 1.2rem .75rem .5rem;
+    opacity: 0;
+    transition: opacity .3s, transform .3s;
+    transform: translateY(4px);
+    line-height: 1.4;
   }
-  .nazar-home-item:hover .nazar-home-caption { opacity: 1; }
+  .nazar-home-item:hover img { transform: scale(1.04); }
+  .nazar-home-item:hover .nazar-home-caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Mobile — always show caption */
+  @media (hover: none) {
+    .nazar-home-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .nazar-home-item img { transform: none !important; }
+  }
+
+  .nazar-home-more {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
 </style>
 {% endif %}
