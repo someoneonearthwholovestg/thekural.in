@@ -23,40 +23,27 @@ permalink: /404.html
     <a href="{{ '/' | relative_url }}" class="btn btn-primary">
       <i data-lucide="home" style="width:15px;height:15px;"></i> Back to Home
     </a>
-    <a href="{{ '/explore' | relative_url }}" class="btn">
-      <i data-lucide="compass" style="width:15px;height:15px;"></i> Explore All
+    <a href="{{ '/book-reviews' | relative_url }}" class="btn">
+      <i data-lucide="book-open" style="width:15px;height:15px;"></i> Book Reviews
     </a>
   </div>
 
   <div class="divider" style="margin:4rem auto;max-width:300px;"></div>
 
-  {% assign all_posts = site.collections["1-nazar"].docs | concat: site.collections["2-book-reviews"].docs | concat: site.collections["3-keywords"].docs | concat: site.collections["4-criticulture"].docs | sort: "date" | reverse %}
-
-  {% if all_posts.size > 0 %}
+  {% if site.posts.size > 0 %}
   <p style="font-family:var(--font-ui);font-size:.75rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--c-text-muted);margin-bottom:1.5rem;">Maybe you were looking for</p>
   <div style="display:flex;flex-direction:column;gap:.75rem;max-width:480px;margin:0 auto;text-align:left;">
-    {% for post in all_posts limit: 3 %}
-    {% assign section_label = "" %}
-    {% if post.collection == "1-nazar" %}{% assign section_label = "Nazar" %}{% endif %}
-    {% if post.collection == "2-book-reviews" %}{% assign section_label = "Book Review" %}{% endif %}
-    {% if post.collection == "3-keywords" %}{% assign section_label = "Keyword" %}{% endif %}
-    {% if post.collection == "4-criticulture" %}{% assign section_label = "Criticulture" %}{% endif %}
+    {% for post in site.posts limit: 3 %}
     <a href="{{ post.url | relative_url }}"
        style="display:flex;align-items:center;gap:1rem;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:.9rem 1.1rem;transition:all var(--transition);text-decoration:none;"
        onmouseover="this.style.borderColor='var(--c-primary)'"
        onmouseout="this.style.borderColor='var(--c-border)'">
       <i data-lucide="file-text" style="width:16px;height:16px;color:var(--c-primary);flex-shrink:0;"></i>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:600;color:var(--c-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ post.title }}</div>
-        <div style="font-family:var(--font-ui);font-size:.78rem;color:var(--c-text-muted);margin-top:.15rem;">
-          {{ post.date | date: "%b %d, %Y" }}
-          {% if section_label != "" %}
-            <span style="margin:0 .4rem;opacity:.4;">·</span>
-            <span style="color:var(--c-primary);">{{ section_label }}</span>
-          {% endif %}
-        </div>
+      <div>
+        <div style="font-family:var(--font-heading);font-size:1rem;font-weight:600;color:var(--c-text);">{{ post.title }}</div>
+        <div style="font-family:var(--font-ui);font-size:.78rem;color:var(--c-text-muted);margin-top:.15rem;">{{ post.date | date: "%b %d, %Y" }}</div>
       </div>
-      <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--c-text-muted);flex-shrink:0;"></i>
+      <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--c-text-muted);margin-left:auto;flex-shrink:0;"></i>
     </a>
     {% endfor %}
   </div>
