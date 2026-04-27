@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Explore
-description: Browse all articles
+description: Browse all articles by section
 permalink: /explore
 ---
 
@@ -10,56 +10,97 @@ permalink: /explore
   <div style="margin-bottom:2.5rem;">
     <p class="hero-eyebrow">Archive</p>
     <h1 style="font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.6rem;">All Articles</h1>
-    <p style="color:var(--c-text-muted);font-size:1rem;">{{ site.posts.size }} articles and counting.</p>
   </div>
 
-  <!-- Tag filter -->
-  {% assign all_tags = site.posts | map: "tags" | join: "," | split: "," | uniq | sort %}
-  {% if all_tags.size > 0 %}
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;" id="tag-filters">
-    <button class="tag tag-filter active" data-tag="all" style="cursor:pointer;padding:.35rem .9rem;font-size:.8rem;">All</button>
-    {% for tag in all_tags %}
-      {% unless tag == "" %}
-      <button class="tag tag-filter" data-tag="{{ tag }}" style="cursor:pointer;padding:.35rem .9rem;font-size:.8rem;">{{ tag }}</button>
-      {% endunless %}
-    {% endfor %}
+  <!-- Section filter tabs -->
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;" id="section-filters">
+    <button class="tag tag-filter active" data-section="all" style="cursor:pointer;padding:.4rem 1rem;font-size:.85rem;">All</button>
+    <button class="tag tag-filter" data-section="nazar" style="cursor:pointer;padding:.4rem 1rem;font-size:.85rem;">📷 Nazar</button>
+    <button class="tag tag-filter" data-section="book-reviews" style="cursor:pointer;padding:.4rem 1rem;font-size:.85rem;">📚 Book Reviews</button>
+    <button class="tag tag-filter" data-section="keywords" style="cursor:pointer;padding:.4rem 1rem;font-size:.85rem;">🔑 Keywords</button>
+    <button class="tag tag-filter" data-section="criticulture" style="cursor:pointer;padding:.4rem 1rem;font-size:.85rem;">🎭 Criticulture</button>
   </div>
-  {% endif %}
 
-  <!-- Posts grid -->
+  <!-- All posts grid -->
   <div class="explore-grid" id="explore-grid">
-    {% for post in site.posts %}
-    <a href="{{ post.url | relative_url }}"
-       class="post-card fade-in"
-       style="text-decoration:none;"
-       data-tags="{{ post.tags | join: ',' }}">
-
+    {% for post in site.collections["1-nazar"] %}
+    <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;" data-section="nazar" data-tags="{{ post.tags | join: ',' }}">
       {% if post.image %}
-      <div class="post-card-img">
-        <img src="{{ post.image }}" alt="{{ post.image_alt | default: post.title }}" loading="lazy" />
-      </div>
+      <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
       {% else %}
       <div class="post-card-img" style="background:linear-gradient(145deg,color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)),color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
-        <i data-lucide="file-text" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
+        <i data-lucide="camera" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
       </div>
       {% endif %}
-
       <div class="post-card-body">
-        <div class="post-card-meta">
-          <span>{{ post.date | date: "%b %d, %Y" }}</span>
-          {% if post.tags.size > 0 %}
-            <span class="dot"></span>
-            <span>{{ post.tags | first }}</span>
-          {% endif %}
-        </div>
+        <div class="post-card-meta"><span>{{ post.date | date: "%b %d, %Y" }}</span><span class="dot"></span><span style="color:var(--c-primary);">Nazar</span></div>
         <h2 class="post-card-title">{{ post.title }}</h2>
         <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 18 }}</p>
         <div class="post-card-footer">
-          <div class="tag-list">
-            {% for tag in post.tags limit: 2 %}
-              <span class="tag">{{ tag }}</span>
-            {% endfor %}
-          </div>
+          <div class="tag-list">{% for tag in post.tags limit:2 %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+          <span class="read-more-arrow">Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+
+    {% for post in site.collections["2-book-reviews"] %}
+    <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;" data-section="book-reviews" data-tags="{{ post.tags | join: ',' }}">
+      {% if post.image %}
+      <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
+      {% else %}
+      <div class="post-card-img" style="background:linear-gradient(145deg,color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)),color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="book-open" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
+      </div>
+      {% endif %}
+      <div class="post-card-body">
+        <div class="post-card-meta"><span>{{ post.date | date: "%b %d, %Y" }}</span><span class="dot"></span><span style="color:var(--c-primary);">Book Review</span></div>
+        <h2 class="post-card-title">{{ post.title }}</h2>
+        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 18 }}</p>
+        <div class="post-card-footer">
+          <div class="tag-list">{% for tag in post.tags limit:2 %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+          <span class="read-more-arrow">Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+
+    {% for post in site.collections["3-keywords"] %}
+    <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;" data-section="keywords" data-tags="{{ post.tags | join: ',' }}">
+      {% if post.image %}
+      <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
+      {% else %}
+      <div class="post-card-img" style="background:linear-gradient(145deg,color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)),color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="key" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
+      </div>
+      {% endif %}
+      <div class="post-card-body">
+        <div class="post-card-meta"><span>{{ post.date | date: "%b %d, %Y" }}</span><span class="dot"></span><span style="color:var(--c-primary);">Keyword</span></div>
+        <h2 class="post-card-title">{{ post.title }}</h2>
+        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 18 }}</p>
+        <div class="post-card-footer">
+          <div class="tag-list">{% for tag in post.tags limit:2 %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+          <span class="read-more-arrow">Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+
+    {% for post in site.collections["4-criticulture"] %}
+    <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;" data-section="criticulture" data-tags="{{ post.tags | join: ',' }}">
+      {% if post.image %}
+      <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
+      {% else %}
+      <div class="post-card-img" style="background:linear-gradient(145deg,color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)),color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="film" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
+      </div>
+      {% endif %}
+      <div class="post-card-body">
+        <div class="post-card-meta"><span>{{ post.date | date: "%b %d, %Y" }}</span><span class="dot"></span><span style="color:var(--c-primary);">Criticulture</span></div>
+        <h2 class="post-card-title">{{ post.title }}</h2>
+        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 18 }}</p>
+        <div class="post-card-footer">
+          <div class="tag-list">{% for tag in post.tags limit:2 %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
           <span class="read-more-arrow">Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
         </div>
       </div>
@@ -67,10 +108,11 @@ permalink: /explore
     {% endfor %}
   </div>
 
-  {% if site.posts.size == 0 %}
+  {% assign total = site.collections["1-nazar"].size | plus: site.collections["2-book-reviews"].size | plus: site.collections["3-keywords"].size | plus: site.collections["4-criticulture"].size %}
+  {% if total == 0 %}
   <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
     <i data-lucide="inbox" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
-    <p style="font-family:var(--font-ui);">No articles yet. Add posts to <code>_posts/</code> to begin.</p>
+    <p style="font-family:var(--font-ui);">No articles yet.</p>
   </div>
   {% endif %}
 
@@ -87,13 +129,12 @@ permalink: /explore
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tag-filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const selected = btn.dataset.tag;
+      const selected = btn.dataset.section;
       document.querySelectorAll('#explore-grid .post-card').forEach(card => {
         if (selected === 'all') {
           card.classList.remove('explore-hide');
         } else {
-          const tags = (card.dataset.tags || '').split(',').map(t => t.trim());
-          card.classList.toggle('explore-hide', !tags.includes(selected));
+          card.classList.toggle('explore-hide', card.dataset.section !== selected);
         }
       });
     });

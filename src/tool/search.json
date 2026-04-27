@@ -3,14 +3,48 @@ layout: none
 permalink: /search.json
 ---
 [
-  {% for post in site.posts %}
+  {% for post in site.collections["1-nazar"] %}
   {
-    "title":   {{ post.title   | jsonify }},
-    "url":     {{ post.url     | relative_url | jsonify }},
-    "date":    "{{ post.date   | date: '%b %d, %Y' }}",
+    "title": {{ post.title | jsonify }},
+    "url": {{ post.url | relative_url | jsonify }},
+    "date": "{{ post.date | date: '%b %d, %Y' }}",
     "excerpt": {{ post.excerpt | strip_html | strip_newlines | jsonify }},
     "content": {{ post.content | strip_html | strip_newlines | truncatewords: 300 | jsonify }},
-    "tags":    {{ post.tags    | jsonify }}
+    "tags": {{ post.tags | jsonify }},
+    "section": "nazar"
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+  {% for post in site.collections["2-book-reviews"] %}
+  ,{
+    "title": {{ post.title | jsonify }},
+    "url": {{ post.url | relative_url | jsonify }},
+    "date": "{{ post.date | date: '%b %d, %Y' }}",
+    "excerpt": {{ post.excerpt | strip_html | strip_newlines | jsonify }},
+    "content": {{ post.content | strip_html | strip_newlines | truncatewords: 300 | jsonify }},
+    "tags": {{ post.tags | jsonify }},
+    "section": "book-reviews"
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+  {% for post in site.collections["3-keywords"] %}
+  ,{
+    "title": {{ post.title | jsonify }},
+    "url": {{ post.url | relative_url | jsonify }},
+    "date": "{{ post.date | date: '%b %d, %Y' }}",
+    "excerpt": {{ post.excerpt | strip_html | strip_newlines | jsonify }},
+    "content": {{ post.content | strip_html | strip_newlines | truncatewords: 300 | jsonify }},
+    "tags": {{ post.tags | jsonify }},
+    "section": "keywords"
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+  {% for post in site.collections["4-criticulture"] %}
+  ,{
+    "title": {{ post.title | jsonify }},
+    "url": {{ post.url | relative_url | jsonify }},
+    "date": "{{ post.date | date: '%b %d, %Y' }}",
+    "excerpt": {{ post.excerpt | strip_html | strip_newlines | jsonify }},
+    "content": {{ post.content | strip_html | strip_newlines | truncatewords: 300 | jsonify }},
+    "tags": {{ post.tags | jsonify }},
+    "section": "criticulture"
   }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 ]
