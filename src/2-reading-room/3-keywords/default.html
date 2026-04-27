@@ -12,10 +12,9 @@ permalink: /keywords
     <p style="color:var(--c-text-muted);font-size:1rem;">Ideas and concepts unpacked — one word at a time.</p>
   </div>
 
-  {% assign kw_posts = site.posts | where_exp: "p","p.tags contains 'keywords'" %}
-  {% if kw_posts.size > 0 %}
+  {% if site.collections["3-keywords"].size > 0 %}
     <div class="explore-grid">
-      {% for post in kw_posts %}
+      {% for post in site.collections["3-keywords"] %}
       <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;">
         {% if post.image %}
         <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
@@ -39,7 +38,7 @@ permalink: /keywords
   {% else %}
     <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
       <i data-lucide="key" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
-      <p style="font-family:var(--font-ui);">No keyword posts yet. Tag a post with <code>keywords</code> to have it appear here.</p>
+      <p style="font-family:var(--font-ui);">No keyword posts yet. Add posts to the <code>3-keywords/_posts/</code> folder.</p>
     </div>
   {% endif %}
 </div>

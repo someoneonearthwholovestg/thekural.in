@@ -12,10 +12,9 @@ permalink: /criticulture
     <p style="color:var(--c-text-muted);font-size:1rem;">Cultural criticism and commentary on the world around us.</p>
   </div>
 
-  {% assign crit_posts = site.posts | where_exp: "p","p.tags contains 'criticulture'" %}
-  {% if crit_posts.size > 0 %}
+  {% if site.collections["4-criticulture"].size > 0 %}
     <div class="explore-grid">
-      {% for post in crit_posts %}
+      {% for post in site.collections["4-criticulture"] %}
       <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;">
         {% if post.image %}
         <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
@@ -39,7 +38,7 @@ permalink: /criticulture
   {% else %}
     <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
       <i data-lucide="film" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
-      <p style="font-family:var(--font-ui);">No criticulture posts yet. Tag a post with <code>criticulture</code> to have it appear here.</p>
+      <p style="font-family:var(--font-ui);">No criticulture posts yet. Add posts to the <code>4-criticulture/_posts/</code> folder.</p>
     </div>
   {% endif %}
 </div>

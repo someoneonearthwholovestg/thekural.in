@@ -9,13 +9,12 @@ permalink: /book-reviews
   <div style="margin-bottom:2.5rem;">
     <p class="hero-eyebrow">Reading Room</p>
     <h1 style="font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.6rem;">Book Reviews</h1>
-    <p style="color:var(--c-text-muted);font-size:1rem;">{{ site.posts | where_exp: "p","p.tags contains 'book-review'" | size }} reviews published.</p>
+    <p style="color:var(--c-text-muted);font-size:1rem;">{{ site.collections["2-book-reviews"].size }} reviews published.</p>
   </div>
 
-  {% assign book_posts = site.posts | where_exp: "p","p.tags contains 'book-review'" %}
-  {% if book_posts.size > 0 %}
+  {% if site.collections["2-book-reviews"].size > 0 %}
     <div class="explore-grid">
-      {% for post in book_posts %}
+      {% for post in site.collections["2-book-reviews"] %}
       <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;" data-tags="{{ post.tags | join: ',' }}">
         {% if post.image %}
         <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
@@ -41,7 +40,7 @@ permalink: /book-reviews
   {% else %}
     <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
       <i data-lucide="book" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
-      <p style="font-family:var(--font-ui);">No book reviews yet. Tag a post with <code>book-review</code> to have it appear here.</p>
+      <p style="font-family:var(--font-ui);">No book reviews yet. Add posts to the <code>2-book-reviews/_posts/</code> folder.</p>
     </div>
   {% endif %}
 </div>
