@@ -1,0 +1,45 @@
+---
+layout: default
+title: Criticulture
+description: Cultural criticism and commentary on the world around us.
+permalink: /criticulture
+---
+
+<div class="container" style="padding-top:3.5rem;padding-bottom:5rem;">
+  <div style="margin-bottom:2.5rem;">
+    <p class="hero-eyebrow">Reading Room</p>
+    <h1 style="font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.6rem;">Criticulture</h1>
+    <p style="color:var(--c-text-muted);font-size:1rem;">Cultural criticism and commentary on the world around us.</p>
+  </div>
+
+  {% assign crit_posts = site.posts | where_exp: "p","p.tags contains 'criticulture'" %}
+  {% if crit_posts.size > 0 %}
+    <div class="explore-grid">
+      {% for post in crit_posts %}
+      <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;">
+        {% if post.image %}
+        <div class="post-card-img"><img src="{{ post.image }}" alt="{{ post.title }}" loading="lazy" /></div>
+        {% else %}
+        <div class="post-card-img" style="background:linear-gradient(145deg,color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)),color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
+          <i data-lucide="film" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
+        </div>
+        {% endif %}
+        <div class="post-card-body">
+          <div class="post-card-meta"><span>{{ post.date | date: "%b %d, %Y" }}</span></div>
+          <h2 class="post-card-title">{{ post.title }}</h2>
+          <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncatewords: 18 }}</p>
+          <div class="post-card-footer">
+            <div class="tag-list">{% for tag in post.tags limit:2 %}<span class="tag">{{ tag }}</span>{% endfor %}</div>
+            <span class="read-more-arrow">Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
+      <i data-lucide="film" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
+      <p style="font-family:var(--font-ui);">No criticulture posts yet. Tag a post with <code>criticulture</code> to have it appear here.</p>
+    </div>
+  {% endif %}
+</div>

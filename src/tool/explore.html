@@ -2,11 +2,11 @@
 layout: default
 title: Explore
 description: Browse all articles
+permalink: /explore
 ---
 
 <div class="container" style="padding-top:3.5rem;padding-bottom:5rem;">
 
-  <!-- Header -->
   <div style="margin-bottom:2.5rem;">
     <p class="hero-eyebrow">Archive</p>
     <h1 style="font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.6rem;">All Articles</h1>
@@ -39,7 +39,7 @@ description: Browse all articles
         <img src="{{ post.image }}" alt="{{ post.image_alt | default: post.title }}" loading="lazy" />
       </div>
       {% else %}
-      <div class="post-card-img" style="background: linear-gradient(145deg, color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)), color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
+      <div class="post-card-img" style="background:linear-gradient(145deg,color-mix(in srgb,var(--c-primary) 14%,var(--c-surface)),color-mix(in srgb,var(--c-accent) 10%,var(--c-surface)));display:flex;align-items:center;justify-content:center;">
         <i data-lucide="file-text" style="width:32px;height:32px;color:var(--c-primary);opacity:.4;"></i>
       </div>
       {% endif %}
@@ -48,8 +48,8 @@ description: Browse all articles
         <div class="post-card-meta">
           <span>{{ post.date | date: "%b %d, %Y" }}</span>
           {% if post.tags.size > 0 %}
-          <span class="dot"></span>
-          <span>{{ post.tags | first }}</span>
+            <span class="dot"></span>
+            <span>{{ post.tags | first }}</span>
           {% endif %}
         </div>
         <h2 class="post-card-title">{{ post.title }}</h2>
@@ -78,10 +78,7 @@ description: Browse all articles
 
 <style>
   .tag-filter { transition: all .2s; }
-  .tag-filter.active {
-    background: var(--c-primary);
-    color: white;
-  }
+  .tag-filter.active { background: var(--c-primary); color: #fff !important; }
   .explore-hide { display: none !important; }
 </style>
 

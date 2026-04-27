@@ -25,3 +25,9 @@
 
 - label: About
   url: /about
+
+# ─────────────────────────────────────────────────────────────
+# NOTE: Jekyll reads from /_data/nav.yml (at the project root).
+# This file at src/config/nav.yml is the human-readable source.
+# After editing here, copy to /_data/nav.yml and commit both.
+# ─────────────────────────────────────────────────────────────

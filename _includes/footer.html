@@ -1,18 +1,19 @@
+<!-- _includes/footer.html -->
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
 
-      <!-- LEFT — Brand -->
+      <!-- Brand -->
       <div class="footer-brand">
         <div class="footer-logo">The<span>Kural</span></div>
         <p class="footer-tagline">Voice &amp; Perception</p>
         <p class="footer-desc">A thoughtful space for ideas, stories, and perspectives worth sharing. We write slowly, think deeply, and speak honestly.</p>
       </div>
 
-      <!-- RIGHT — Nav -->
+      <!-- Nav -->
       <nav class="footer-nav">
         {% for item in site.data.nav %}
-                  {% if item.children %}
+          {% if item.children %}
             <div class="footer-nav-group">
               <span class="footer-nav-label">{{ item.label }}</span>
               {% for child in item.children %}
@@ -29,10 +30,8 @@
 
     </div>
 
-    <!-- BOTTOM BAR -->
+    <!-- Bottom bar -->
     <div class="footer-bottom">
-
-      <!-- Social icons -->
       <div class="footer-socials">
         <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="footer-social-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -47,12 +46,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </a>
       </div>
-
-      <!-- Copyright -->
-      <p class="footer-copy">
-        &copy; {{ "now" | date: "%Y" }} {{ site.title }}. All rights reserved.
-      </p>
-
+      <p class="footer-copy">&copy; {{ "now" | date: "%Y" }} {{ site.title }}. All rights reserved.</p>
     </div>
   </div>
 </footer>

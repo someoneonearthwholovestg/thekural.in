@@ -1,7 +1,6 @@
-# ═══════════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
 #  THEKURAL — SITE CONFIGURATION
-#  Edit the sections below to fully customise your blog.
-# ═══════════════════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
 
 title:        "TheKural"
 tagline:      "Stories worth telling"
@@ -9,62 +8,67 @@ description:  "A thoughtful space for ideas, stories, and perspectives."
 url:          "https://someoneonearthwholovestg.github.io"
 baseurl:      "/thekural.in"
 lang:         "en"
-twitter:
-  username:   "yourtwitterhandle"
 logo:         "/assets/images/logo.png"
 
-# ─── AUTHOR ────────────────────────────────────────────────────────
+# ─── AUTHOR ────────────────────────────────────────────────────
 author:
   name:   "The Kural"
   bio:    "Voices & Perceptions"
-  avatar: "/assets/images/about.png"   # Put your photo in assets/images/
+  avatar: "/assets/images/about.png"
 
-# ─── JEKYLL CORE ───────────────────────────────────────────────────
-markdown:   kramdown
+# ─── JEKYLL CORE ───────────────────────────────────────────────
+markdown:    kramdown
 highlighter: rouge
-permalink:  /:categories/:title/
+permalink:   /:categories/:title/
 
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
-  
-# ─── TYPOGRAPHY ────────────────────────────────────────────────────
-# Change to any Google Fonts name. The layout auto-imports them.
-# fonts:
-#   post_heading:    "Cormorant Garamond"   # Big article titles
-#   post_subheading: "Spectral"             # Sub-headings inside posts (h2, h3)
-#   body:            "Spectral"             # All paragraph / body text
-#   ui:              "DM Sans"              # Nav, buttons, tags, meta
-#   mono:            "JetBrains Mono"       # Code blocks
+
+# ─── DATA FILES ───────────────────────────────────────────────
+# Jekyll reads from _data/ by default (GitHub Pages compatible).
+# Edit _data/nav.yml, _data/authors.yml, _data/nazar.yml.
+# The same files are mirrored at src/config/ for clarity —
+# but _data/ is what Jekyll actually uses.
+
+# ─── TYPOGRAPHY ────────────────────────────────────────────────
 fonts:
   post_heading:    "Caveat"
   post_subheading: "Kalam"
   body:            "Patrick Hand"
   ui:              "Architects Daughter"
   mono:            "JetBrains Mono"
-  
+
 font_sizes:
-  post_heading:    "3.4rem"    # Hero title on post page
-  card_heading:    "1.45rem"   # Title on cards in index / explore
-  subheading:      "1.3rem"    # h2 inside posts
-  body:            "1.1rem"    # Body paragraphs
-  ui:              "0.88rem"   # Nav, tags, meta
+  post_heading: "3.4rem"
+  card_heading: "1.45rem"
+  subheading:   "1.3rem"
+  body:         "1.1rem"
+  ui:           "0.88rem"
 
-# ─── COLORS (LIGHT MODE) ───────────────────────────────────────────
+# ─── COLORS (LIGHT MODE) ───────────────────────────────────────
 colors:
-  primary:       "#4A4A4A"   # medium graphite — main actions
-  primary_dark:  "#2E2E2E"   # deep pencil pressure (hover)
-  bg:            "#FFFFFF"   # paper white background
-  surface:       "#F5F5F5"   # light sketch shading (cards)
-  text:          "#1A1A1A"   # near-black pencil outline
-  text_muted:    "#8A8A8A"   # faded pencil strokes
-  border:        "#E0E0E0"   # soft sketch boundary
-  accent:        "#BDBDBD"   # highlight grey (like smudge/light shade)
-  footer:        "#000000"   # strong charcoal finish
+  primary:      "#4A4A4A"
+  primary_dark: "#2E2E2E"
+  bg:           "#FFFFFF"
+  surface:      "#F5F5F5"
+  text:         "#1A1A1A"
+  text_muted:   "#8A8A8A"
+  border:       "#E0E0E0"
+  accent:       "#BDBDBD"
+  footer:       "#000000"
 
-# ─── FEATURES ──────────────────────────────────────────────────────
-show_reading_time: true    # Show "5 min read" on posts
-show_tags:         true    # Show tags on cards
-posts_per_page:    9       # Posts shown on homepage
+# ─── FEATURES ──────────────────────────────────────────────────
+show_reading_time: true
+show_tags:         true
+posts_per_page:    9
 default_image:     "/assets/images/default-cover.png"
+
+# ─── COLLECTIONS ───────────────────────────────────────────────
+# Posts live in _posts/ as usual.
+# Section-specific editors and pages live in src/
+collections_dir: .
+
+# ─── NAVIGATION (auto-built from folder names) ─────────────────
+# Edit src/config/nav.yml to control the nav bar.

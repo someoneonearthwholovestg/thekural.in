@@ -5,17 +5,19 @@ layout: default
 <div class="container-narrow">
   <article>
 
-    <div class="post-hero">
+    <div class="post-hero" style="padding:3.5rem 0 2.5rem;">
+
       <!-- Back link -->
       <a href="{{ '/' | relative_url }}" style="display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-ui);font-size:.82rem;color:var(--c-text-muted);margin-bottom:1.5rem;">
         <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to articles
       </a>
 
-      <!-- Category / tags -->
+      <!-- Tags (as category line) -->
       {% if page.tags.size > 0 %}
       <div class="post-hero-meta">
         {% for tag in page.tags limit:2 %}
-          <span>{{ tag }}</span>{% unless forloop.last %}<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--c-border);display:inline-block;"></span>{% endunless %}
+          <span>{{ tag }}</span>
+          {% unless forloop.last %}<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--c-border);display:inline-block;"></span>{% endunless %}
         {% endfor %}
       </div>
       {% endif %}
@@ -23,28 +25,35 @@ layout: default
       <!-- Title -->
       <h1 class="post-hero-title">{{ page.title }}</h1>
 
-      <!-- Meta row -->
+      <!-- Author + date row -->
       {% assign author = site.data.authors[page.author] | default: site.data.authors.rithu %}
       <div style="display:flex;align-items:center;gap:1rem;font-family:var(--font-ui);font-size:.82rem;color:var(--c-text-muted);flex-wrap:wrap;margin-bottom:2rem;">
         {% if author.avatar %}
-        <img src="{{ author.avatar }}" alt="{{ author.name }}"
-          style="width:clamp(24px,4vw,36px);height:clamp(24px,4vw,36px);border-radius:50%;object-fit:cover;border:2px solid var(--c-primary);"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-        <div style="width:clamp(24px,4vw,36px);height:clamp(24px,4vw,36px);border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:none;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:clamp(.7rem,2vw,1rem);font-weight:700;color:var(--c-primary);">{{ author.name | slice: 0 }}</div>
+          <img src="{{ author.avatar }}" alt="{{ author.name }}"
+            style="width:clamp(24px,4vw,36px);height:clamp(24px,4vw,36px);border-radius:50%;object-fit:cover;border:2px solid var(--c-primary);"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div style="width:clamp(24px,4vw,36px);height:clamp(24px,4vw,36px);border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:none;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:clamp(.7rem,2vw,1rem);font-weight:700;color:var(--c-primary);">{{ author.name | slice: 0 }}</div>
         {% else %}
-        <div style="width:clamp(24px,4vw,36px);height:clamp(24px,4vw,36px);border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:clamp(.7rem,2vw,1rem);font-weight:700;color:var(--c-primary);">{{ author.name | slice: 0 }}</div>
+          <div style="width:clamp(24px,4vw,36px);height:clamp(24px,4vw,36px);border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:clamp(.7rem,2vw,1rem);font-weight:700;color:var(--c-primary);">{{ author.name | slice: 0 }}</div>
         {% endif %}
         <span>{{ author.name }}</span>
         <span>·</span>
         <span>{{ page.date | date: "%B %d, %Y" }}</span>
         {% if site.show_reading_time %}
-        <span>·</span>
-        <span id="reading-time">— min read</span>
+          <span>·</span>
+          <span id="reading-time">— min read</span>
         {% endif %}
       </div>
     </div>
 
-    <!-- Post body -->
+    <!-- Cover image -->
+    {% if page.image %}
+    <div class="post-cover">
+      <img src="{{ page.image }}" alt="{{ page.image_alt | default: page.title }}" />
+    </div>
+    {% endif %}
+
+    <!-- Body -->
     <div class="post-body">
       {{ content }}
     </div>
@@ -61,34 +70,33 @@ layout: default
     <div class="divider"></div>
 
     <!-- Author card -->
-    {% assign author = site.data.authors[page.author] | default: site.data.authors.rithu %}
-      {% if author %}
-      <div class="post-author">
-        {% if author.avatar %}
+    {% if author %}
+    <div class="post-author">
+      {% if author.avatar %}
         <img src="{{ author.avatar }}" alt="{{ author.name }}"
           style="width:clamp(44px,8vw,64px);height:clamp(44px,8vw,64px);border-radius:50%;object-fit:cover;border:2px solid var(--c-primary);flex-shrink:0;"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
         <div style="width:clamp(44px,8vw,64px);height:clamp(44px,8vw,64px);border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:none;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:clamp(1rem,3vw,1.6rem);font-weight:700;color:var(--c-primary);flex-shrink:0;">{{ author.name | slice: 0 }}</div>
-        {% else %}
+      {% else %}
         <div style="width:clamp(44px,8vw,64px);height:clamp(44px,8vw,64px);border-radius:50%;background:color-mix(in srgb,var(--c-primary) 20%,var(--c-surface));display:flex;align-items:center;justify-content:center;border:2px solid var(--c-primary);font-family:var(--font-heading);font-size:clamp(1rem,3vw,1.6rem);font-weight:700;color:var(--c-primary);flex-shrink:0;">{{ author.name | slice: 0 }}</div>
-        {% endif %}
-        <div>
-          <div class="author-name">{{ author.name }}</div>
-          <div class="author-bio">{{ author.bio }}</div>
-        </div>
-      </div>
       {% endif %}
+      <div>
+        <div class="author-name">{{ author.name }}</div>
+        <div class="author-bio">{{ author.bio }}</div>
+      </div>
+    </div>
+    {% endif %}
 
   </article>
 </div>
 
 <script>
-  // Calculate reading time
+  // Reading time
   const body = document.querySelector('.post-body');
   if (body) {
     const words = body.innerText.split(/\s+/).length;
-    const mins = Math.max(1, Math.round(words / 220));
-    const el = document.getElementById('reading-time');
+    const mins  = Math.max(1, Math.round(words / 220));
+    const el    = document.getElementById('reading-time');
     if (el) el.textContent = mins + ' min read';
   }
 </script>

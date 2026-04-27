@@ -1,0 +1,122 @@
+<!-- _includes/head-vars.html
+     Shared <head> content: meta tags, fonts, CSS custom properties.
+     Included by both default.html and editor.html layouts. -->
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ page.description | default: site.description }}" />
+<meta name="keywords"    content="{{ page.tags | join: ', ' | default: 'stories, ideas, perspectives, writing, blog' }}" />
+<meta name="author"      content="{{ page.author | default: site.author.name }}" />
+<meta name="robots"      content="index, follow" />
+<link rel="canonical"    href="{{ page.url | absolute_url }}" />
+<link rel="icon" type="image/png" href="https://i.ibb.co/xK8XVXTn/logoo.png" />
+
+<!-- Open Graph -->
+<meta property="og:type"        content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
+<meta property="og:title"       content="{% if page.title %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
+<meta property="og:description" content="{{ page.description | default: page.excerpt | default: site.description }}" />
+<meta property="og:url"         content="{{ page.url | absolute_url }}" />
+<meta property="og:site_name"   content="{{ site.title }}" />
+<meta property="og:image"       content="{% if page.image %}{{ page.image | absolute_url }}{% else %}{{ site.default_image | absolute_url }}{% endif %}" />
+{% if page.layout == 'post' %}
+<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}" />
+<meta property="article:author"         content="{{ page.author | default: site.author.name }}" />
+{% for tag in page.tags %}
+<meta property="article:tag" content="{{ tag }}" />
+{% endfor %}
+{% endif %}
+
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image" />
+<meta name="twitter:title"       content="{% if page.title %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
+<meta name="twitter:description" content="{{ page.description | default: page.excerpt | default: site.description }}" />
+<meta name="twitter:image"       content="{% if page.image %}{{ page.image | absolute_url }}{% else %}{{ site.default_image | absolute_url }}{% endif %}" />
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  {% if page.layout == 'post' %}
+  "@type": "BlogPosting",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page.description | default: page.excerpt | default: site.description | jsonify }},
+  "image": "{% if page.image %}{{ page.image | absolute_url }}{% else %}{{ site.default_image | absolute_url }}{% endif %}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "author": { "@type": "Person", "name": {{ page.author | default: site.author.name | jsonify }} },
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ site.title | jsonify }},
+    "logo": { "@type": "ImageObject", "url": "{{ site.url }}/assets/images/logo.png" }
+  },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ page.url | absolute_url }}" }
+  {% else %}
+  "@type": "WebSite",
+  "name": {{ site.title | jsonify }},
+  "description": {{ site.description | jsonify }},
+  "url": {{ site.url | jsonify }}
+  {% endif %}
+}
+</script>
+
+<!-- Google Fonts -->
+{% assign f = site.fonts %}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family={{ f.post_heading | replace: ' ', '+' }}:ital,wght@0,300;0,400;0,600;0,700;1,400;1,700&family={{ f.body | replace: ' ', '+' }}:ital,wght@0,400;0,600;1,400&family={{ f.ui | replace: ' ', '+' }}:wght@300;400;500;600&family={{ f.mono | replace: ' ', '+' }}:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>if(window.lucide) lucide.createIcons();</script>
+
+<!-- CSS Custom Properties (from _config.yml) -->
+<style>
+  :root {
+    --font-heading:    "{{ site.fonts.post_heading }}", Georgia, serif;
+    --font-subheading: "{{ site.fonts.post_subheading }}", Georgia, serif;
+    --font-body:       "{{ site.fonts.body }}", Georgia, serif;
+    --font-ui:         "{{ site.fonts.ui }}", system-ui, sans-serif;
+    --font-mono:       "{{ site.fonts.mono }}", monospace;
+
+    --fs-post-heading: {{ site.font_sizes.post_heading }};
+    --fs-card-heading: {{ site.font_sizes.card_heading }};
+    --fs-subheading:   {{ site.font_sizes.subheading }};
+    --fs-body:         {{ site.font_sizes.body }};
+    --fs-ui:           {{ site.font_sizes.ui }};
+
+    --c-primary:       {{ site.colors.primary }};
+    --c-primary-dark:  {{ site.colors.primary_dark }};
+    --c-bg:            {{ site.colors.bg }};
+    --c-surface:       {{ site.colors.surface }};
+    --c-text:          {{ site.colors.text }};
+    --c-text-muted:    {{ site.colors.text_muted }};
+    --c-border:        {{ site.colors.border }};
+    --c-accent:        {{ site.colors.accent }};
+    --c-footer:        {{ site.colors.footer }};
+
+    --c-surface-hover: color-mix(in srgb, var(--c-primary) 6%, var(--c-surface));
+    --shadow-sm:  0 1px 3px rgba(44,21,8,.06), 0 1px 2px rgba(44,21,8,.04);
+    --shadow-md:  0 4px 16px rgba(44,21,8,.08), 0 2px 6px rgba(44,21,8,.05);
+    --shadow-lg:  0 12px 40px rgba(44,21,8,.12), 0 4px 12px rgba(44,21,8,.07);
+    --radius:     10px;
+    --radius-lg:  16px;
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Dark mode */
+  [data-theme="dark"] {
+    --c-bg:           #1A1405;
+    --c-surface:      #241B08;
+    --c-text:         #FFF6D6;
+    --c-text-muted:   #C9B458;
+    --c-border:       #4A3A10;
+    --c-primary:      #FFD54F;
+    --c-primary-dark: #FFCA28;
+    --c-accent:       #FFE082;
+    --c-footer:       #000000;
+    --c-surface-hover: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
+    --shadow-sm:  0 1px 3px rgba(0,0,0,.3);
+    --shadow-md:  0 4px 16px rgba(0,0,0,.35);
+    --shadow-lg:  0 12px 40px rgba(0,0,0,.45);
+  }
+</style>
