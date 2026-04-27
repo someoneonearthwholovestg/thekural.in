@@ -68,19 +68,18 @@ default_image:     "/assets/images/default-cover.png"
 # ─── COLLECTIONS ───────────────────────────────────────────────
 # Posts live in _posts/ as usual.
 # Section-specific editors and pages live in src/
-collections_dir: src/2-reading-room
-
+# Collection keys MUST match the folder names exactly (including numbers)
 collections:
-  nazar:
+  "1-nazar":
     output: true
     permalink: /nazar/:title/
-  book_reviews:
+  "2-book-reviews":
     output: true
     permalink: /book-reviews/:title/
-  keywords:
+  "3-keywords":
     output: true
     permalink: /keywords/:title/
-  criticulture:
+  "4-criticulture":
     output: true
     permalink: /criticulture/:title/
 
