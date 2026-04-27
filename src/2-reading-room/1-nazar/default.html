@@ -44,22 +44,25 @@ permalink: /nazar
     </a>
   </div>
 
-  <div class="nazar-gallery">
-    {% if site.data.nazar and site.data.nazar.size > 0 %}
-      {% for item in site.data.nazar %}
-        <div class="nazar-item" onclick="openLightbox({{ forloop.index0 }})">
-          <img src="{{ item.url }}" alt="{{ item.caption | default: 'Nazar' }}" loading="lazy" />
-          {% if item.caption %}
-            <div class="nazar-caption">{{ item.caption }}</div>
-          {% endif %}
-        </div>
-      {% endfor %}
-    {% else %}
-      <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);font-family:var(--font-ui);">
-        <div style="font-size:3rem;opacity:.3;margin-bottom:1rem;">📷</div>
-        <p>No images yet. Add some in <code>src/config/nazar.yml</code></p>
+  <div class="explore-grid">
+  {% for quarter in site.data.nazar_quarters %}
+    {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains quarter.key" %}
+    <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="post-card" style="text-decoration:none;">
+      <div class="post-card-img">
+        <img src="{{ quarter.image }}" alt="{{ quarter.label }}" loading="lazy" />
       </div>
-    {% endif %}
+      <div class="post-card-body">
+        <div class="post-card-meta">
+          <span>{{ q_posts.size }} posts</span>
+        </div>
+        <h2 class="post-card-title">{{ quarter.label }}</h2>
+        <p class="post-card-excerpt">{{ quarter.description }}</p>
+        <div class="post-card-footer">
+          <span class="read-more-arrow">View <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
   </div>
 </div>
 

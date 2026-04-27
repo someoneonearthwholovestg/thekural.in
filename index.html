@@ -28,7 +28,24 @@ permalink: /
       </div>
     {% else %}
 
-      {% include nazar-home.html %}
+      {% assign latest_quarter = site.data.nazar_quarters | first %}
+      {% if latest_quarter %}
+      <section style="margin:3rem 0;">
+        <div class="section-label">Nazar — Visual Journal</div>
+        {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains latest_quarter.key" %}
+        <a href="{{ '/nazar/' | append: latest_quarter.key | relative_url }}" class="post-card" style="text-decoration:none;display:flex;flex-direction:row;max-width:700px;">
+          <div class="post-card-img" style="width:40%;flex-shrink:0;aspect-ratio:auto;">
+            <img src="{{ latest_quarter.image }}" alt="{{ latest_quarter.label }}" />
+          </div>
+          <div class="post-card-body">
+            <div class="post-card-meta"><span>{{ q_posts.size }} stories</span></div>
+            <h2 class="post-card-title">{{ latest_quarter.label }}</h2>
+            <p class="post-card-excerpt">{{ latest_quarter.description }}</p>
+            <span class="read-more-arrow">Explore <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+          </div>
+        </a>
+      </section>
+      {% endif %}
 
       <div class="section-label">Latest articles</div>
 
