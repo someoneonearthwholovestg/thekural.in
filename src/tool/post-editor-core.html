@@ -584,7 +584,14 @@ function edUpdate() {
   document.getElementById('pv-body').innerHTML = content ? parseMarkdown(content) : '<p style="color:var(--c-border);font-style:italic;">Your content will appear here as you type…</p>';
 
   const slug = title.toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
-  const filename = date&&slug ? `${date}-${slug}.md` : '—';
+  const dateObj = new Date(dateStr);
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+  const quarter = Math.ceil(month / 3);
+  const quarterDir = `${year}-Q${quarter}`;
+
+  // This logic should be integrated into your saving/display function
+  const filename = `_posts/${quarterDir}/${dateStr}-${slug}.md`;
   document.getElementById('out-filename').textContent = filename;
 
   if (title&&date) {

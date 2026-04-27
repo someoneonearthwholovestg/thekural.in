@@ -68,7 +68,21 @@ default_image:     "/assets/images/default-cover.png"
 # ─── COLLECTIONS ───────────────────────────────────────────────
 # Posts live in _posts/ as usual.
 # Section-specific editors and pages live in src/
-collections_dir: src/2-reading-room/2-book-reviews
+collections_dir: src/2-reading-room
+
+collections:
+  nazar:
+    output: true
+    permalink: /nazar/:title/
+  book_reviews:
+    output: true
+    permalink: /book-reviews/:title/
+  keywords:
+    output: true
+    permalink: /keywords/:title/
+  criticulture:
+    output: true
+    permalink: /criticulture/:title/
 
 # ─── NAVIGATION (auto-built from folder names) ─────────────────
 # Edit src/config/nav.yml to control the nav bar.
