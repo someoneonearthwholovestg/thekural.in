@@ -7,3 +7,13 @@
   label: "2026 — Q1"
   description: "The year begins. January through March in frames and words."
   image: "https://picsum.photos/300"
+
+- key: "2025-Q4"
+  label: "2025 — Q4"
+  description: "Spring dispatches. Quiet observations from April through June."
+  image: "https://picsum.photos/300"
+
+- key: "2025-Q3"
+  label: "2025 — Q3"
+  description: "The year begins. January through March in frames and words."
+  image: "https://picsum.photos/300"
