@@ -72,7 +72,7 @@ default_image:     "/assets/images/default-cover.png"
 collections:
   "1-nazar":
     output: true
-    permalink: /nazar/:title/
+    permalink: /nazar/post/:title/
   "2-book-reviews":
     output: true
     permalink: /book-reviews/:title/
