@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Book Reviews
+title: Nazar
 description: Honest, thoughtful reviews of books worth your time.
-permalink: /book-reviews
+permalink: /nazar/
 ---
 
 <div class="container" style="padding-top:3.5rem;padding-bottom:5rem;">
@@ -10,14 +10,14 @@ permalink: /book-reviews
     <p class="hero-eyebrow">Reading Room</p>
     <h1
       style="font-family:var(--font-heading);font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;margin-bottom:.6rem;">
-      Book Reviews</h1>
-    <p style="color:var(--c-text-muted);font-size:1rem;">{{ site.collections["2-book-reviews"].size }} reviews
+      Nazar</h1>
+    <p style="color:var(--c-text-muted);font-size:1rem;">{{ site.collections["1-nazar"].size }} reviews
       published.</p>
   </div>
 
-  {% if site.collections["2-book-reviews"].size > 0 %}
+  {% if site.collections["1-nazar"].size > 0 %}
   <div class="explore-grid">
-    {% for post in site.collections["2-book-reviews"] %}
+    {% for post in site.collections["1-nazar"] %}
     <a href="{{ post.url | relative_url }}" class="post-card fade-in" style="text-decoration:none;"
       data-tags="{{ post.tags | join: ',' }}">
       {% if post.image %}
@@ -45,7 +45,7 @@ permalink: /book-reviews
   {% else %}
   <div style="text-align:center;padding:5rem 0;color:var(--c-text-muted);">
     <i data-lucide="book" style="width:48px;height:48px;opacity:.3;margin:0 auto 1rem;display:block;"></i>
-    <p style="font-family:var(--font-ui);">No book reviews yet. Add posts to the <code>2-book-reviews/_posts/</code>
+    <p style="font-family:var(--font-ui);">No book reviews yet. Add posts to the <code>1-nazar/_posts/</code>
       folder.</p>
   </div>
   {% endif %}
