@@ -33,20 +33,164 @@ permalink: /
     <section style="margin:3rem 0;">
       <div class="section-label">Nazar — Visual Journal</div>
       {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains latest_quarter.key" %}
-      <a href="{{ '/nazar/' | append: latest_quarter.key | relative_url }}" class="post-card"
-        style="text-decoration:none;display:flex;flex-direction:row;max-width:700px;margin:0 auto;border-radius:30px 80px 30px 80px;">
-        <div class="post-card-img" style="width:40%;flex-shrink:0;aspect-ratio:auto;">
+      <div class="post-card" onclick="document.getElementById('nazar-quarters-modal').classList.add('open')"
+        style="cursor:pointer;text-decoration:none;display:flex;flex-direction:row;max-width:700px;margin:0 auto;border-radius:30px 80px 30px 80px;">
+        <div class="post-card-img" style="width:40%;flex-shrink:0;aspect-ratio:auto;border-radius:30px 0 0 80px;overflow:hidden;">
           <img src="{{ latest_quarter.image }}" alt="{{ latest_quarter.label }}" />
         </div>
         <div class="post-card-body">
           <div class="post-card-meta"><span>{{ q_posts.size }} stories</span></div>
           <h2 class="post-card-title">{{ latest_quarter.label }}</h2>
           <p class="post-card-excerpt">{{ latest_quarter.description }}</p>
-          <span class="read-more-arrow">Explore <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+          <span class="read-more-arrow">Browse Quarters <i data-lucide="layers" style="width:13px;height:13px;"></i></span>
         </div>
-      </a>
+      </div>
     </section>
     {% endif %}
+
+    <!-- ── NAZAR QUARTERS MODAL ── -->
+    <div id="nazar-quarters-modal" class="nazar-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="nazar-modal">
+        <div class="nazar-modal-header">
+          <div>
+            <h2 class="nazar-modal-title">Nazar — Visual Journal</h2>
+            <p class="nazar-modal-sub">Pick a quarter to explore its stories</p>
+          </div>
+          <button class="nazar-modal-close" onclick="document.getElementById('nazar-quarters-modal').classList.remove('open')">
+            <i data-lucide="x" style="width:18px;height:18px;"></i>
+          </button>
+        </div>
+        <div class="nazar-modal-grid">
+          {% for quarter in site.data.nazar_quarters %}
+          {% assign qp = site.collections["1-nazar"] | where_exp: "p", "p.path contains quarter.key" %}
+          <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="nazar-quarter-card">
+            <div class="nazar-quarter-img">
+              <img src="{{ quarter.image }}" alt="{{ quarter.label }}" loading="lazy" />
+            </div>
+            <div class="nazar-quarter-body">
+              <span class="nazar-quarter-meta">{{ qp.size }} stories</span>
+              <h3 class="nazar-quarter-title">{{ quarter.label }}</h3>
+              <p class="nazar-quarter-desc">{{ quarter.description }}</p>
+              <span class="read-more-arrow">Explore <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <style>
+      /* ── Nazar Quarters Modal ── */
+      .nazar-modal-overlay {
+        position: fixed; inset: 0; z-index: 1000;
+        background: rgba(0,0,0,.55);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none;
+        transition: opacity .3s ease;
+        padding: 1.5rem;
+      }
+      .nazar-modal-overlay.open { opacity: 1; pointer-events: all; }
+
+      .nazar-modal {
+        background: var(--c-bg);
+        border: 1px solid var(--c-border);
+        border-radius: 24px;
+        box-shadow: 0 25px 60px rgba(0,0,0,.25);
+        width: min(680px, 96vw);
+        max-height: 85vh;
+        overflow-y: auto;
+        transform: scale(.92) translateY(20px);
+        transition: transform .35s cubic-bezier(.4,0,.2,1);
+        scrollbar-width: none;
+      }
+      .nazar-modal::-webkit-scrollbar { display: none; }
+      .nazar-modal-overlay.open .nazar-modal { transform: scale(1) translateY(0); }
+
+      .nazar-modal-header {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        padding: 2rem 2rem 1rem; position: sticky; top: 0;
+        background: var(--c-bg); z-index: 2;
+        border-bottom: 1px solid var(--c-border);
+      }
+      .nazar-modal-title {
+        font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700;
+        color: var(--c-text); line-height: 1.2; margin-bottom: .3rem;
+      }
+      .nazar-modal-sub {
+        font-family: var(--font-ui); font-size: .82rem; color: var(--c-text-muted);
+        margin: 0;
+      }
+      .nazar-modal-close {
+        width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+        border: 1px solid var(--c-border); border-radius: 10px;
+        background: transparent; color: var(--c-text-muted); cursor: pointer;
+        transition: all var(--transition); flex-shrink: 0;
+      }
+      .nazar-modal-close:hover { background: var(--c-surface); color: var(--c-text); border-color: var(--c-primary); }
+
+      .nazar-modal-grid {
+        display: flex; flex-direction: column; gap: 1rem;
+        padding: 1.5rem 2rem 2rem;
+      }
+
+      .nazar-quarter-card {
+        display: flex; flex-direction: row; gap: 0;
+        background: var(--c-surface); border: 1px solid var(--c-border);
+        border-radius: 16px; overflow: hidden;
+        text-decoration: none; color: inherit;
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      }
+      .nazar-quarter-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+        border-color: var(--c-primary);
+      }
+
+      .nazar-quarter-img {
+        width: 35%; flex-shrink: 0; overflow: hidden;
+        background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
+      }
+      .nazar-quarter-img img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform .5s ease;
+      }
+      .nazar-quarter-card:hover .nazar-quarter-img img { transform: scale(1.05); }
+
+      .nazar-quarter-body {
+        padding: 1.2rem 1.4rem; flex: 1; display: flex; flex-direction: column; justify-content: center;
+      }
+      .nazar-quarter-meta {
+        font-family: var(--font-ui); font-size: .72rem; font-weight: 600;
+        letter-spacing: .1em; text-transform: uppercase;
+        color: var(--c-text-muted); margin-bottom: .4rem;
+      }
+      .nazar-quarter-title {
+        font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700;
+        color: var(--c-text); margin-bottom: .35rem; line-height: 1.2;
+        transition: color .25s ease;
+      }
+      .nazar-quarter-card:hover .nazar-quarter-title { color: var(--c-primary); }
+      .nazar-quarter-desc {
+        font-size: .88rem; color: var(--c-text-muted); line-height: 1.55; margin: 0 0 .6rem;
+      }
+
+      @media (max-width: 500px) {
+        .nazar-modal-grid { padding: 1rem; }
+        .nazar-quarter-card { flex-direction: column; }
+        .nazar-quarter-img { width: 100%; aspect-ratio: 16/9; }
+        .nazar-modal-header { padding: 1.5rem 1rem .8rem; }
+      }
+    </style>
+
+    <script>
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.getElementById('nazar-quarters-modal').classList.remove('open');
+        }
+      });
+    </script>
 
     <div class="section-label">Latest articles</div>
 
