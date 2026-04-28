@@ -66,7 +66,7 @@ permalink: /
           </button>
         </div>
         <div class="nazar-modal-grid">
-          {% for quarter in site.data.nazar_quarters limit:4 %}
+          {% for quarter in site.data.nazar_quarters %}
           {% assign qp = nazar_docs | where_exp: "p", "p.path contains quarter.key" %}
           <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="nazar-quarter-card">
             <div class="nazar-quarter-img">
@@ -76,66 +76,176 @@ permalink: /
               <span class="nazar-quarter-meta">{{ qp.size }} stories</span>
               <h3 class="nazar-quarter-title">{{ quarter.label }}</h3>
               <p class="nazar-quarter-desc">{{ quarter.description }}</p>
-              <span class="read-more-arrow">Explore <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
+              <span class="read-more-arrow">Explore <i data-lucide="arrow-right"
+                  style="width:13px;height:13px;"></i></span>
             </div>
           </a>
           {% endfor %}
-        </div>
-        <div class="nazar-modal-footer" style="padding: 0 2rem 2rem; text-align: center;">
-          <a href="{{ '/nazar' | relative_url }}" class="btn">View all quarters <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></a>
         </div>
       </div>
     </div>
 
     <style>
+      /* ── Nazar Quarters Modal ── */
+      .nazar-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, .55);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s ease;
+        padding: 1.5rem;
+      }
+
+      .nazar-modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .nazar-modal {
+        background: var(--c-bg);
+        border: 1px solid var(--c-border);
+        border-radius: 24px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, .25);
+        width: min(680px, 96vw);
+        max-height: 85vh;
+        overflow-y: auto;
+        transform: scale(.92) translateY(20px);
+        transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+        scrollbar-width: none;
+      }
+
+      .nazar-modal::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nazar-modal-overlay.open .nazar-modal {
+        transform: scale(1) translateY(0);
+      }
+
+      .nazar-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 2rem 2rem 1rem;
+        position: sticky;
+        top: 0;
+        background: var(--c-bg);
+        z-index: 2;
+        border-bottom: 1px solid var(--c-border);
+      }
+
+      .nazar-modal-title {
+        font-family: var(--font-heading);
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--c-text);
+        line-height: 1.2;
+        margin-bottom: .3rem;
+      }
+
+      .nazar-modal-sub {
+        font-family: var(--font-ui);
+        font-size: .82rem;
+        color: var(--c-text-muted);
+        margin: 0;
+      }
+
+      .nazar-modal-close {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--c-border);
+        border-radius: 10px;
+        background: transparent;
+        color: var(--c-text-muted);
+        cursor: pointer;
+        transition: all var(--transition);
+        flex-shrink: 0;
+      }
+
+      .nazar-modal-close:hover {
+        background: var(--c-surface);
+        color: var(--c-text);
+        border-color: var(--c-primary);
+      }
+
       .nazar-modal-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
-        padding: 1.5rem 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem 2rem 2rem;
       }
 
       .nazar-quarter-card {
-        display: flex; flex-direction: column; gap: 0;
-        background: var(--c-surface); border: 1px solid var(--c-border);
-        border-radius: 16px; overflow: hidden;
-        text-decoration: none; color: inherit;
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: 16px;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
         transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
       }
+
       .nazar-quarter-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
         border-color: var(--c-primary);
       }
 
       .nazar-quarter-img {
-        width: 100%; aspect-ratio: 16/9; flex-shrink: 0; overflow: hidden;
+        width: 35%;
+        flex-shrink: 0;
+        overflow: hidden;
         background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
       }
+
       .nazar-quarter-img img {
-        width: 100%; height: 100%; object-fit: cover;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         transition: transform .5s ease;
       }
-      .nazar-quarter-card:hover .nazar-quarter-img img { transform: scale(1.05); }
+
+      .nazar-quarter-card:hover .nazar-quarter-img img {
+        transform: scale(1.05);
+      }
 
       .nazar-quarter-body {
-        padding: 1.2rem 1.4rem; flex: 1; display: flex; flex-direction: column; justify-content: center;
+        padding: 1.2rem 1.4rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       .nazar-quarter-meta {
         font-family: var(--font-ui);
-        font-size: .68rem;
+        font-size: .72rem;
         font-weight: 600;
         letter-spacing: .1em;
         text-transform: uppercase;
         color: var(--c-text-muted);
-        margin-bottom: .3rem;
+        margin-bottom: .4rem;
       }
 
       .nazar-quarter-title {
         font-family: var(--font-heading);
-        font-size: 1.1rem;
+        font-size: 1.25rem;
         font-weight: 700;
         color: var(--c-text);
-        margin-bottom: .25rem;
+        margin-bottom: .35rem;
         line-height: 1.2;
         transition: color .25s ease;
       }
@@ -145,18 +255,29 @@ permalink: /
       }
 
       .nazar-quarter-desc {
-        font-size: .82rem;
+        font-size: .88rem;
         color: var(--c-text-muted);
-        line-height: 1.5;
-        margin: 0 0 .5rem;
+        line-height: 1.55;
+        margin: 0 0 .6rem;
       }
 
-      @media (max-width: 600px) {
-        .nazar-modal-grid { grid-template-columns: 1fr; padding: 1rem; }
-        .nazar-quarter-card { flex-direction: column; }
-        .nazar-quarter-img { width: 100%; aspect-ratio: 16/9; }
-        .nazar-modal-header { padding: 1.5rem 1rem .8rem; }
-        .nazar-modal-footer { padding: 0 1rem 1.5rem; }
+      @media (max-width: 500px) {
+        .nazar-modal-grid {
+          padding: 1rem;
+        }
+
+        .nazar-quarter-card {
+          flex-direction: column;
+        }
+
+        .nazar-quarter-img {
+          width: 100%;
+          aspect-ratio: 16/9;
+        }
+
+        .nazar-modal-header {
+          padding: 1.5rem 1rem .8rem;
+        }
       }
     </style>
 
