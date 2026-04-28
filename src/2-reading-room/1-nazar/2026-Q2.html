@@ -13,7 +13,7 @@ quarter_label: "2026 — Q2"
 
   <div class="section-label">{{ page.quarter_label }}</div>
 
-  {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains page.quarter_key" %}
+  {% assign q_posts = site.collections["1-nazar"].docs | where_exp: "p", "p.path contains page.quarter_key" %}
 
   {% if q_posts.size > 0 %}
     <div class="explore-grid">

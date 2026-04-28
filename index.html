@@ -32,7 +32,8 @@ permalink: /
     {% if latest_quarter %}
     <section style="margin:3rem 0;">
       <div class="section-label">Nazar — Visual Journal</div>
-      {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains latest_quarter.key" %}
+      {% assign nazar_docs = site.collections["1-nazar"].docs %}
+      {% assign q_posts = nazar_docs | where_exp: "p", "p.path contains latest_quarter.key" %}
       <div class="post-card" onclick="document.getElementById('nazar-quarters-modal').classList.add('open')"
         style="cursor:pointer;text-decoration:none;display:flex;flex-direction:row;max-width:700px;margin:0 auto;border-radius:30px 80px 30px 80px;">
         <div class="post-card-img" style="width:40%;flex-shrink:0;aspect-ratio:auto;border-radius:30px 0 0 80px;overflow:hidden;">
@@ -62,7 +63,7 @@ permalink: /
         </div>
         <div class="nazar-modal-grid">
           {% for quarter in site.data.nazar_quarters %}
-          {% assign qp = site.collections["1-nazar"] | where_exp: "p", "p.path contains quarter.key" %}
+          {% assign qp = nazar_docs | where_exp: "p", "p.path contains quarter.key" %}
           <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="nazar-quarter-card">
             <div class="nazar-quarter-img">
               <img src="{{ quarter.image }}" alt="{{ quarter.label }}" loading="lazy" />
