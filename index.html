@@ -66,7 +66,7 @@ permalink: /
           </button>
         </div>
         <div class="nazar-modal-grid">
-          {% for quarter in site.data.nazar_quarters %}
+          {% for quarter in site.data.nazar_quarters limit:4 %}
           {% assign qp = nazar_docs | where_exp: "p", "p.path contains quarter.key" %}
           <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="nazar-quarter-card">
             <div class="nazar-quarter-img">
@@ -179,8 +179,8 @@ permalink: /
       }
 
       .nazar-modal-grid {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
         padding: 1.5rem 2rem 2rem;
       }
@@ -277,6 +277,12 @@ permalink: /
 
         .nazar-modal-header {
           padding: 1.5rem 1rem .8rem;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .nazar-modal-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
