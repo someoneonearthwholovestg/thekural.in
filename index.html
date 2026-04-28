@@ -66,7 +66,7 @@ permalink: /
           </button>
         </div>
         <div class="nazar-modal-grid">
-          {% for quarter in site.data.nazar_quarters limit: 4 %}
+          {% for quarter in site.data.nazar_quarters limit:4 %}
           {% assign qp = nazar_docs | where_exp: "p", "p.path contains quarter.key" %}
           <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="nazar-quarter-card">
             <div class="nazar-quarter-img">
@@ -76,67 +76,48 @@ permalink: /
               <span class="nazar-quarter-meta">{{ qp.size }} stories</span>
               <h3 class="nazar-quarter-title">{{ quarter.label }}</h3>
               <p class="nazar-quarter-desc">{{ quarter.description }}</p>
-              <span class="read-more-arrow">Explore <i data-lucide="arrow-right"
-                  style="width:13px;height:13px;"></i></span>
+              <span class="read-more-arrow">Explore <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></span>
             </div>
           </a>
           {% endfor %}
+        </div>
+        <div class="nazar-modal-footer" style="padding: 0 2rem 2rem; text-align: center;">
+          <a href="{{ '/nazar' | relative_url }}" class="btn">View all quarters <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></a>
         </div>
       </div>
     </div>
 
     <style>
       .nazar-modal-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        padding: 1.5rem 2rem 2rem;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+        padding: 1.5rem 2rem 1.5rem;
       }
 
       .nazar-quarter-card {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        background: var(--c-surface);
-        border: 1px solid var(--c-border);
-        border-radius: 16px;
-        overflow: hidden;
-        text-decoration: none;
-        color: inherit;
+        display: flex; flex-direction: column; gap: 0;
+        background: var(--c-surface); border: 1px solid var(--c-border);
+        border-radius: 16px; overflow: hidden;
+        text-decoration: none; color: inherit;
         transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
       }
-
       .nazar-quarter-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
         border-color: var(--c-primary);
       }
 
       .nazar-quarter-img {
-        width: 100%;
-        height: 160px;
-        flex-shrink: 0;
-        overflow: hidden;
+        width: 100%; aspect-ratio: 16/9; flex-shrink: 0; overflow: hidden;
         background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
       }
-
       .nazar-quarter-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        width: 100%; height: 100%; object-fit: cover;
         transition: transform .5s ease;
       }
-
-      .nazar-quarter-card:hover .nazar-quarter-img img {
-        transform: scale(1.05);
-      }
+      .nazar-quarter-card:hover .nazar-quarter-img img { transform: scale(1.05); }
 
       .nazar-quarter-body {
-        padding: 1rem 1.2rem;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        padding: 1.2rem 1.4rem; flex: 1; display: flex; flex-direction: column; justify-content: center;
       }
 
       .nazar-quarter-meta {
@@ -171,18 +152,11 @@ permalink: /
       }
 
       @media (max-width: 600px) {
-        .nazar-modal-grid {
-          grid-template-columns: 1fr;
-          padding: 1rem;
-        }
-
-        .nazar-quarter-img {
-          height: 140px;
-        }
-
-        .nazar-modal-header {
-          padding: 1.5rem 1rem .8rem;
-        }
+        .nazar-modal-grid { grid-template-columns: 1fr; padding: 1rem; }
+        .nazar-quarter-card { flex-direction: column; }
+        .nazar-quarter-img { width: 100%; aspect-ratio: 16/9; }
+        .nazar-modal-header { padding: 1.5rem 1rem .8rem; }
+        .nazar-modal-footer { padding: 0 1rem 1.5rem; }
       }
     </style>
 
