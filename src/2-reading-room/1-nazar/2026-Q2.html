@@ -1,14 +1,14 @@
 ---
 layout: default
-title: "Nazar — 2026 Q1"
-permalink: /nazar/2026-Q1
-quarter_key: "2026-Q1"
-quarter_label: "2026 — Q1"
+title: "Nazar — 2026 Q2"
+permalink: /nazar/2026-Q2
+quarter_key: "2026-Q2"
+quarter_label: "2026 — Q2"
 ---
 
 <div class="container" style="padding-top:3rem;padding-bottom:5rem;">
-  <a href="{{ '/nazar' | relative_url }}" style="display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-ui);font-size:.82rem;color:var(--c-text-muted);margin-bottom:2rem;">
-    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Nazar
+  <a href="{{ '/' | relative_url }}" style="display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-ui);font-size:.82rem;color:var(--c-text-muted);margin-bottom:2rem;">
+    <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back to Home
   </a>
 
   <div class="section-label">{{ page.quarter_label }}</div>
@@ -43,6 +43,6 @@ quarter_label: "2026 — Q1"
       {% endfor %}
     </div>
   {% else %}
-    <p style="color:var(--c-text-muted);">No posts in this quarter yet.</p>
+    <p style="color:var(--c-text-muted);text-align:center;padding:3rem 0;">No posts in this quarter yet.</p>
   {% endif %}
 </div>

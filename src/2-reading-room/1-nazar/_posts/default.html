@@ -1,9 +1,8 @@
 ---
 layout: default
-title: "Nazar — 2026 Q1"
-permalink: /nazar/2026-Q1
-quarter_key: "2026-Q1"
-quarter_label: "2026 — Q1"
+title: "Nazar — {{ page.quarter_label }}"
+quarter_key: ""
+quarter_label: ""
 ---
 
 <div class="container" style="padding-top:3rem;padding-bottom:5rem;">
@@ -13,7 +12,13 @@ quarter_label: "2026 — Q1"
 
   <div class="section-label">{{ page.quarter_label }}</div>
 
-  {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains page.quarter_key" %}
+  {% assign all_nazar = site.collections["1-nazar"] %}
+  {% assign q_posts = "" | split: "" %}
+  {% for p in all_nazar %}
+    {% if p.path contains page.quarter_key %}
+      {% assign q_posts = q_posts | push: p %}
+    {% endif %}
+  {% endfor %}
 
   {% if q_posts.size > 0 %}
     <div class="explore-grid">
