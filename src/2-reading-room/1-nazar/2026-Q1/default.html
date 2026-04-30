@@ -12,7 +12,8 @@ permalink: /nazar/2026-Q1
 
   <div class="section-label">2026 — Q1</div>
 
-  {% assign q_posts = site[page.collection] | where_exp: "p", "p.dir == page.dir and p.name != 'default.html'" %}
+  {% assign folder = page.dir | split: "/" | last %}
+  {% assign q_posts = site[page.collection] | where_exp: "p", "p.path contains folder and p.name != 'default.html'" %}
 
   {% if q_posts.size > 0 %}
     <div class="explore-grid">
