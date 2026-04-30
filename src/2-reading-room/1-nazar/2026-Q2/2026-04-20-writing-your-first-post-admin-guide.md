@@ -1,7 +1,7 @@
 ---
 layout: nazar-post
 title: "Writing Your First Post — A Guide for Admins"
-date: 2024-05-20
+date: 2026-04-20
 author: rithu
 tags: [guide, admin]
 excerpt: "Everything you need to know to publish, customise fonts, add images, and manage your blog without touching a line of HTML."
