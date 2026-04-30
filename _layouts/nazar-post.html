@@ -1,0 +1,259 @@
+---
+# _layouts/nazar-post.html
+# Rendered at /nazar/2026-Q1/article-slug/
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title }} · Nazar</title>
+  {% include head-vars.html %}
+  {% include base-styles.html %}
+
+  <style>
+    /* ── Nazar Post Page ─────────────────────────────────────── */
+
+    .post-header {
+      padding: 4rem 0 0;
+    }
+
+    .post-breadcrumb {
+      font-family: var(--font-ui);
+      font-size: .76rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .post-breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .post-breadcrumb a:hover { color: var(--c-primary); }
+    .post-breadcrumb .sep { opacity: .4; }
+
+    .post-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.9rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -.025em;
+      color: var(--c-text);
+      margin-bottom: 1rem;
+      max-width: 760px;
+    }
+
+    .post-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .post-meta-date {
+      font-family: var(--font-ui);
+      font-size: .8rem;
+      color: var(--c-text-muted);
+    }
+
+    .post-meta-tags {
+      display: flex;
+      gap: .4rem;
+    }
+
+    .post-hero-img {
+      width: 100%;
+      aspect-ratio: 21/9;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 3rem;
+      display: block;
+    }
+
+    /* ── Prose ───────────────────────────────────────────────── */
+
+    .post-prose {
+      max-width: 680px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+      line-height: 1.78;
+      color: var(--c-text);
+    }
+
+    .post-prose h2,
+    .post-prose h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--c-text);
+      margin: 2.5rem 0 .9rem;
+      line-height: 1.25;
+    }
+
+    .post-prose h2 { font-size: 1.55rem; }
+    .post-prose h3 { font-size: 1.2rem; }
+
+    .post-prose p { margin: 0 0 1.4rem; }
+
+    .post-prose a {
+      color: var(--c-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .post-prose blockquote {
+      border-left: 3px solid var(--c-primary);
+      margin: 2rem 0;
+      padding: .8rem 0 .8rem 1.5rem;
+      color: var(--c-text-muted);
+      font-style: italic;
+    }
+
+    .post-prose code {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      padding: .15em .4em;
+      border-radius: 5px;
+      font-size: .88em;
+    }
+
+    .post-prose pre {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+
+    .post-prose pre code {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .post-prose img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+    }
+
+    /* ── Footer nav ──────────────────────────────────────────── */
+
+    .post-nav {
+      max-width: 680px;
+      margin: 4rem auto 0;
+      padding: 2rem 0;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .post-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-family: var(--font-ui);
+      font-size: .82rem;
+      color: var(--c-text-muted);
+      text-decoration: none;
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      padding: .45rem .9rem;
+      background: var(--c-surface);
+      transition: all .2s;
+    }
+
+    .post-nav a:hover {
+      color: var(--c-primary);
+      border-color: var(--c-primary);
+    }
+
+    /* ── Detect which quarter this post belongs to ───────────── */
+    /* (Derived from page.path in the template below)            */
+  </style>
+</head>
+<body>
+  {% include header.html %}
+
+  <div class="container">
+
+    <!-- Breadcrumb: derive quarter from page.path -->
+    {% assign path_parts = page.path | split: "/" %}
+    {% assign quarter_slug = "" %}
+    {% for part in path_parts %}
+      {% if part contains "-Q" %}
+        {% assign quarter_slug = part %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+
+    <header class="post-header">
+      <nav class="post-breadcrumb" aria-label="breadcrumb">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <span class="sep">›</span>
+        <a href="{{ '/nazar/' | append: quarter_slug | relative_url }}">
+          Nazar · {{ quarter_slug }}
+        </a>
+        <span class="sep">›</span>
+        <span>{{ page.title | truncatewords: 6 }}</span>
+      </nav>
+
+      <h1 class="post-title">{{ page.title }}</h1>
+
+      <div class="post-meta-row">
+        <span class="post-meta-date">
+          {{ page.date | date: "%B %d, %Y" }}
+        </span>
+        <div class="post-meta-tags">
+          {% for tag in page.tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </header>
+
+    {% if page.image %}
+    <img class="post-hero-img"
+         src="{{ page.image }}"
+         alt="{{ page.image_alt | default: page.title }}" />
+    {% endif %}
+
+    <article class="post-prose">
+      {{ content }}
+    </article>
+
+    <!-- Back / forward nav -->
+    <nav class="post-nav">
+      {% if quarter_slug != "" %}
+      <a href="{{ '/nazar/' | append: quarter_slug | relative_url }}">
+        <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
+        Back to {{ quarter_slug }}
+      </a>
+      {% endif %}
+      <a href="{{ '/' | relative_url }}">
+        <i data-lucide="home" style="width:13px;height:13px;"></i>
+        Home
+      </a>
+    </nav>
+
+  </div>
+
+  {% include footer.html %}
+
+  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  </script>
+</body>
+</html>

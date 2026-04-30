@@ -69,19 +69,39 @@ default_image:     "/assets/images/default-cover.png"
 # Posts live in _posts/ as usual.
 # Section-specific editors and pages live in src/
 # Collection keys MUST match the folder names exactly (including numbers)
+
+collections_dir: src/2-reading-room
+ 
 collections:
-  "1-nazar":
+  # Articles inside Nazar quarters
+  1-nazar:
     output: true
-    permalink: /nazar/_post/:title/
-  "2-book-reviews":
+    permalink: /nazar/:path/        # → /nazar/2026-Q1/article-slug/
+ 
+# Quarter index pages live at the root in _quarters/
+# (not inside collections_dir, so declare them separately)
+collections:
+  quarters:
     output: true
-    permalink: /book-reviews/:title/
-  "3-keywords":
+    permalink: /nazar/:name/        # → /nazar/2026-Q1/  (name = filename without .md)
+  1-nazar:
     output: true
-    permalink: /keywords/:title/
-  "4-criticulture":
-    output: true
-    permalink: /criticulture/:title/
+    permalink: /nazar/:path/        # → /nazar/2026-Q1/article-slug/
+ 
+# ── Default front-matter ───────────────────────────────────────
+defaults:
+  - scope:
+      path: ""
+      type: "1-nazar"
+    values:
+      layout: nazar-post
+ 
+  - scope:
+      path: ""
+      type: "quarters"
+    values:
+      layout: nazar-quarter
+ 
 
 # ─── NAVIGATION (auto-built from folder names) ─────────────────
 # Edit src/config/nav.yml to control the nav bar.
