@@ -75,19 +75,19 @@ collections:
     output: true
     permalink: /nazar/:name/
 
-  nazar:
+  1-nazar:
     output: true
     permalink: /nazar/:name/
 
-  book-reviews:
+  2-book-reviews:
     output: true
     permalink: /book-reviews/:name/
 
-  keywords:
+  3-keywords:
     output: true
     permalink: /keywords/:name/
 
-  criticulture:
+  4-criticulture:
     output: true
     permalink: /criticulture/:name/
 
