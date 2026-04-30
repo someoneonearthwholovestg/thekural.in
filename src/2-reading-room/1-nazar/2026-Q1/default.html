@@ -14,8 +14,7 @@ permalink: /nazar/2026-Q1
 
   <p>All collections: {{ site.collections | map: "label" | join: ", " }}</p>
 
-  {% assign folder = page.url | split: "/" | reverse | reject: "empty" | first %}
-  {% assign q_posts = site["1-nazar"] | where_exp: "p", "p.path contains folder and p.name != 'default.html'" %}
+  {% assign q_posts = site["1-nazar"] | where_exp: "p", "p.path contains '2026-Q1' and p.name != 'default.html'" %}
   
   {% if q_posts.size > 0 %}
     <div class="explore-grid">
