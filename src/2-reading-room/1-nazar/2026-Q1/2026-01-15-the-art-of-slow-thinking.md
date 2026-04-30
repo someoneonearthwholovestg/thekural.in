@@ -5,6 +5,7 @@ date: 2026-01-15
 author: rithu
 tags: [reflection, mindfulness, writing]
 excerpt: "In a world optimised for speed, there is a quiet rebellion in choosing to think slowly — to sit with an idea until it fully blooms."
+permalink: /nazar/2026-Q1/:title
 ---
 
 In a world optimised for speed, there is a quiet rebellion in choosing to think slowly — to sit with an idea until it fully blooms.
