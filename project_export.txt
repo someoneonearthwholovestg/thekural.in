@@ -3599,7 +3599,7 @@ permalink: /
 {% endif %}
 
 ==================================================
-FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\_quarters\2026-Q1.md
+FILE: D:\rithu\thekural.in\src\2-reading-room\_quarters\2026-Q1.md
 ==================================================
 
 ---
@@ -3610,7 +3610,7 @@ image: "https://picsum.photos/seed/q2-2026/600/400"
 ---
 
 ==================================================
-FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\_quarters\2026-Q2.md
+FILE: D:\rithu\thekural.in\src\2-reading-room\_quarters\2026-Q2.md
 ==================================================
 
 ---
@@ -3625,7 +3625,7 @@ FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\2026-Q1\2024-01-15-the-art
 ==================================================
 
 ---
-layout: post
+layout: nazar-post
 title: "The Art of Slow Thinking"
 date: 2024-01-15
 author: rithu
@@ -3687,7 +3687,7 @@ FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\2026-Q2\2024-05-20-writing
 ==================================================
 
 ---
-layout: post
+layout: nazar-post
 title: "Writing Your First Post — A Guide for Admins"
 date: 2024-05-20
 author: rithu
