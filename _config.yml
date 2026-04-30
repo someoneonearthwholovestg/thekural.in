@@ -102,7 +102,7 @@ collections:
 defaults:
   - scope:
       path: ""
-      type: "1-nazar"
+      type: "nazar"
     values:
       layout: nazar-post
 
@@ -114,19 +114,19 @@ defaults:
 
   - scope:
       path: ""
-      type: "2-book-reviews"
+      type: "book-reviews"
     values:
       layout: post
 
   - scope:
       path: ""
-      type: "3-keywords"
+      type: "keywords"
     values:
       layout: post
 
   - scope:
       path: ""
-      type: "4-criticulture"
+      type: "criticulture"
     values:
       layout: post
 
