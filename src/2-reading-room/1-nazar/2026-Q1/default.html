@@ -15,10 +15,12 @@ permalink: /nazar/2026-Q1
   <p>All collections: {{ site.collections | map: "label" | join: ", " }}</p>
 
   {% assign all = site["1-nazar"] %}
-<p>1-nazar size: {{ all.size }}</p>
-{% for p in site["1-nazar"] %}
-  <p>{{ p.relative_path }}</p>
-{% endfor %}
+  <p>1-nazar size: {{ all.size }}</p>
+  {% for p in site["1-nazar"] %}
+    <p>{{ p.relative_path }}</p>
+  {% endfor %}
+
+  {% assign q_posts = site["nazar"] | where_exp: "p", "p.path contains folder and p.name != 'default.html'" %}
   
   {% if q_posts.size > 0 %}
     <div class="explore-grid">
