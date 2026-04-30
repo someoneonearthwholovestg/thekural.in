@@ -31,11 +31,8 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
-# ─── DATA FILES ───────────────────────────────────────────────
-# Jekyll reads from _data/ by default (GitHub Pages compatible).
-# Edit _data/nav.yml, _data/authors.yml, _data/nazar.yml.
-# The same files are mirrored at src/config/ for clarity —
-# but _data/ is what Jekyll actually uses.
+# ─── DATA FILES ────────────────────────────────────────────────
+# Jekyll reads _data/ by default (GitHub Pages compatible).
 
 # ─── TYPOGRAPHY ────────────────────────────────────────────────
 fonts:
@@ -71,45 +68,75 @@ posts_per_page:    9
 default_image:     "/assets/images/default-cover.png"
 
 # ─── COLLECTIONS ───────────────────────────────────────────────
-# Posts live in _posts/ as usual.
-# Section-specific editors and pages live in src/
-# Collection keys MUST match the folder names exactly (including numbers)
+# IMPORTANT: collections_dir applies to ALL collections below.
+# Every collection folder must live inside src/2-reading-room/
+# That means _quarters/ must be at src/2-reading-room/_quarters/
+# (NOT at the project root)
 
 collections_dir: src/2-reading-room
- 
+
 collections:
-  # Articles inside Nazar quarters
-  1-nazar:
-    output: true
-    permalink: /nazar/:path/        # → /nazar/2026-Q1/article-slug/
- 
-# Quarter index pages live at the root in _quarters/
-# (not inside collections_dir, so declare them separately)
-collections:
+
+  # Quarter index pages → /nazar/2026-Q1/ etc.
+  # Files live at: src/2-reading-room/_quarters/2026-Q1.md
   quarters:
     output: true
-    permalink: /nazar/:name/        # → /nazar/2026-Q1/  (name = filename without .md)
+    permalink: /nazar/:name/
+
+  # Nazar articles → /nazar/2026-Q1/article-slug/
+  # Files live at: src/2-reading-room/1-nazar/2026-Q1/article.md
+  # DO NOT use a _posts/ subdirectory — files go directly in the quarter folder
   1-nazar:
     output: true
-    permalink: /nazar/:path/        # → /nazar/2026-Q1/article-slug/
- 
-# ── Default front-matter ───────────────────────────────────────
+    permalink: /nazar/:path/
+
+  # Other reading room sections (add output:true + permalink when ready)
+  2-book-reviews:
+    output: true
+    permalink: /book-reviews/:path/
+
+  3-keywords:
+    output: true
+    permalink: /keywords/:path/
+
+  4-criticulture:
+    output: true
+    permalink: /criticulture/:path/
+
+# ─── DEFAULT FRONT-MATTER ──────────────────────────────────────
 defaults:
   - scope:
       path: ""
       type: "1-nazar"
     values:
       layout: nazar-post
- 
+
   - scope:
       path: ""
       type: "quarters"
     values:
       layout: nazar-quarter
- 
 
-# ─── NAVIGATION (auto-built from folder names) ─────────────────
-# Edit src/config/nav.yml to control the nav bar.
+  - scope:
+      path: ""
+      type: "2-book-reviews"
+    values:
+      layout: post
+
+  - scope:
+      path: ""
+      type: "3-keywords"
+    values:
+      layout: post
+
+  - scope:
+      path: ""
+      type: "4-criticulture"
+    values:
+      layout: post
+
+# ─── NAVIGATION ────────────────────────────────────────────────
+# Edit _data/nav.yml to control the nav bar.
 
 ==================================================
 FILE: D:\rithu\thekural.in\_data\authors.yml
@@ -1806,657 +1833,613 @@ FILE: D:\rithu\thekural.in\_layouts\nazar-post.html
 ==================================================
 
 ---
-# _layouts/nazar-post.html
-# Rendered at /nazar/2026-Q1/article-slug/
+layout: default
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ page.title }} · Nazar</title>
-  {% include head-vars.html %}
-  {% include base-styles.html %}
 
-  <style>
-    /* ── Nazar Post Page ─────────────────────────────────────── */
+<style>
+  /* ── Nazar Post Page ─────────────────────────────────────── */
 
-    .post-header {
-      padding: 4rem 0 0;
-    }
+  .post-header {
+    padding: 4rem 0 0;
+  }
 
-    .post-breadcrumb {
-      font-family: var(--font-ui);
-      font-size: .76rem;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--c-text-muted);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      flex-wrap: wrap;
-    }
+  .post-breadcrumb {
+    font-family: var(--font-ui);
+    font-size: .76rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
 
-    .post-breadcrumb a {
-      color: inherit;
-      text-decoration: none;
-      transition: color .2s;
-    }
-    .post-breadcrumb a:hover { color: var(--c-primary); }
-    .post-breadcrumb .sep { opacity: .4; }
+  .post-breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .post-breadcrumb a:hover { color: var(--c-primary); }
+  .post-breadcrumb .sep { opacity: .4; }
 
-    .post-title {
-      font-family: var(--font-heading);
-      font-size: clamp(1.9rem, 5vw, 3.2rem);
-      font-weight: 800;
-      line-height: 1.12;
-      letter-spacing: -.025em;
-      color: var(--c-text);
-      margin-bottom: 1rem;
-      max-width: 760px;
-    }
+  .post-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.9rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -.025em;
+    color: var(--c-text);
+    margin-bottom: 1rem;
+    max-width: 760px;
+  }
 
-    .post-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 2.5rem;
-    }
+  .post-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
 
-    .post-meta-date {
-      font-family: var(--font-ui);
-      font-size: .8rem;
-      color: var(--c-text-muted);
-    }
+  .post-meta-date {
+    font-family: var(--font-ui);
+    font-size: .8rem;
+    color: var(--c-text-muted);
+  }
 
-    .post-meta-tags {
-      display: flex;
-      gap: .4rem;
-    }
+  .post-meta-tags {
+    display: flex;
+    gap: .4rem;
+  }
 
-    .post-hero-img {
-      width: 100%;
-      aspect-ratio: 21/9;
-      object-fit: cover;
-      border-radius: 20px;
-      margin-bottom: 3rem;
-      display: block;
-    }
+  .post-hero-img {
+    width: 100%;
+    aspect-ratio: 21/9;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    display: block;
+  }
 
-    /* ── Prose ───────────────────────────────────────────────── */
+  /* ── Prose ───────────────────────────────────────────────── */
 
-    .post-prose {
-      max-width: 680px;
-      margin: 0 auto;
-      font-size: 1.05rem;
-      line-height: 1.78;
-      color: var(--c-text);
-    }
+  .post-prose {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    line-height: 1.78;
+    color: var(--c-text);
+  }
 
-    .post-prose h2,
-    .post-prose h3 {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--c-text);
-      margin: 2.5rem 0 .9rem;
-      line-height: 1.25;
-    }
+  .post-prose h2,
+  .post-prose h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 2.5rem 0 .9rem;
+    line-height: 1.25;
+  }
 
-    .post-prose h2 { font-size: 1.55rem; }
-    .post-prose h3 { font-size: 1.2rem; }
+  .post-prose h2 { font-size: 1.55rem; }
+  .post-prose h3 { font-size: 1.2rem; }
 
-    .post-prose p { margin: 0 0 1.4rem; }
+  .post-prose p { margin: 0 0 1.4rem; }
 
-    .post-prose a {
-      color: var(--c-primary);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
+  .post-prose a {
+    color: var(--c-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 
-    .post-prose blockquote {
-      border-left: 3px solid var(--c-primary);
-      margin: 2rem 0;
-      padding: .8rem 0 .8rem 1.5rem;
-      color: var(--c-text-muted);
-      font-style: italic;
-    }
+  .post-prose blockquote {
+    border-left: 3px solid var(--c-primary);
+    margin: 2rem 0;
+    padding: .8rem 0 .8rem 1.5rem;
+    color: var(--c-text-muted);
+    font-style: italic;
+  }
 
-    .post-prose code {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      padding: .15em .4em;
-      border-radius: 5px;
-      font-size: .88em;
-    }
+  .post-prose code {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    padding: .15em .4em;
+    border-radius: 5px;
+    font-size: .88em;
+  }
 
-    .post-prose pre {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-    }
+  .post-prose pre {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
 
-    .post-prose pre code {
-      background: none;
-      border: none;
-      padding: 0;
-    }
+  .post-prose pre code {
+    background: none;
+    border: none;
+    padding: 0;
+  }
 
-    .post-prose img {
-      max-width: 100%;
-      border-radius: 12px;
-      margin: 1.5rem 0;
-    }
+  .post-prose img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+  }
 
-    /* ── Footer nav ──────────────────────────────────────────── */
+  /* ── Footer nav ──────────────────────────────────────────── */
 
-    .post-nav {
-      max-width: 680px;
-      margin: 4rem auto 0;
-      padding: 2rem 0;
-      border-top: 1px solid var(--c-border);
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+  .nazar-post-nav {
+    max-width: 680px;
+    margin: 4rem auto 0;
+    padding: 2rem 0;
+    border-top: 1px solid var(--c-border);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
 
-    .post-nav a {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      font-family: var(--font-ui);
-      font-size: .82rem;
-      color: var(--c-text-muted);
-      text-decoration: none;
-      border: 1px solid var(--c-border);
-      border-radius: 10px;
-      padding: .45rem .9rem;
-      background: var(--c-surface);
-      transition: all .2s;
-    }
+  .nazar-post-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    font-family: var(--font-ui);
+    font-size: .82rem;
+    color: var(--c-text-muted);
+    text-decoration: none;
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    padding: .45rem .9rem;
+    background: var(--c-surface);
+    transition: all .2s;
+  }
 
-    .post-nav a:hover {
-      color: var(--c-primary);
-      border-color: var(--c-primary);
-    }
+  .nazar-post-nav a:hover {
+    color: var(--c-primary);
+    border-color: var(--c-primary);
+  }
+</style>
 
-    /* ── Detect which quarter this post belongs to ───────────── */
-    /* (Derived from page.path in the template below)            */
-  </style>
-</head>
-<body>
-  {% include header.html %}
+<div class="container">
 
-  <div class="container">
-
-    <!-- Breadcrumb: derive quarter from page.path -->
-    {% assign path_parts = page.path | split: "/" %}
-    {% assign quarter_slug = "" %}
-    {% for part in path_parts %}
-      {% if part contains "-Q" %}
-        {% assign quarter_slug = part %}
-        {% break %}
-      {% endif %}
-    {% endfor %}
-
-    <header class="post-header">
-      <nav class="post-breadcrumb" aria-label="breadcrumb">
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <span class="sep">›</span>
-        <a href="{{ '/nazar/' | append: quarter_slug | relative_url }}">
-          Nazar · {{ quarter_slug }}
-        </a>
-        <span class="sep">›</span>
-        <span>{{ page.title | truncatewords: 6 }}</span>
-      </nav>
-
-      <h1 class="post-title">{{ page.title }}</h1>
-
-      <div class="post-meta-row">
-        <span class="post-meta-date">
-          {{ page.date | date: "%B %d, %Y" }}
-        </span>
-        <div class="post-meta-tags">
-          {% for tag in page.tags %}
-          <span class="tag">{{ tag }}</span>
-          {% endfor %}
-        </div>
-      </div>
-    </header>
-
-    {% if page.image %}
-    <img class="post-hero-img"
-         src="{{ page.image }}"
-         alt="{{ page.image_alt | default: page.title }}" />
+  <!--
+    Derive the quarter slug from page.path.
+    page.path for a collection doc is relative to collections_dir, e.g.:
+      1-nazar/2026-Q1/2026-01-15-my-article.md
+    We split on "/" and find the segment that matches YYYY-QN.
+    NOTE: {% break %} is NOT supported in Jekyll Liquid — we use a flag instead.
+  -->
+  {% assign path_parts = page.path | split: "/" %}
+  {% assign quarter_slug = "" %}
+  {% for part in path_parts %}
+    {% if part contains "-Q" and quarter_slug == "" %}
+      {% assign quarter_slug = part %}
     {% endif %}
+  {% endfor %}
 
-    <article class="post-prose">
-      {{ content }}
-    </article>
-
-    <!-- Back / forward nav -->
-    <nav class="post-nav">
+  <header class="post-header">
+    <nav class="post-breadcrumb" aria-label="breadcrumb">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <span class="sep">›</span>
       {% if quarter_slug != "" %}
       <a href="{{ '/nazar/' | append: quarter_slug | relative_url }}">
-        <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
-        Back to {{ quarter_slug }}
+        Nazar · {{ quarter_slug }}
       </a>
+      {% else %}
+      <a href="{{ '/nazar/' | relative_url }}">Nazar</a>
       {% endif %}
-      <a href="{{ '/' | relative_url }}">
-        <i data-lucide="home" style="width:13px;height:13px;"></i>
-        Home
-      </a>
+      <span class="sep">›</span>
+      <span>{{ page.title | truncatewords: 6 }}</span>
     </nav>
 
-  </div>
+    <h1 class="post-title">{{ page.title }}</h1>
 
-  {% include footer.html %}
+    <div class="post-meta-row">
+      <span class="post-meta-date">
+        {{ page.date | date: "%B %d, %Y" }}
+      </span>
+      <div class="post-meta-tags">
+        {% for tag in page.tags %}
+        <span class="tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </header>
 
-  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
-  <script>
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  </script>
-</body>
-</html>
+  {% if page.image %}
+  <img class="post-hero-img"
+       src="{{ page.image }}"
+       alt="{{ page.image_alt | default: page.title }}" />
+  {% endif %}
+
+  <article class="post-prose">
+    {{ content }}
+  </article>
+
+  <!-- Back / forward nav -->
+  <nav class="nazar-post-nav">
+    {% if quarter_slug != "" %}
+    <a href="{{ '/nazar/' | append: quarter_slug | relative_url }}">
+      <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
+      Back to {{ quarter_slug }}
+    </a>
+    {% endif %}
+    <a href="{{ '/' | relative_url }}">
+      <i data-lucide="home" style="width:13px;height:13px;"></i>
+      Home
+    </a>
+  </nav>
+
+</div>
 
 ==================================================
 FILE: D:\rithu\thekural.in\_layouts\nazar-quarter.html
 ==================================================
 
 ---
-# _layouts/nazar-quarter.html
-# Rendered at /nazar/2026-Q1/, /nazar/2026-Q2/, etc.
+layout: default
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ page.title }} · Nazar</title>
-  {% include head-vars.html %}
-  {% include base-styles.html %}
 
-  <style>
-    /* ── Nazar Quarter Page ──────────────────────────────────── */
+<style>
+  /* ── Nazar Quarter Page ──────────────────────────────────── */
 
-    .nazar-hero {
-      position: relative;
-      overflow: hidden;
-      padding: 0;
-      margin-bottom: 3.5rem;
-    }
+  .nazar-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    margin-bottom: 3.5rem;
+  }
 
-    .nazar-hero-bg {
-      width: 100%;
-      height: clamp(220px, 38vw, 420px);
-      object-fit: cover;
-      display: block;
-      filter: brightness(.72) saturate(.9);
-    }
+  .nazar-hero-bg {
+    width: 100%;
+    height: clamp(220px, 38vw, 420px);
+    object-fit: cover;
+    display: block;
+    filter: brightness(.72) saturate(.9);
+  }
 
-    .nazar-hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        transparent 30%,
-        rgba(0,0,0,.6) 100%
-      );
-    }
+  .nazar-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 30%,
+      rgba(0,0,0,.6) 100%
+    );
+  }
 
-    .nazar-hero-content {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: clamp(1.5rem, 4vw, 3rem);
-    }
+  .nazar-hero-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
 
-    .nazar-hero-eyebrow {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.65);
-      margin-bottom: .6rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
+  .nazar-hero-eyebrow {
+    font-family: var(--font-ui);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.65);
+    margin-bottom: .6rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
 
-    .nazar-hero-eyebrow a {
-      color: inherit;
-      text-decoration: none;
-      transition: color .2s;
-    }
-    .nazar-hero-eyebrow a:hover { color: #fff; }
+  .nazar-hero-eyebrow a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .nazar-hero-eyebrow a:hover { color: #fff; }
+  .nazar-hero-eyebrow .sep { opacity: .4; }
 
-    .nazar-hero-eyebrow .sep {
-      opacity: .4;
-    }
+  .nazar-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: .7rem;
+    letter-spacing: -.02em;
+  }
 
-    .nazar-hero-title {
-      font-family: var(--font-heading);
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.1;
-      margin-bottom: .7rem;
-      letter-spacing: -.02em;
-    }
+  .nazar-hero-desc {
+    font-size: clamp(.9rem, 2vw, 1.05rem);
+    color: rgba(255,255,255,.75);
+    max-width: 520px;
+    line-height: 1.6;
+    margin: 0;
+  }
 
-    .nazar-hero-desc {
-      font-size: clamp(.9rem, 2vw, 1.05rem);
-      color: rgba(255,255,255,.75);
-      max-width: 520px;
-      line-height: 1.6;
-      margin: 0;
-    }
+  /* ── Article grid ────────────────────────────────────────── */
 
-    /* ── Article grid ────────────────────────────────────────── */
+  .nazar-count-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: .75rem;
+  }
 
-    .nazar-count-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: .75rem;
-    }
+  .nazar-count {
+    font-family: var(--font-ui);
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+  }
 
-    .nazar-count {
-      font-family: var(--font-ui);
-      font-size: .8rem;
-      font-weight: 600;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--c-text-muted);
-    }
+  .nazar-back {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-family: var(--font-ui);
+    font-size: .82rem;
+    color: var(--c-text-muted);
+    text-decoration: none;
+    transition: color .2s;
+    padding: .35rem .75rem;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    background: var(--c-surface);
+  }
 
-    .nazar-back {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      font-family: var(--font-ui);
-      font-size: .82rem;
-      color: var(--c-text-muted);
-      text-decoration: none;
-      transition: color .2s;
-      padding: .35rem .75rem;
-      border: 1px solid var(--c-border);
-      border-radius: 8px;
-      background: var(--c-surface);
-    }
+  .nazar-back:hover {
+    color: var(--c-primary);
+    border-color: var(--c-primary);
+  }
 
-    .nazar-back:hover {
-      color: var(--c-primary);
-      border-color: var(--c-primary);
-    }
+  .nazar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 1.5rem;
+  }
 
-    .nazar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
-      gap: 1.5rem;
-    }
+  .nazar-article-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    animation: fadeUp .4s ease both;
+  }
 
-    .nazar-article-card {
-      display: flex;
-      flex-direction: column;
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: 16px;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-      animation: fadeUp .4s ease both;
-    }
+  .nazar-article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,.1);
+    border-color: var(--c-primary);
+  }
 
-    .nazar-article-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(0,0,0,.1);
-      border-color: var(--c-primary);
-    }
+  .nazar-article-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
+    position: relative;
+  }
 
-    .nazar-article-img {
-      width: 100%;
-      aspect-ratio: 16/9;
-      overflow: hidden;
-      background: color-mix(in srgb, var(--c-primary) 10%, var(--c-surface));
-      position: relative;
-    }
+  .nazar-article-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .55s ease;
+  }
 
-    .nazar-article-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .55s ease;
-    }
+  .nazar-article-card:hover .nazar-article-img img {
+    transform: scale(1.06);
+  }
 
-    .nazar-article-card:hover .nazar-article-img img {
-      transform: scale(1.06);
-    }
+  .nazar-article-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .nazar-article-img-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  .nazar-article-body {
+    padding: 1.4rem 1.5rem 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .nazar-article-body {
-      padding: 1.4rem 1.5rem 1.5rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+  .nazar-article-meta {
+    font-family: var(--font-ui);
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    margin-bottom: .55rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
 
-    .nazar-article-meta {
-      font-family: var(--font-ui);
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      color: var(--c-text-muted);
-      margin-bottom: .55rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-    }
+  .nazar-article-title {
+    font-family: var(--font-heading);
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: var(--c-text);
+    line-height: 1.3;
+    margin-bottom: .55rem;
+    transition: color .2s;
+  }
 
-    .nazar-article-title {
-      font-family: var(--font-heading);
-      font-size: 1.18rem;
-      font-weight: 700;
-      color: var(--c-text);
-      line-height: 1.3;
-      margin-bottom: .55rem;
-      transition: color .2s;
-    }
+  .nazar-article-card:hover .nazar-article-title {
+    color: var(--c-primary);
+  }
 
-    .nazar-article-card:hover .nazar-article-title {
-      color: var(--c-primary);
-    }
+  .nazar-article-excerpt {
+    font-size: .88rem;
+    color: var(--c-text-muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 1rem;
+  }
 
-    .nazar-article-excerpt {
-      font-size: .88rem;
-      color: var(--c-text-muted);
-      line-height: 1.6;
-      flex: 1;
-      margin-bottom: 1rem;
-    }
+  .nazar-article-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
 
-    .nazar-article-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: auto;
-    }
+  .nazar-tag-list {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+  }
 
-    .nazar-tag-list {
-      display: flex;
-      gap: .4rem;
-      flex-wrap: wrap;
-    }
+  /* ── Empty state ─────────────────────────────────────────── */
 
-    /* ── Empty state ─────────────────────────────────────────── */
+  .nazar-empty {
+    text-align: center;
+    padding: 5rem 1rem;
+    color: var(--c-text-muted);
+  }
 
-    .nazar-empty {
-      text-align: center;
-      padding: 5rem 1rem;
-      color: var(--c-text-muted);
-    }
+  .nazar-empty p {
+    font-family: var(--font-ui);
+    font-size: .9rem;
+  }
 
-    .nazar-empty svg {
-      opacity: .2;
-      margin: 0 auto 1.2rem;
-      display: block;
-    }
+  /* ── Animation ───────────────────────────────────────────── */
 
-    .nazar-empty p {
-      font-family: var(--font-ui);
-      font-size: .9rem;
-    }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-    /* ── Animation ───────────────────────────────────────────── */
+  {% for i in (1..12) %}
+  .nazar-article-card:nth-child({{ i }}) { animation-delay: {{ i | times: 55 }}ms; }
+  {% endfor %}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+  @media (max-width: 640px) {
+    .nazar-grid { grid-template-columns: 1fr; }
+  }
+</style>
 
-    {% for i in (1..12) %}
-    .nazar-article-card:nth-child({{ i }}) { animation-delay: {{ i | times: 55 }}ms; }
+<!-- ── Hero banner ── -->
+<div class="nazar-hero">
+  <img class="nazar-hero-bg"
+       src="{{ page.image | default: 'https://picsum.photos/1200/420' }}"
+       alt="{{ page.title }}" />
+  <div class="nazar-hero-overlay"></div>
+  <div class="nazar-hero-content">
+    <p class="nazar-hero-eyebrow">
+      <a href="{{ '/' | relative_url }}">Home</a>
+      <span class="sep">›</span>
+      <span>Nazar</span>
+      <span class="sep">›</span>
+      <span>{{ page.quarter_key }}</span>
+    </p>
+    <h1 class="nazar-hero-title">{{ page.title }}</h1>
+    <p class="nazar-hero-desc">{{ page.description }}</p>
+  </div>
+</div>
+
+<!-- ── Article listing ── -->
+<div class="container">
+
+  <!--
+    site["1-nazar"] gives the array of collection documents.
+    We filter by quarter_key which appears in the file path, e.g.:
+      path = "1-nazar/2026-Q1/article.md"
+    So `p.path contains page.quarter_key` correctly picks only that quarter's posts.
+  -->
+  {% assign quarter_posts = site["1-nazar"] | where_exp: "p", "p.path contains page.quarter_key" | sort: "date" | reverse %}
+
+  <div class="nazar-count-bar">
+    <span class="nazar-count">
+      {{ quarter_posts.size }}
+      {% if quarter_posts.size == 1 %}story{% else %}stories{% endif %}
+    </span>
+    <a href="{{ '/' | relative_url }}" class="nazar-back">
+      <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
+      Back home
+    </a>
+  </div>
+
+  {% if quarter_posts.size == 0 %}
+  <div class="nazar-empty">
+    <i data-lucide="camera-off" style="width:48px;height:48px;opacity:.2;margin:0 auto 1.2rem;display:block;"></i>
+    <p>No stories yet for {{ page.title }}.</p>
+    <p style="margin-top:.4rem;font-size:.8rem;opacity:.7;">
+      Add <code>.md</code> files to
+      <code>src/2-reading-room/1-nazar/{{ page.quarter_key }}/</code>
+    </p>
+  </div>
+
+  {% else %}
+  <div class="nazar-grid">
+    {% for post in quarter_posts %}
+    <a href="{{ post.url | relative_url }}" class="nazar-article-card">
+
+      <div class="nazar-article-img">
+        {% if post.image %}
+        <img src="{{ post.image }}"
+             alt="{{ post.image_alt | default: post.title }}"
+             loading="lazy" />
+        {% else %}
+        <div class="nazar-article-img-placeholder">
+          <i data-lucide="feather"
+             style="width:36px;height:36px;color:var(--c-primary);opacity:.3;"></i>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="nazar-article-body">
+        <div class="nazar-article-meta">
+          <span>{{ post.date | date: "%b %d, %Y" }}</span>
+          {% if post.tags.size > 0 %}
+          <span>·</span>
+          <span>{{ post.tags | first }}</span>
+          {% endif %}
+        </div>
+
+        <h2 class="nazar-article-title">{{ post.title }}</h2>
+
+        {% if post.excerpt %}
+        <p class="nazar-article-excerpt">
+          {{ post.excerpt | strip_html | truncatewords: 24 }}
+        </p>
+        {% endif %}
+
+        <div class="nazar-article-footer">
+          <div class="nazar-tag-list">
+            {% for tag in post.tags limit: 2 %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          <span class="read-more-arrow">
+            Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
+          </span>
+        </div>
+      </div>
+
+    </a>
     {% endfor %}
-
-    /* ── Responsive ──────────────────────────────────────────── */
-
-    @media (max-width: 640px) {
-      .nazar-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  {% include header.html %}
-
-  <!-- ── Hero banner ── -->
-  <div class="nazar-hero">
-    <img class="nazar-hero-bg"
-         src="{{ page.image | default: 'https://picsum.photos/1200/420' }}"
-         alt="{{ page.title }}" />
-    <div class="nazar-hero-overlay"></div>
-    <div class="nazar-hero-content">
-      <p class="nazar-hero-eyebrow">
-        <a href="{{ '/' | relative_url }}">Home</a>
-        <span class="sep">›</span>
-        <span>Nazar</span>
-        <span class="sep">›</span>
-        <span>{{ page.quarter_key }}</span>
-      </p>
-      <h1 class="nazar-hero-title">{{ page.title }}</h1>
-      <p class="nazar-hero-desc">{{ page.description }}</p>
-    </div>
   </div>
+  {% endif %}
 
-  <!-- ── Article listing ── -->
-  <div class="container">
-
-    {% assign nazar_docs = site.collections["1-nazar"].docs %}
-    {% assign quarter_posts = nazar_docs | where_exp: "p", "p.path contains page.quarter_key" | sort: "date" | reverse %}
-
-    <div class="nazar-count-bar">
-      <span class="nazar-count">
-        {{ quarter_posts.size }}
-        {% if quarter_posts.size == 1 %}story{% else %}stories{% endif %}
-      </span>
-      <a href="{{ '/' | relative_url }}" class="nazar-back">
-        <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
-        Back home
-      </a>
-    </div>
-
-    {% if quarter_posts.size == 0 %}
-    <div class="nazar-empty">
-      <i data-lucide="camera-off" style="width:48px;height:48px;"></i>
-      <p>No stories yet for {{ page.title }}.</p>
-      <p style="margin-top:.4rem;font-size:.8rem;opacity:.7;">
-        Add <code>.md</code> files to
-        <code>src/2-reading-room/1-nazar/{{ page.quarter_key }}/</code>
-      </p>
-    </div>
-
-    {% else %}
-    <div class="nazar-grid">
-      {% for post in quarter_posts %}
-      <a href="{{ post.url | relative_url }}" class="nazar-article-card">
-
-        <div class="nazar-article-img">
-          {% if post.image %}
-          <img src="{{ post.image }}"
-               alt="{{ post.image_alt | default: post.title }}"
-               loading="lazy" />
-          {% else %}
-          <div class="nazar-article-img-placeholder">
-            <i data-lucide="feather"
-               style="width:36px;height:36px;color:var(--c-primary);opacity:.3;"></i>
-          </div>
-          {% endif %}
-        </div>
-
-        <div class="nazar-article-body">
-          <div class="nazar-article-meta">
-            <span>{{ post.date | date: "%b %d, %Y" }}</span>
-            {% if post.tags.size > 0 %}
-            <span>·</span>
-            <span>{{ post.tags | first }}</span>
-            {% endif %}
-          </div>
-
-          <h2 class="nazar-article-title">{{ post.title }}</h2>
-
-          {% if post.excerpt %}
-          <p class="nazar-article-excerpt">
-            {{ post.excerpt | strip_html | truncatewords: 24 }}
-          </p>
-          {% endif %}
-
-          <div class="nazar-article-footer">
-            <div class="nazar-tag-list">
-              {% for tag in post.tags limit: 2 %}
-              <span class="tag">{{ tag }}</span>
-              {% endfor %}
-            </div>
-            <span class="read-more-arrow">
-              Read <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
-            </span>
-          </div>
-        </div>
-
-      </a>
-      {% endfor %}
-    </div>
-    {% endif %}
-
-  </div>
-
-  {% include footer.html %}
-
-  <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
-  <script>
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  </script>
-</body>
-</html>
+</div>
 
 ==================================================
 FILE: D:\rithu\thekural.in\_layouts\post.html
@@ -2564,28 +2547,6 @@ layout: default
     if (el) el.textContent = mins + ' min read';
   }
 </script>
-
-==================================================
-FILE: D:\rithu\thekural.in\_quarters\2026-Q1.md
-==================================================
-
----
-title: "2026 — Q1"
-quarter_key: "2026-Q1"
-description: "The year begins. January through March in frames and words."
-image: "https://picsum.photos/seed/q1-2026/600/400"
----
-
-==================================================
-FILE: D:\rithu\thekural.in\_quarters\2026-Q2.md
-==================================================
-
----
-title: "2026 — Q2"
-quarter_key: "2026-Q2"
-description: "Spring dispatches. Quiet observations from April through June."
-image: "https://picsum.photos/seed/q2-2026/600/400"
----
 
 ==================================================
 FILE: D:\rithu\thekural.in\404.html
@@ -3636,6 +3597,28 @@ permalink: /
   <p style="font-family:var(--font-ui);">No articles yet — add posts to the collection folders to get started!</p>
 </div>
 {% endif %}
+
+==================================================
+FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\_quarters\2026-Q1.md
+==================================================
+
+---
+title: "2026 — Q1"
+quarter_key: "2026-Q1"
+description: "Spring dispatches. Quiet observations from April through June."
+image: "https://picsum.photos/seed/q2-2026/600/400"
+---
+
+==================================================
+FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\_quarters\2026-Q2.md
+==================================================
+
+---
+title: "2026 — Q2"
+quarter_key: "2026-Q2"
+description: "Spring dispatches. Quiet observations from April through June."
+image: "https://picsum.photos/seed/q2-2026/600/400"
+---
 
 ==================================================
 FILE: D:\rithu\thekural.in\src\2-reading-room\1-nazar\2026-Q1\2024-01-15-the-art-of-slow-thinking.md

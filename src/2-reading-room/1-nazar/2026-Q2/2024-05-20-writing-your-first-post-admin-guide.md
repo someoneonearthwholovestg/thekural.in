@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: nazar-post
 title: "Writing Your First Post — A Guide for Admins"
 date: 2024-05-20
 author: rithu
