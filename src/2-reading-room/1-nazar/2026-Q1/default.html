@@ -12,6 +12,15 @@ permalink: /nazar/2026-Q1
 
   <div class="section-label">2026 — Q1</div>
 
+  <p>page.dir: {{ page.dir }}</p>
+<p>page.collection: {{ page.collection }}</p>
+<p>folder: {{ page.dir | split: "/" | last }}</p>
+<p>Total in collection: {{ site[page.collection].size }}</p>
+
+{% for p in site[page.collection] %}
+  <p>{{ p.name }} — {{ p.path }} — {{ p.dir }}</p>
+{% endfor %}
+
   {% assign folder = page.dir | split: "/" | last %}
   {% assign q_posts = site[page.collection] | where_exp: "p", "p.path contains folder and p.name != 'default.html'" %}
 
