@@ -26,11 +26,8 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
-# ─── DATA FILES ───────────────────────────────────────────────
-# Jekyll reads from _data/ by default (GitHub Pages compatible).
-# Edit _data/nav.yml, _data/authors.yml, _data/nazar.yml.
-# The same files are mirrored at src/config/ for clarity —
-# but _data/ is what Jekyll actually uses.
+# ─── DATA FILES ────────────────────────────────────────────────
+# Jekyll reads _data/ by default (GitHub Pages compatible).
 
 # ─── TYPOGRAPHY ────────────────────────────────────────────────
 fonts:
@@ -66,42 +63,72 @@ posts_per_page:    9
 default_image:     "/assets/images/default-cover.png"
 
 # ─── COLLECTIONS ───────────────────────────────────────────────
-# Posts live in _posts/ as usual.
-# Section-specific editors and pages live in src/
-# Collection keys MUST match the folder names exactly (including numbers)
+# IMPORTANT: collections_dir applies to ALL collections below.
+# Every collection folder must live inside src/2-reading-room/
+# That means _quarters/ must be at src/2-reading-room/_quarters/
+# (NOT at the project root)
 
 collections_dir: src/2-reading-room
- 
+
 collections:
-  # Articles inside Nazar quarters
-  1-nazar:
-    output: true
-    permalink: /nazar/:path/        # → /nazar/2026-Q1/article-slug/
- 
-# Quarter index pages live at the root in _quarters/
-# (not inside collections_dir, so declare them separately)
-collections:
+
+  # Quarter index pages → /nazar/2026-Q1/ etc.
+  # Files live at: src/2-reading-room/_quarters/2026-Q1.md
   quarters:
     output: true
-    permalink: /nazar/:name/        # → /nazar/2026-Q1/  (name = filename without .md)
+    permalink: /nazar/:name/
+
+  # Nazar articles → /nazar/2026-Q1/article-slug/
+  # Files live at: src/2-reading-room/1-nazar/2026-Q1/article.md
+  # DO NOT use a _posts/ subdirectory — files go directly in the quarter folder
   1-nazar:
     output: true
-    permalink: /nazar/:path/        # → /nazar/2026-Q1/article-slug/
- 
-# ── Default front-matter ───────────────────────────────────────
+    permalink: /nazar/:path/
+
+  # Other reading room sections (add output:true + permalink when ready)
+  2-book-reviews:
+    output: true
+    permalink: /book-reviews/:path/
+
+  3-keywords:
+    output: true
+    permalink: /keywords/:path/
+
+  4-criticulture:
+    output: true
+    permalink: /criticulture/:path/
+
+# ─── DEFAULT FRONT-MATTER ──────────────────────────────────────
 defaults:
   - scope:
       path: ""
       type: "1-nazar"
     values:
       layout: nazar-post
- 
+
   - scope:
       path: ""
       type: "quarters"
     values:
       layout: nazar-quarter
- 
 
-# ─── NAVIGATION (auto-built from folder names) ─────────────────
-# Edit src/config/nav.yml to control the nav bar.
+  - scope:
+      path: ""
+      type: "2-book-reviews"
+    values:
+      layout: post
+
+  - scope:
+      path: ""
+      type: "3-keywords"
+    values:
+      layout: post
+
+  - scope:
+      path: ""
+      type: "4-criticulture"
+    values:
+      layout: post
+
+# ─── NAVIGATION ────────────────────────────────────────────────
+# Edit _data/nav.yml to control the nav bar.
