@@ -68,7 +68,7 @@ default_image:     "/assets/images/default-cover.png"
 # That means _quarters/ must be at src/2-reading-room/_quarters/
 # (NOT at the project root)
 
-collections_dir: src/2-reading-room
+collections_dir: src/
 
 collections:
 
