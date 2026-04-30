@@ -207,7 +207,7 @@ permalink: /nazar
 
   <div class="explore-grid">
     {% for quarter in site.data.nazar_quarters %}
-    {% assign q_posts = site.collections["1-nazar"] | where_exp: "p", "p.path contains quarter.key" %}
+    {% assign q_posts = site.collections["nazar"] | where_exp: "p", "p.path contains quarter.key" %}
     <a href="{{ '/nazar/' | append: quarter.key | relative_url }}" class="post-card"
       style="text-decoration:none;">
       <div class="post-card-img">
